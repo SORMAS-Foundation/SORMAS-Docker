@@ -11,4 +11,8 @@ services:
     build: postgres/.
     environment: 
       - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-    
+    volumes:
+      - psqldata:/var/lib/postgresql/data
+
+volumes:
+  psqldata:
