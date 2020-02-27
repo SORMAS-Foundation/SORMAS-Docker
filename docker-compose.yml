@@ -1,13 +1,10 @@
 version: '3'
 services:
   sormas:
-    tty: true
     build:
       context: sormas/.
       args:
         SORMAS_URL: ${SORMAS_URL}
-        SORMAS_POSTGRES_USER: ${SORMAS_POSTGRES_USER}
-        SORMAS_POSTGRES_PASSWORD: ${SORMAS_POSTGRES_PASSWORD}
     environment:
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}

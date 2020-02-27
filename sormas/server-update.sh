@@ -176,7 +176,8 @@ fi
 
 if [ $(expr substr "$(uname -a)" 1 5) = "Linux" ]; then
 	echo "Creating database backups..."
-	sudo -u postgres pg_dump -Fc -b $DATABASE_NAME > $DB_BACKUP_PATH/$DATABASE_NAME"_"`date +"%Y-%m-%d_%H-%M-%S"`".dump"
+	PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
+	pg_dump -h postgres -p 5432 -U ${SORMAS_POSTGRES_USER} -Fc -b $DATABASE_NAME > $DB_BACKUP_PATH/$DATABASE_NAME"_"`date +"%Y-%m-%d_%H-%M-%S"`".dump"
 
 	if [ $? -ne 0 ]; then
 		echo "Main database backup failed and will be skipped..."

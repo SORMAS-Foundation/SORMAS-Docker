@@ -32,4 +32,6 @@ COPY start-server.sh /root/deploy/sormas/deploy/start-server.sh
 COPY server-update.sh /root/deploy/sormas/deploy/update-server.sh
 RUN chmod +x /root/deploy/sormas/deploy/start-server.sh
 
+
+ENV PGPASSWORD="password"
 ENTRYPOINT ["/bin/sh","/root/deploy/sormas/deploy/start-server.sh" ]
