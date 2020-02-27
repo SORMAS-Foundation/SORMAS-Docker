@@ -17,8 +17,8 @@ PORT_BASE=6000
 PORT_ADMIN=6048
 DOMAIN_DIR=${DOMAINS_HOME}/${DOMAIN_NAME}
 
-
-
+DB_NAME=sormas
+DB_NAME_AUDIT=sormas_audit
 
 
 # Setting ASADMIN_CALL and creating domain
@@ -52,13 +52,15 @@ GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO $SORMAS_POSTGRES_USER;
 ALTER TABLE IF EXISTS schema_version OWNER TO $SORMAS_POSTGRES_USER;
 EOF
 
-	/usr/bin/psql -h postgres -p 5432 -U postgres -f setup.sql
+
+PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
+/usr/bin/psql -h postgres -p 5432 -U sormas_user -f setup.sql
 
 
 rm setup.sql
 
 echo "---"
-read -p "Database setup completed. Please check the output for any error. Press [Enter] to continue or [Strg+C] to cancel."
+
 
 
 
@@ -69,43 +71,36 @@ ${ASADMIN} delete-jvm-options -Xmx512m
 ${ASADMIN} create-jvm-options -Xmx4096m
 
 # JDBC pool
-${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=${DB_PORT}:databaseName=${DB_NAME}:serverName=localhost:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool
+${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=5432:databaseName=${DB_NAME}:serverName=postgres:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}DataPool jdbc/${DOMAIN_NAME}DataPool
 
 # Pool for audit log
-${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=${DB_PORT}:databaseName=${DB_NAME_AUDIT}:serverName=localhost:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}AuditlogPool
+${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=5432:databaseName=${DB_NAME_AUDIT}:serverName=postgres:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}AuditlogPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}AuditlogPool jdbc/AuditlogPool
 
 ${ASADMIN} create-javamail-resource --mailhost localhost --mailuser user --fromaddress ${MAIL_FROM} mail/MailSession
 
 ${ASADMIN} create-custom-resource --restype java.util.Properties --factoryclass org.glassfish.resources.custom.factory.PropertiesFactory --property "org.glassfish.resources.custom.factory.PropertiesFactory.fileName=\${com.sun.aas.instanceRoot}/sormas.properties" sormas/Properties
 
-cp sormas.properties ${DOMAIN_DIR}
-cp start-payara-sormas.sh ${DOMAIN_DIR}
-cp stop-payara-sormas.sh ${DOMAIN_DIR}
-cp logback.xml ${DOMAIN_DIR}/config/
+cp /root/deploy/sormas/deploy/sormas.properties ${DOMAIN_DIR}
+cp /root/deploy/sormas/deploy/start-payara-sormas.sh ${DOMAIN_DIR}
+cp /root/deploy/sormas/deploy/stop-payara-sormas.sh ${DOMAIN_DIR}
+cp /root/deploy/sormas/deploy/logback.xml ${DOMAIN_DIR}/config/
 if [ ${DEV_SYSTEM} = true ] && [ ${LINUX} != true ]; then
 	# Fixes outdated certificate - don't do this on linux systems!
 	cp cacerts.txt ${DOMAIN_DIR}/config/cacerts.jks
 fi
-cp loginsidebar.html ${CUSTOM_DIR}
-cp logindetails.html ${CUSTOM_DIR}
+cp /root/deploy/sormas/deploy/loginsidebar.html ${CUSTOM_DIR}
+cp /root/deploy/sormas/deploy/logindetails.html ${CUSTOM_DIR}
 if [ ${DEMO_SYSTEM} = true ]; then
 	cp demologinmain.html ${CUSTOM_DIR}/loginmain.html
 else
-	cp loginmain.html ${CUSTOM_DIR}
+	cp /root/deploy/sormas/deploy/loginmain.html ${CUSTOM_DIR}
 fi
 
 
-if [ ${LINUX} = true ]; then
-	cp payara-sormas /etc/init.d
-	chmod 755 /etc/init.d/payara-sormas
-	update-rc.d payara-sormas defaults
 
 	chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
-fi
-
-read -p "--- Press [Enter] to continue..."
 
 # Logging
 echo "Configuring logging..."
@@ -117,18 +112,18 @@ ${ASADMIN} set-log-attributes com.sun.enterprise.server.logging.GFFileHandler.ro
 #${ASADMIN} set-log-levels javax.enterprise.system.util=SEVERE
 
 
-	# Make the payara listen to localhost only
-	echo "Configuring security settings..."
-	${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.network-listeners=http-listener-1
-	${ASADMIN} delete-network-listener --target=server-config http-listener-2
-	${ASADMIN} set configs.config.server-config.network-config.network-listeners.network-listener.admin-listener.address=127.0.0.1
-	${ASADMIN} set configs.config.server-config.network-config.network-listeners.network-listener.http-listener-1.address=127.0.0.1
-	${ASADMIN} set configs.config.server-config.iiop-service.iiop-listener.orb-listener-1.address=127.0.0.1
-	${ASADMIN} set configs.config.server-config.iiop-service.iiop-listener.SSL.address=127.0.0.1
-	${ASADMIN} set configs.config.server-config.iiop-service.iiop-listener.SSL_MUTUALAUTH.address=127.0.0.1
-	${ASADMIN} set configs.config.server-config.jms-service.jms-host.default_JMS_host.host=127.0.0.1
-	${ASADMIN} set configs.config.server-config.admin-service.jmx-connector.system.address=127.0.0.1
-	${ASADMIN} set-hazelcast-configuration --enabled=false
+	# # Make the payara listen to localhost only
+	# echo "Configuring security settings..."
+	# ${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.network-listeners=http-listener-1
+	# ${ASADMIN} delete-network-listener --target=server-config http-listener-2
+	# ${ASADMIN} set configs.config.server-config.network-config.network-listeners.network-listener.admin-listener.address=127.0.0.1
+	# ${ASADMIN} set configs.config.server-config.network-config.network-listeners.network-listener.http-listener-1.address=127.0.0.1
+	# ${ASADMIN} set configs.config.server-config.iiop-service.iiop-listener.orb-listener-1.address=127.0.0.1
+	# ${ASADMIN} set configs.config.server-config.iiop-service.iiop-listener.SSL.address=127.0.0.1
+	# ${ASADMIN} set configs.config.server-config.iiop-service.iiop-listener.SSL_MUTUALAUTH.address=127.0.0.1
+	# ${ASADMIN} set configs.config.server-config.jms-service.jms-host.default_JMS_host.host=127.0.0.1
+	# ${ASADMIN} set configs.config.server-config.admin-service.jmx-connector.system.address=127.0.0.1
+	# ${ASADMIN} set-hazelcast-configuration --enabled=false
 
 
 # don't stop the domain, because we need it running for the update script
@@ -136,19 +131,18 @@ ${ASADMIN} set-log-attributes com.sun.enterprise.server.logging.GFFileHandler.ro
 #${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME} ${DOMAIN_NAME}
 
 echo "Server setup completed."
-echo "Commands to start and stop the domain: "
-if [ ${LINUX} = true ]; then
-	echo "service payara-sormas start"
-	echo "service payara-sormas stop"
-else
-	echo "${DOMAIN_DIR}/start-payara-sormas.sh"
-	echo "${DOMAIN_DIR}/stop-payara-sormas.sh"
-fi
-echo "---"
-echo "Please make sure to perform the following steps:"
-echo "  - Adjust the sormas.properties file to your system"
-echo "  - Execute the sormas-update.sh file to populate the database and deploy the server"
+# echo "Commands to start and stop the domain: "
+# if [ ${LINUX} = true ]; then
+# 	echo "service payara-sormas start"
+# 	echo "service payara-sormas stop"
+# else
+# 	echo "${DOMAIN_DIR}/start-payara-sormas.sh"
+# 	echo "${DOMAIN_DIR}/stop-payara-sormas.sh"
+# fi
+# echo "---"
+# echo "Please make sure to perform the following steps:"
+# echo "  - Adjust the sormas.properties file to your system"
+# echo "  - Execute the sormas-update.sh file to populate the database and deploy the server"
+#
 
-
-
-/bin/bash
+sh /root/deploy/sormas/deploy/update-server.sh

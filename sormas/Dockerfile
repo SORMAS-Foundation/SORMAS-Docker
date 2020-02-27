@@ -1,7 +1,8 @@
 FROM azul/zulu-openjdk:8
 
 ARG SORMAS_URL
-ENV SORMAS_POSTGRES_USER=sormas
+ENV SORMAS_POSTGRES_USER=sormas_user
+
 ENV SORMAS_POSTGRES_PASSWORD=password
 ENV MAIL_FROM=root@localhost
 RUN apt-get update \
@@ -26,6 +27,7 @@ RUN wget -O /opt/payara5/payara-5.192.zip "https://search.maven.org/remoteconten
 ENV ASENV_PATH="/opt/payara5/glassfish/config/asenv.conf"
 RUN useradd payara
 COPY start-server.sh /root/deploy/sormas/deploy/start-server.sh
+COPY server-update.sh /root/deploy/sormas/deploy/update-server.sh
 RUN chmod +x /root/deploy/sormas/deploy/start-server.sh
 EXPOSE 6048
 EXPOSE 6080
