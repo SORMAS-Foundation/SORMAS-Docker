@@ -15,6 +15,7 @@ services:
       - "6080:6080"
   postgres:
     build: postgres/.
+    command: -c 'config_file=/etc/postgresql/postgresql.conf'
     environment:
       - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - POSTGRES_USER=${SORMAS_POSTGRES_USER}

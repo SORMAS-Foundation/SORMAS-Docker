@@ -1,12 +1,14 @@
 FROM azul/zulu-openjdk:8
-
+EXPOSE 6080
 ARG SORMAS_URL
 ENV SORMAS_POSTGRES_USER=sormas_user
 
 ENV SORMAS_POSTGRES_PASSWORD=password
 ENV MAIL_FROM=root@localhost
 RUN apt-get update \
+  && apt-get upgrade -y \
   && apt-get -y install wget unzip postgresql curl \
+  && apt-get clean \
   && mkdir -p /root/deploy/sormas\
   && cd /root/deploy/sormas \
   && wget ${SORMAS_URL} -O sormas.zip \
@@ -29,9 +31,5 @@ RUN useradd payara
 COPY start-server.sh /root/deploy/sormas/deploy/start-server.sh
 COPY server-update.sh /root/deploy/sormas/deploy/update-server.sh
 RUN chmod +x /root/deploy/sormas/deploy/start-server.sh
-EXPOSE 6048
-EXPOSE 6080
-EXPOSE 6081
-ARG MAIL_FROM
-ENV PGPASSWORD="password"
+
 ENTRYPOINT ["/bin/sh","/root/deploy/sormas/deploy/start-server.sh" ]

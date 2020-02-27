@@ -86,17 +86,11 @@ cp /root/deploy/sormas/deploy/sormas.properties ${DOMAIN_DIR}
 cp /root/deploy/sormas/deploy/start-payara-sormas.sh ${DOMAIN_DIR}
 cp /root/deploy/sormas/deploy/stop-payara-sormas.sh ${DOMAIN_DIR}
 cp /root/deploy/sormas/deploy/logback.xml ${DOMAIN_DIR}/config/
-if [ ${DEV_SYSTEM} = true ] && [ ${LINUX} != true ]; then
-	# Fixes outdated certificate - don't do this on linux systems!
-	cp cacerts.txt ${DOMAIN_DIR}/config/cacerts.jks
-fi
+
 cp /root/deploy/sormas/deploy/loginsidebar.html ${CUSTOM_DIR}
 cp /root/deploy/sormas/deploy/logindetails.html ${CUSTOM_DIR}
-if [ ${DEMO_SYSTEM} = true ]; then
-	cp demologinmain.html ${CUSTOM_DIR}/loginmain.html
-else
+
 	cp /root/deploy/sormas/deploy/loginmain.html ${CUSTOM_DIR}
-fi
 
 
 
