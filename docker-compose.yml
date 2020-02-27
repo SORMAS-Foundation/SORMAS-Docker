@@ -23,11 +23,12 @@ services:
   apache2:
     build:
       context: apache2/.
-      args:
-        SORMAS_SERVER_URL: ${SORMAS_SERVER_URL}
+    environment:
+      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
     volumes:
       - apache2_www:/var/www/
       - apache2_local:/usr/local/apache2/
+      - /etc/ssl/certs/:/etc/ssl/certs/
     ports:
       - "80:80"
       - "443:443"
