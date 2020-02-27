@@ -19,11 +19,6 @@ Listen 443
 <VirtualHost *:443>
         ServerName ${SORMAS_SERVER_URL}
 	
-	DocumentRoot /var/www/
-	<Directory /var/www>
-          Require all granted
-        </Directory>
-
         ErrorLog /usr/local/apache2/error.log
         LogLevel warn
         LogFormat "%h %l %u %t \"%r\" %>s %b _%D_ \"%{User}i\"  \"%{Connection}i\"  \"%{Referer}i\" \"%{User-agent}i\"" combined_ext
@@ -41,11 +36,11 @@ Listen 443
         SSLHonorCipherOrder off
 
 	
-        #ProxyRequests Off
-        #ProxyPass /sormas-ui http://172.17.0.1:6080/sormas-ui
-        #ProxyPassReverse /sormas-ui http://172.17.0.1:6080/sormas-ui
-        #ProxyPass /sormas-rest http://172.17.0.1:6080/sormas-rest
-        #ProxyPassReverse /sormas-rest http://172.17.0.1:6080/sormas-rest
+        ProxyRequests Off
+        ProxyPass /sormas-ui http://sormas:6080/sormas-ui
+        ProxyPassReverse /sormas-ui http://sormas:6080/sormas-ui
+        ProxyPass /sormas-rest http://sormas:6080/sormas-rest
+        ProxyPassReverse /sormas-rest http://sormas:6080/sormas-rest
 
         Options -Indexes
         AliasMatch "/downloads/sormas-(.*)" "/var/www/sormas/downloads/sormas-$1"
