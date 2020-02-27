@@ -1,18 +1,14 @@
-FROM centos:centos8
+FROM httpd:2.4-alpine
 
 ARG SORMAS_SERVER_URL
 
-RUN yum install httpd mod_ssl -y
 RUN mkdir -p /var/www/ \
-  && chown -R apache:apache /var/www/ \
-  && mkdir /etc/httpd/sites-available/ \
-  && mkdir /etc/httpd/sites-enabled/ \
-  && chown -R apache:apache /etc/httpd/
+  && chown -R www-data:www-data /var/www/ 
 
-COPY ./certs/*.crt /etc/httpd/conf/${SORMAS_SERVER_URL}.crt
-COPY ./certs/*.key /etc/httpd/conf/${SORMAS_SERVER_URL}.key
-COPY ./httpd.conf /etc/httpd/conf.d/000_${SORMAS_SERVER_URL}.conf
-COPY ./ssl_httpd.conf /etc/httpd/conf.d/001_ssl_${SORMAS_SERVER_URL}.conf
+COPY ./certs/*.crt /usr/local/apache2/conf/${SORMAS_SERVER_URL}.crt
+COPY ./certs/*.key /usr/local/apache2/conf/${SORMAS_SERVER_URL}.key
+COPY ./httpd.conf /usr/local/apache2/conf.d/000_${SORMAS_SERVER_URL}.conf
+COPY ./ssl_httpd.conf /usr/local/apache2/conf.d/001_ssl_${SORMAS_SERVER_URL}.conf
 COPY ./index.html /var/www/index.html
 
 RUN sed -i \
@@ -23,15 +19,16 @@ RUN sed -i \
         -e 's/^#\(LoadModule .*mod_proxy.so\)/\1/' \
         -e 's/^#\(LoadModule .*mod_proxy_http.so\)/\1/' \
         -e 's/^#\(LoadModule .*mod_ssl.so\)/\1/' \
-        /etc/httpd/conf/httpd.conf
+        conf/httpd.conf
 
 RUN sed -i 's/SORMAS_SERVER_URL/'"${SORMAS_SERVER_URL}"'/g' \
-	"/etc/httpd/conf.d/000_${SORMAS_SERVER_URL}.conf"
+	"/usr/local/apache2/conf.d/000_${SORMAS_SERVER_URL}.conf"
 
 RUN sed -i 's/SORMAS_SERVER_URL/'"${SORMAS_SERVER_URL}"'/g' \
-        "/etc/httpd/conf.d/001_ssl_${SORMAS_SERVER_URL}.conf"
+        "/usr/local/apache2/conf.d/001_ssl_${SORMAS_SERVER_URL}.conf"
 
-RUN sed -i '/<VirtualHost _default_/q' /etc/httpd/conf.d/ssl.conf
-RUN sed -i '/<VirtualHost _default_/d' /etc/httpd/conf.d/ssl.conf
+RUN sed -i '/<VirtualHost _default_/q' /usr/local/apache2/conf/extra/httpd-ssl.conf
+RUN sed -i '/<VirtualHost _default_/d' /usr/local/apache2/conf/extra/httpd-ssl.conf
 
-ENTRYPOINT ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+RUN echo "IncludeOptional conf.d/*.conf" >> /usr/local/apache2/conf/httpd.conf \
+  && chown -R www-data:www-data /usr/local/apache2/

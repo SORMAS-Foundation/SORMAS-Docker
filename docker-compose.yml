@@ -27,7 +27,7 @@ services:
         SORMAS_SERVER_URL: ${SORMAS_SERVER_URL}
     volumes:
       - apache2_www:/var/www/
-      - apache2_etc:/etc/httpd/
+      - apache2_local:/usr/local/apache2/
     ports:
       - "80:80"
       - "443:443"
@@ -35,4 +35,4 @@ services:
 volumes:
   psqldata:
   apache2_www:
-  apache2_etc:
+  apache2_local:
