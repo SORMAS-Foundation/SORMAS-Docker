@@ -19,33 +19,7 @@ DOMAIN_DIR=${DOMAINS_HOME}/${DOMAIN_NAME}
 
 
 
-# Set up the database
-echo "Starting database setup..."
 
-cat > setup.sql <<-EOF
-CREATE USER $DB_USER WITH PASSWORD '$SORMAS_POSTGRES_PASSWORD' CREATEDB;
-CREATE DATABASE $DB_NAME WITH OWNER = '$DB_USER' ENCODING = 'UTF8';
-CREATE DATABASE $DB_NAME_AUDIT WITH OWNER = '$DB_USER' ENCODING = 'UTF8';
-\c $DB_NAME
-CREATE OR REPLACE PROCEDURAL LANGUAGE plpgsql;
-ALTER PROCEDURAL LANGUAGE plpgsql OWNER TO $DB_USER;
-CREATE EXTENSION temporal_tables;
-CREATE EXTENSION pg_trgm;
-GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO $DB_USER;
-\c $DB_NAME_AUDIT
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO $DB_USER;
-ALTER TABLE IF EXISTS schema_version OWNER TO $DB_USER;
-EOF
-
-	/usr/bin/psql -h postgres -p 5432 -U postgres -f setup.sql
-
-
-rm setup.sql
-
-echo "---"
-read -p "Database setup completed. Please check the output for any error. Press [Enter] to continue or [Strg+C] to cancel."
 
 # Setting ASADMIN_CALL and creating domain
 echo "Creating domain for Payara..."
@@ -58,7 +32,33 @@ fi
 
 ${PAYARA_HOME}/bin/asadmin start-domain --domaindir ${DOMAINS_HOME} ${DOMAIN_NAME}
 
+# Set up the database
+echo "Starting database setup..."
 
+cat > setup.sql <<-EOF
+CREATE USER $SORMAS_POSTGRES_USER WITH PASSWORD '$SORMAS_POSTGRES_PASSWORD' CREATEDB;
+CREATE DATABASE $DB_NAME WITH OWNER = '$SORMAS_POSTGRES_USER' ENCODING = 'UTF8';
+CREATE DATABASE $DB_NAME_AUDIT WITH OWNER = '$SORMAS_POSTGRES_USER' ENCODING = 'UTF8';
+\c $DB_NAME
+CREATE OR REPLACE PROCEDURAL LANGUAGE plpgsql;
+ALTER PROCEDURAL LANGUAGE plpgsql OWNER TO $SORMAS_POSTGRES_USER;
+CREATE EXTENSION temporal_tables;
+CREATE EXTENSION pg_trgm;
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO $SORMAS_POSTGRES_USER;
+\c $DB_NAME_AUDIT
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO $SORMAS_POSTGRES_USER;
+ALTER TABLE IF EXISTS schema_version OWNER TO $SORMAS_POSTGRES_USER;
+EOF
+
+	/usr/bin/psql -h postgres -p 5432 -U postgres -f setup.sql
+
+
+rm setup.sql
+
+echo "---"
+read -p "Database setup completed. Please check the output for any error. Press [Enter] to continue or [Strg+C] to cancel."
 
 
 
@@ -69,11 +69,11 @@ ${ASADMIN} delete-jvm-options -Xmx512m
 ${ASADMIN} create-jvm-options -Xmx4096m
 
 # JDBC pool
-${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=${DB_PORT}:databaseName=${DB_NAME}:serverName=localhost:user=${DB_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool
+${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=${DB_PORT}:databaseName=${DB_NAME}:serverName=localhost:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}DataPool jdbc/${DOMAIN_NAME}DataPool
 
 # Pool for audit log
-${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=${DB_PORT}:databaseName=${DB_NAME_AUDIT}:serverName=localhost:user=${DB_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}AuditlogPool
+${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=${DB_PORT}:databaseName=${DB_NAME_AUDIT}:serverName=localhost:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}AuditlogPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}AuditlogPool jdbc/AuditlogPool
 
 ${ASADMIN} create-javamail-resource --mailhost localhost --mailuser user --fromaddress ${MAIL_FROM} mail/MailSession
@@ -116,7 +116,7 @@ ${ASADMIN} set-log-attributes com.sun.enterprise.server.logging.GFFileHandler.ro
 #${ASADMIN} set-log-levels org.wamblee.glassfish.auth.HexEncoder=SEVERE
 #${ASADMIN} set-log-levels javax.enterprise.system.util=SEVERE
 
-if [ ${DEV_SYSTEM} != true ]; then
+
 	# Make the payara listen to localhost only
 	echo "Configuring security settings..."
 	${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.network-listeners=http-listener-1
@@ -129,7 +129,7 @@ if [ ${DEV_SYSTEM} != true ]; then
 	${ASADMIN} set configs.config.server-config.jms-service.jms-host.default_JMS_host.host=127.0.0.1
 	${ASADMIN} set configs.config.server-config.admin-service.jmx-connector.system.address=127.0.0.1
 	${ASADMIN} set-hazelcast-configuration --enabled=false
-fi
+
 
 # don't stop the domain, because we need it running for the update script
 #read -p "--- Press [Enter] to continue..."
@@ -148,6 +148,7 @@ echo "---"
 echo "Please make sure to perform the following steps:"
 echo "  - Adjust the sormas.properties file to your system"
 echo "  - Execute the sormas-update.sh file to populate the database and deploy the server"
-if [ ${DEV_SYSTEM} != true ]; then
-	echo "  - Configure the apache web server according to the server setup guide"
-fi
+
+
+
+/bin/bash

@@ -1,12 +1,16 @@
 version: '3'
 services:
   sormas:
+    tty: true
     build:
       context: sormas/.
       args:
         SORMAS_URL: ${SORMAS_URL}
         SORMAS_POSTGRES_USER: ${SORMAS_POSTGRES_USER}
         SORMAS_POSTGRES_PASSWORD: ${SORMAS_POSTGRES_PASSWORD}
+    environment:
+      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
     ports:
       - "6080:6080"
   postgres:
@@ -20,7 +24,7 @@ services:
     build:
       context: apache2/.
       args:
-        SORMAS_SERVER_URL: ${SORMAS_SERVER_URL}   
+        SORMAS_SERVER_URL: ${SORMAS_SERVER_URL}
     volumes:
       - apache2_www:/var/www/
       - apache2_etc:/etc/httpd/
