@@ -35,8 +35,8 @@ DOMAIN_PATH=/opt/domains
 DOMAIN_NAME="sormas"
 DOWNLOADS_PATH=/var/www/sormas/downloads
 DB_BACKUP_PATH=/root/deploy/sormas/backup
-DATABASE_NAME="sormas_db"
-DATABASE_AUDIT_NAME="sormas_audit_db"
+DATABASE_NAME="sormas"
+DATABASE_AUDIT_NAME="sormas_audit"
 LOG_FILE_PATH=$DOMAIN_PATH/$DOMAIN_NAME/logs
 UPDATE_LOG_PATH=$DOMAIN_PATH/$DOMAIN_NAME/update-logs
 UPDATE_LOG_FILE_NAME=server_update_`date +"%Y-%m-%d_%H-%M-%S"`.txt
@@ -185,7 +185,7 @@ if [ $(expr substr "$(uname -a)" 1 5) = "Linux" ]; then
 		echo "Main database backup successfully completed..."
 	fi
 
-	sudo -u postgres pg_dump -Fc -b $DATABASE_AUDIT_NAME > $DB_BACKUP_PATH/$DATABASE_AUDIT_NAME"_"`date +"%Y-%m-%d_%H-%M-%S"`".dump"
+	pg_dump -h postgres -p 5432 -U ${SORMAS_POSTGRES_USER} -Fc -b $DATABASE_AUDIT_NAME > $DB_BACKUP_PATH/$DATABASE_AUDIT_NAME"_"`date +"%Y-%m-%d_%H-%M-%S"`".dump"
 
 	if [ $? -ne 0 ]; then
 		echo "Audit database backup failed and will be skipped..."

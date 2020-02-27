@@ -8,6 +8,8 @@ services:
     environment:
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - MAIL_FROM=${MAIL_FROM}
     ports:
       - "6080:6080"
   postgres:
