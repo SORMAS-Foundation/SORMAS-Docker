@@ -32,7 +32,7 @@ services:
     volumes:
       - apache2_www:/var/www/
       - apache2_local:/usr/local/apache2/
-      - /etc/ssl/certs/:/etc/ssl/certs/
+      - ./certs/:/etc/ssl/certs/
     ports:
       - "80:80"
       - "443:443"
