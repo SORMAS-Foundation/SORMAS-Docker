@@ -23,6 +23,10 @@ services:
   apache2:
     build:
       context: apache2/.
+    links:
+      - sormas
+    depends_on:
+      - sormas
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
     volumes:
