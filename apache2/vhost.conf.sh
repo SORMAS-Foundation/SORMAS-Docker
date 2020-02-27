@@ -18,6 +18,8 @@ cat << EOF > /usr/local/apache2/conf.d/001_ssl_${SORMAS_SERVER_URL}.conf
 Listen 443
 <VirtualHost *:443>
         ServerName ${SORMAS_SERVER_URL}
+
+	Redirect "/" "https://${SORMAS_SERVER_URL}/sormas-ui"
 	
         ErrorLog /usr/local/apache2/error.log
         LogLevel warn
