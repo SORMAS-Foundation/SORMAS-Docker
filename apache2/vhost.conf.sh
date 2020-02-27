@@ -25,8 +25,8 @@ Listen 443
         CustomLog /var/log/apache2/access.log combined_ext        
 
         SSLEngine on
-        SSLCertificateFile    /etc/ssl/certs/${SORMAS_SERVER_URL}.crt
-        SSLCertificateKeyFile /etc/ssl/certs/${SORMAS_SERVER_URL}.key
+        SSLCertificateFile    /usr/local/apache2/certs/${SORMAS_SERVER_URL}.crt
+        SSLCertificateKeyFile /usr/local/apache2/certs/${SORMAS_SERVER_URL}.key
         #SSLCertificateChainFile /etc/ssl/certs/${SORMAS_SEVER_URL}.ca-bundle
 
         # disable weak ciphers and old TLS/SSL

@@ -11,8 +11,10 @@ COPY ./vhost.conf.sh /tmp/vhost.conf.sh
 COPY ./httpd.conf /usr/local/apache2/conf/httpd.conf
 COPY ./httpd-ssl.conf /usr/local/apache2/conf/extra/httpd-ssl.conf
 COPY ./index.html /var/www/index.html
-
-RUN chown -R www-data:www-data /var/www 
+#COPY ./certs/sormas-docker-test.com.crt /usr/local/apache2/conf/sormas-docker-test.com.crt
+#COPY ./certs/sormas-docker-test.com.key /usr/local/apache2/conf/sormas-docker-test.com.key
+RUN chown -R www-data:www-data /var/www \
+  && chown -R www-data:www-data /etc/ssl/certs/ 
 
 ENTRYPOINT ["/tmp/vhost.conf.sh"]
 CMD ["/usr/local/apache2/bin/httpd","-D","FOREGROUND"]
