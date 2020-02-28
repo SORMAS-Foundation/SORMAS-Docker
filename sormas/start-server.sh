@@ -55,7 +55,7 @@ EOF
 
 PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
 echo $PGPASSWORD
-/usr/bin/psql -h postgres -p 5432 -U sormas_user -f setup.sql
+/usr/bin/psql -h postgres -p 5432 -U $SORMAS_POSTGRES_USER -f setup.sql
 
 
 rm setup.sql
