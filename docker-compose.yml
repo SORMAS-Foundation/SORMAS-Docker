@@ -30,8 +30,6 @@ services:
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
     volumes:
-      - apache2_www:/var/www/
-      - apache2_local:/usr/local/apache2/
       - ./apache2/certs/:/usr/local/apache2/certs/
     ports:
       - "80:80"
@@ -39,5 +37,3 @@ services:
 
 volumes:
   psqldata:
-  apache2_www:
-  apache2_local:
