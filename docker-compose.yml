@@ -11,8 +11,9 @@ services:
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - MAIL_FROM=${MAIL_FROM}
-    ports:
-      - "6080:6080"
+    volumes:
+      - sormas-backup:/root/deploy/sormas/backup
+      - sormas-web:/opt/domains
   postgres:
     build: postgres/.
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
@@ -40,3 +41,5 @@ services:
 
 volumes:
   psqldata:
+  sormas-backup:
+  sormas-web:
