@@ -1,0 +1,45 @@
+version: '3'
+services:
+  sormas:
+    build:
+      context: sormas/.
+      args:
+        SORMAS_URL: ${SORMAS_URL}
+    image: docker.netzlink.com/sormas/sormas:latest
+    environment:
+      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - MAIL_FROM=${MAIL_FROM}
+    volumes:
+      - sormas-backup:/root/deploy/sormas/backup
+      - sormas-web:/opt/domains
+  postgres:
+    build: postgres/.
+    command: -c 'config_file=/etc/postgresql/postgresql.conf'
+    image: docker.netzlink.com/sormas/postgres:latest
+    environment:
+      - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - POSTGRES_USER=${SORMAS_POSTGRES_USER}
+    volumes:
+      - psqldata:/var/lib/postgresql/data
+  apache2:
+    build:
+      context: apache2/.
+    links:
+      - sormas
+    depends_on:
+      - sormas
+    image: docker.netzlink.com/sormas/apache2:latest
+    environment:
+      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+    volumes:
+      - ./apache2/certs/:/usr/local/apache2/certs/
+    ports:
+      - "80:80"
+      - "443:443"
+
+volumes:
+  psqldata:
+  sormas-backup:
+  sormas-web:
