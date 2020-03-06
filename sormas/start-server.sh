@@ -84,7 +84,7 @@ ${ASADMIN} create-javamail-resource --mailhost localhost --mailuser user --froma
 ${ASADMIN} create-custom-resource --restype java.util.Properties --factoryclass org.glassfish.resources.custom.factory.PropertiesFactory --property "org.glassfish.resources.custom.factory.PropertiesFactory.fileName=\${com.sun.aas.instanceRoot}/sormas.properties" sormas/Properties
 
 # Set domain name
-${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.hosts=${SORMAS_SERVER_URL}
+${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.hosts=$SORMAS_SERVER_URL
 
 cp /root/deploy/sormas/deploy/sormas.properties ${DOMAIN_DIR}
 cp /root/deploy/sormas/deploy/start-payara-sormas.sh ${DOMAIN_DIR}
