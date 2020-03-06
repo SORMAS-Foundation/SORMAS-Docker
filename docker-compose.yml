@@ -5,7 +5,7 @@ services:
       context: sormas/.
       args:
         SORMAS_URL: ${SORMAS_URL}
-    image: docker.netzlink.com/sormas/sormas:vm_1.0
+    image: docker.netzlink.com/sormas/sormas:vm1.0
     environment:
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
@@ -18,7 +18,7 @@ services:
   postgres:
     build: postgres/.
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
-    image: docker.netzlink.com/sormas/postgres:vm_1.0
+    image: docker.netzlink.com/sormas/postgres:vm1.0
     environment:
       - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - POSTGRES_USER=${SORMAS_POSTGRES_USER}
@@ -31,7 +31,7 @@ services:
       - sormas
     depends_on:
       - sormas
-    image: docker.netzlink.com/sormas/apache2:vm_1.0
+    image: docker.netzlink.com/sormas/apache2:vm1.0
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
     volumes:
