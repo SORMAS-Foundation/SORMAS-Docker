@@ -19,7 +19,7 @@ Listen 443
 <VirtualHost *:443>
         ServerName ${SORMAS_SERVER_URL}
 
-	Redirect "/" "https://${SORMAS_SERVER_URL}/sormas-ui"
+	Redirect "/" "https://${SORMAS_SERVER_URL}/sormas-ui/"
 	
         ErrorLog /usr/local/apache2/error.log
         LogLevel warn
