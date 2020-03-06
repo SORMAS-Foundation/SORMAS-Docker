@@ -12,7 +12,6 @@ services:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - MAIL_FROM=${MAIL_FROM}
-      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
     volumes:
       - sormas-backup:/root/deploy/sormas/backup
       - sormas-web:/opt/domains
