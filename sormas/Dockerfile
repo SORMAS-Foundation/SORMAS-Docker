@@ -1,6 +1,6 @@
 FROM azul/zulu-openjdk:8
 EXPOSE 6080
-ARG SORMAS_URL
+ENV SORMAS_URL
 ENV MAIL_FROM=root@localhost
 RUN apt-get update \
   && apt-get upgrade -y \
