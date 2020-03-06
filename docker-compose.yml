@@ -15,8 +15,6 @@ services:
     volumes:
       - sormas-backup:/root/deploy/sormas/backup
       - sormas-web:/opt/domains
-    ports:
-      - "6080:6080"
   postgres:
     build: postgres/.
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
@@ -26,7 +24,21 @@ services:
       - POSTGRES_USER=${SORMAS_POSTGRES_USER}
     volumes:
       - psqldata:/var/lib/postgresql/data
-    
+  apache2:
+    build:
+      context: apache2/.
+    links:
+      - sormas
+    depends_on:
+      - sormas
+    image: docker.netzlink.com/sormas/apache2:vm1.0
+    environment:
+      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+    volumes:
+      - ./apache2/certs/:/usr/local/apache2/certs/
+    ports:
+      - "80:80"
+      - "443:443"
 
 volumes:
   psqldata:
