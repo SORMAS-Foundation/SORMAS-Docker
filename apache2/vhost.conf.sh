@@ -39,6 +39,7 @@ Listen 443
 
 	
         ProxyRequests Off
+        ProxyPreserveHost On
         ProxyPass /sormas-ui http://sormas:6080/sormas-ui
         ProxyPassReverse /sormas-ui http://sormas:6080/sormas-ui
         ProxyPass /sormas-rest http://sormas:6080/sormas-rest
