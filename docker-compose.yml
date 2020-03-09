@@ -3,7 +3,7 @@ services:
   sormas:
     links: 
       - postgres
-    image: hzibraunschweig/sormas-application:latest
+    image: hzibraunschweig/sormas-application:${SORMAS_VERSION}
     environment:
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
@@ -15,7 +15,7 @@ services:
       - ${SORMAS_PATH}/sormas-web:/opt/domains
   postgres:
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
-    image: hzibraunschweig/sormas-postgres:latest
+    image: hzibraunschweig/sormas-postgres:${SORMAS_VERSION}
     environment:
       - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - POSTGRES_USER=${SORMAS_POSTGRES_USER}
@@ -26,7 +26,7 @@ services:
       - sormas
     depends_on:
       - sormas
-    image: hzibraunschweig/sormas-apache2:latest
+    image: hzibraunschweig/sormas-apache2:${SORMAS_VERSION}
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
     volumes:
