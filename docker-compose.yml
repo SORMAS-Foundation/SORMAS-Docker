@@ -1,6 +1,8 @@
 version: '3'
 services:
   sormas:
+    links: 
+      - postgres
     image: hzibraunschweig/sormas-application:latest
     environment:
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
