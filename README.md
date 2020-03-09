@@ -19,7 +19,7 @@ This project aims to build docker images for the SORMAS application.
 
 ## Quick Start
 
-If you would like to set up a local instance for testing, follwo these instructions
+If you would like to set up a local instance for testing, follow these instructions
 
 ### Prerequisites
 
