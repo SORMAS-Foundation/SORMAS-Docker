@@ -19,6 +19,8 @@ This project aims to build docker images for the SORMAS application.
 
 ## Quick Start
 
+If you would like to set up a local instance for testing, follwo these instructions
+
 ### Prerequisites
 
 In order to run the containerized SORMAS you need to have installed the following tools: 
@@ -29,6 +31,13 @@ In order to run the containerized SORMAS you need to have installed the followin
 ``` 
 127.0.0.1	sormas-docker-test.com
 ```  
+4. As the user running docker-compose create these directories:
+```
+mkdir /srv/dockerdata/sormas/psqldata
+mkdir /srv/dockerdata/sormas/sormas-backup
+mkdir /srv/dockerdata/sormas/sormas-web
+
+```
 
 ### Start the application
 1. Check out this repository

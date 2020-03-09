@@ -11,8 +11,8 @@ services:
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - MAIL_FROM=${MAIL_FROM}
     volumes:
-      - sormas-backup:/root/deploy/sormas/backup
-      - sormas-web:/opt/domains
+      - ${SORMAS_PATH}/sormas-backup:/root/deploy/sormas/backup
+      - ${SORMAS_PATH}/sormas-web:/opt/domains
   postgres:
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
     image: hzibraunschweig/sormas-postgres:latest
@@ -20,7 +20,7 @@ services:
       - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - POSTGRES_USER=${SORMAS_POSTGRES_USER}
     volumes:
-      - psqldata:/var/lib/postgresql/data
+      - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
   apache2:
     links:
       - sormas
@@ -35,8 +35,8 @@ services:
       - "80:80"
       - "443:443"
 
-volumes:
-  psqldata:
-  sormas-backup:
-  sormas-web:
+# volumes:
+#   psqldata:
+#   sormas-backup:
+#   sormas-web:
 
