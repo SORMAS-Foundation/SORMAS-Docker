@@ -15,7 +15,7 @@ services:
         - MAIL_FROM=${MAIL_FROM}
         - JVM_MAX=${JVM_MAX}
         - SORMAS_VERSION=${SORMAS_VERSION}
-    image: docker.netzlink.com/sormas/sormas:vm1.1
+    image: docker.netzlink.com/sormas/sormas:vm1.2
     environment:
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
@@ -36,7 +36,7 @@ services:
   postgres:
     build: postgres/.
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
-    image: docker.netzlink.com/sormas/postgres:vm1.1
+    image: docker.netzlink.com/sormas/postgres:vm1.2
     environment:
       - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - DB_NAME=sormas
@@ -55,7 +55,7 @@ services:
       - sormas
     depends_on:
       - sormas
-    image: docker.netzlink.com/sormas/apache2:vm1.1
+    image: docker.netzlink.com/sormas/apache2:vm1.2
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
     volumes:
