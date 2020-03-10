@@ -1,7 +1,7 @@
 version: '3'
 services:
-  restart: unless-stopped
   sormas:
+    restart: unless-stopped
     links: 
       - postgres
     image: hzibraunschweig/sormas-application:${SORMAS_VERSION}
