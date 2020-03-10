@@ -1,6 +1,7 @@
 version: '3'
 services:
   sormas:
+sormas-web:/opt/domains
     links: 
       - postgres
     image: hzibraunschweig/sormas-application:${SORMAS_VERSION}
@@ -30,10 +31,11 @@ services:
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
     volumes:
-      - ./apache2/certs/:/usr/local/apache2/certs/
+      - /etc/ssl/certs/:/usr/local/apache2/certs/
     ports:
       - "80:80"
       - "443:443"
+
 
 # volumes:
 #   psqldata:

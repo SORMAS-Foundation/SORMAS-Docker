@@ -32,4 +32,3 @@ RUN chmod +x /root/deploy/sormas/deploy/start-server.sh
 
 
 ENTRYPOINT ["/bin/sh","/root/deploy/sormas/deploy/start-server.sh" ]
-
