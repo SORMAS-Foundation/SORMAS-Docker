@@ -1,33 +1,34 @@
 FROM azul/zulu-openjdk:8
+
+ARG SORMAS_POSTGRES_PASSWORD
+ARG SORMAS_POSTGRES_USER=sormas_user
+ARG SORMAS_VERSION
+ARG SORMAS_SERVER_URL
+ARG DB_HOST=postgres
+ARG DOMAIN_NAME=sormas
+ARG DB_NAME=sormas
+ARG DB_NAME_AUDIT=sormas_audit
+ARG MAIL_HOST=localhost
+ARG MAIL_FROM=sormas@localhost
+ARG JVM_MAX=4096m
+
 EXPOSE 6080
-ARG SORMAS_URL
-ENV MAIL_FROM=root@localhost
+EXPOSE 6048
+
 RUN apt-get update \
   && apt-get upgrade -y \
   && apt-get -y install wget unzip postgresql curl \
-  && apt-get clean \
-  && mkdir -p /root/deploy/sormas\
-  && cd /root/deploy/sormas \
-  && wget ${SORMAS_URL} -O sormas.zip \
-  && unzip sormas.zip \
-  && rm sormas.zip
-
-RUN mkdir -p /opt/sormas/temp \
-  && mkdir -p /opt/sormas/generated \
-  && mkdir -p /opt/sormas/custom \
-  && mkdir -p /opt/payara5 \
-  && mkdir -p /opt/domains \
-  && mkdir -p /var/www/sormas/downloads
+  && apt-get clean
 
 RUN wget -O /tmp/payara-5.192.zip "https://search.maven.org/remotecontent?filepath=fish/payara/distributions/payara/5.192/payara-5.192.zip" \
   && unzip -q -o /tmp/payara-5.192.zip -d /opt/ \
-  && rm -R /opt/payara5/glassfish/domains
+  && rm -R /opt/payara5/glassfish/domains \
+  && rm /tmp/payara-5.192.zip
 
 ENV ASENV_PATH="/opt/payara5/glassfish/config/asenv.conf"
 RUN useradd payara
-COPY start-server.sh /root/deploy/sormas/deploy/start-server.sh
-COPY server-update.sh /root/deploy/sormas/deploy/update-server.sh
-RUN chmod +x /root/deploy/sormas/deploy/start-server.sh
+COPY setup-server.sh /setup-server.sh
+COPY start-server.sh /start-server.sh
+RUN /setup-server.sh
 
-
-ENTRYPOINT ["/bin/sh","/root/deploy/sormas/deploy/start-server.sh" ]
+CMD ["/start-server.sh"]

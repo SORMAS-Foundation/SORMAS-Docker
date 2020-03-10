@@ -1,146 +1,75 @@
-LINUX=true
+#!/bin/bash
+
+function check_db() {
+  psql -h ${DB_HOST} -U ${SORMAS_POSTGRES_USER} ${DB_NAME} --no-align --tuples-only --quiet --command="SELECT count(*) FROM pg_database WHERE datname='${DB_NAME}';" 2>/dev/null || echo "0"
+}
+
+SLEEP=30
+COUNT=0
+while [ $(check_db) -ne 1 ];do
+  echo "Waiting for ${DB_NAME} DB to get ready ..." 
+  sleep ${SLEEP}
+  COUNT=$(( ${COUNT} + 1 ))
+  if [ ${COUNT} -gt 9 ];then
+    echo "DB ${DB_NAME} is not reachable after ${COUNT} attempts. Exiting!"
+    exit 1
+  fi
+done
 
 ROOT_PREFIX=
 # make sure to update payara-sormas script when changing the user name
 USER_NAME=payara
-DOWNLOAD_DIR=${ROOT_PREFIX}/var/www/sormas/downloads
 
-
-TEMP_DIR=${ROOT_PREFIX}/opt/sormas/temp
-GENERATED_DIR=${ROOT_PREFIX}/opt/sormas/generated
-CUSTOM_DIR=${ROOT_PREFIX}/opt/sormas/custom
 PAYARA_HOME=${ROOT_PREFIX}/opt/payara5
 DOMAINS_HOME=${ROOT_PREFIX}/opt/domains
+TEMP_DIR=${ROOT_PREFIX}/opt/${DOMAIN_NAME}/temp
+GENERATED_DIR=${ROOT_PREFIX}/opt/${DOMAIN_NAME}/generated
+CUSTOM_DIR=${ROOT_PREFIX}/opt/${DOMAIN_NAME}/custom
 
-DOMAIN_NAME=sormas
+DEPLOY_PATH=/tmp/${DOMAIN_NAME}
+DOWNLOADS_PATH=/var/www/${DOMAIN_NAME}/downloads
+
 PORT_BASE=6000
 PORT_ADMIN=6048
 DOMAIN_DIR=${DOMAINS_HOME}/${DOMAIN_NAME}
+LOG_FILE_PATH=${DOMAIN_DIR}/logs
+LOG_FILE_NAME=configure_`date +"%Y-%m-%d_%H-%M-%S"`.log
 
-DB_NAME=sormas
-DB_NAME_AUDIT=sormas_audit
-
-
-# Setting ASADMIN_CALL and creating domain
-echo "Creating domain for Payara..."
-${PAYARA_HOME}/bin/asadmin create-domain --domaindir ${DOMAINS_HOME} --portbase ${PORT_BASE} --nopassword ${DOMAIN_NAME}
 ASADMIN="${PAYARA_HOME}/bin/asadmin --port ${PORT_ADMIN}"
-
-if [ ${LINUX} = true ]; then
-	chown -R ${USER_NAME}:${USER_NAME} ${PAYARA_HOME}
-fi
 
 ${PAYARA_HOME}/bin/asadmin start-domain --domaindir ${DOMAINS_HOME} ${DOMAIN_NAME}
 
-# Set up the database
-echo "Starting database setup..."
+echo "Configuring domain and database connection..."
 
-cat > setup.sql <<-EOF
-CREATE USER $SORMAS_POSTGRES_USER WITH PASSWORD '$SORMAS_POSTGRES_PASSWORD' CREATEDB;
-CREATE DATABASE $DB_NAME WITH OWNER = '$SORMAS_POSTGRES_USER' ENCODING = 'UTF8';
-CREATE DATABASE $DB_NAME_AUDIT WITH OWNER = '$SORMAS_POSTGRES_USER' ENCODING = 'UTF8';
-\c $DB_NAME
-CREATE OR REPLACE PROCEDURAL LANGUAGE plpgsql;
-ALTER PROCEDURAL LANGUAGE plpgsql OWNER TO $SORMAS_POSTGRES_USER;
-CREATE EXTENSION temporal_tables;
-CREATE EXTENSION pg_trgm;
-GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO $SORMAS_POSTGRES_USER;
-\c $DB_NAME_AUDIT
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO $SORMAS_POSTGRES_USER;
-ALTER TABLE IF EXISTS schema_version OWNER TO $SORMAS_POSTGRES_USER;
-EOF
-
-
-PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
-echo $PGPASSWORD
-/usr/bin/psql -h postgres -p 5432 -U $SORMAS_POSTGRES_USER -f setup.sql
-
-
-rm setup.sql
-
-echo "---"
-
-
-
-
-echo "Configuring domain and database..."
-
-# General domain settings
-${ASADMIN} delete-jvm-options -Xmx512m
-${ASADMIN} create-jvm-options -Xmx4096m
+# JVM settings
+${ASADMIN} delete-jvm-options -Xmx4096m
+${ASADMIN} create-jvm-options -Xmx${JVM_MAX}
 
 # JDBC pool
-${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=5432:databaseName=${DB_NAME}:serverName=postgres:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool
+${ASADMIN} delete-jdbc-resource jdbc/${DOMAIN_NAME}DataPool
+${ASADMIN} delete-jdbc-connection-pool ${DOMAIN_NAME}DataPool
+${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}DataPool jdbc/${DOMAIN_NAME}DataPool
 
 # Pool for audit log
-${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=5432:databaseName=${DB_NAME_AUDIT}:serverName=postgres:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}AuditlogPool
+${ASADMIN} delete-jdbc-resource jdbc/AuditlogPool
+${ASADMIN} delete-jdbc-connection-pool ${DOMAIN_NAME}AuditlogPool
+${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=5432:databaseName=${DB_NAME_AUDIT}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}AuditlogPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}AuditlogPool jdbc/AuditlogPool
 
-${ASADMIN} create-javamail-resource --mailhost localhost --mailuser user --fromaddress ${MAIL_FROM} mail/MailSession
+${ASADMIN} delete-javamail-resource mail/MailSession
+${ASADMIN} create-javamail-resource --mailhost ${MAIL_HOST} --mailuser "sormas" --fromaddress ${MAIL_FROM} mail/MailSession
 
-${ASADMIN} create-custom-resource --restype java.util.Properties --factoryclass org.glassfish.resources.custom.factory.PropertiesFactory --property "org.glassfish.resources.custom.factory.PropertiesFactory.fileName=\${com.sun.aas.instanceRoot}/sormas.properties" sormas/Properties
+# set FQDN for sormas domain
+${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.hosts=${SORMAS_SERVER_URL}
 
-# Set domain name
-${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.hosts=$SORMAS_SERVER_URL
+${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
+chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
 
-cp /root/deploy/sormas/deploy/sormas.properties ${DOMAIN_DIR}
-cp /root/deploy/sormas/deploy/start-payara-sormas.sh ${DOMAIN_DIR}
-cp /root/deploy/sormas/deploy/stop-payara-sormas.sh ${DOMAIN_DIR}
-cp /root/deploy/sormas/deploy/logback.xml ${DOMAIN_DIR}/config/
-
-cp /root/deploy/sormas/deploy/loginsidebar.html ${CUSTOM_DIR}
-cp /root/deploy/sormas/deploy/logindetails.html ${CUSTOM_DIR}
-
-	cp /root/deploy/sormas/deploy/loginmain.html ${CUSTOM_DIR}
-
-
-
-	chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
-
-# Logging
-echo "Configuring logging..."
-${ASADMIN} create-jvm-options -Dlogback.configurationFile=\${com.sun.aas.instanceRoot}/config/logback.xml
-${ASADMIN} set-log-attributes com.sun.enterprise.server.logging.GFFileHandler.maxHistoryFiles=14
-${ASADMIN} set-log-attributes com.sun.enterprise.server.logging.GFFileHandler.rotationLimitInBytes=0
-${ASADMIN} set-log-attributes com.sun.enterprise.server.logging.GFFileHandler.rotationOnDateChange=true
-#${ASADMIN} set-log-levels org.wamblee.glassfish.auth.HexEncoder=SEVERE
-#${ASADMIN} set-log-levels javax.enterprise.system.util=SEVERE
-
-
-	# # Make the payara listen to localhost only
-	# echo "Configuring security settings..."
-	# ${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.network-listeners=http-listener-1
-	# ${ASADMIN} delete-network-listener --target=server-config http-listener-2
-	# ${ASADMIN} set configs.config.server-config.network-config.network-listeners.network-listener.admin-listener.address=127.0.0.1
-	# ${ASADMIN} set configs.config.server-config.network-config.network-listeners.network-listener.http-listener-1.address=127.0.0.1
-	# ${ASADMIN} set configs.config.server-config.iiop-service.iiop-listener.orb-listener-1.address=127.0.0.1
-	# ${ASADMIN} set configs.config.server-config.iiop-service.iiop-listener.SSL.address=127.0.0.1
-	# ${ASADMIN} set configs.config.server-config.iiop-service.iiop-listener.SSL_MUTUALAUTH.address=127.0.0.1
-	# ${ASADMIN} set configs.config.server-config.jms-service.jms-host.default_JMS_host.host=127.0.0.1
-	# ${ASADMIN} set configs.config.server-config.admin-service.jmx-connector.system.address=127.0.0.1
-	# ${ASADMIN} set-hazelcast-configuration --enabled=false
-
-
-# don't stop the domain, because we need it running for the update script
-#read -p "--- Press [Enter] to continue..."
-#${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME} ${DOMAIN_NAME}
+# put deployments into place
+mv ${DOMAIN_DIR}/deployments/* ${DOMAIN_DIR}/autodeploy
 
 echo "Server setup completed."
-# echo "Commands to start and stop the domain: "
-# if [ ${LINUX} = true ]; then
-# 	echo "service payara-sormas start"
-# 	echo "service payara-sormas stop"
-# else
-# 	echo "${DOMAIN_DIR}/start-payara-sormas.sh"
-# 	echo "${DOMAIN_DIR}/stop-payara-sormas.sh"
-# fi
-# echo "---"
-# echo "Please make sure to perform the following steps:"
-# echo "  - Adjust the sormas.properties file to your system"
-# echo "  - Execute the sormas-update.sh file to populate the database and deploy the server"
-#
 
-sh /root/deploy/sormas/deploy/update-server.sh
+${PAYARA_HOME}/bin/asadmin start-domain --domaindir ${DOMAINS_HOME} ${DOMAIN_NAME}
+tail -f $LOG_FILE_PATH/server.log
