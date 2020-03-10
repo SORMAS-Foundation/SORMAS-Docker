@@ -19,7 +19,7 @@ Listen 443
 <VirtualHost *:443>
         ServerName ${SORMAS_SERVER_URL}
 
-	Redirect "/" "https://${SORMAS_SERVER_URL}/sormas-ui/"
+	RedirectMatch "^(/(?!downloads).*)" https://${SORMAS_SERVER_URL}/sormas-ui/$1
 	
         ErrorLog /usr/local/apache2/error.log
         LogLevel warn
@@ -39,6 +39,7 @@ Listen 443
 
 	
         ProxyRequests Off
+        ProxyPreserveHost On
         ProxyPass /sormas-ui http://sormas:6080/sormas-ui
         ProxyPassReverse /sormas-ui http://sormas:6080/sormas-ui
         ProxyPass /sormas-rest http://sormas:6080/sormas-rest
@@ -46,6 +47,13 @@ Listen 443
 
         Options -Indexes
         AliasMatch "/downloads/sormas-(.*)" "/var/www/sormas/downloads/sormas-$1"
+
+        Alias "/downloads" "/var/www/sormas/downloads/"
+
+        <Directory "/var/www/sormas/downloads/">
+            Require all granted
+            Options +Indexes
+        </Directory>
 
         <IfModule mod_deflate.c>
             AddOutputFilterByType DEFLATE text/plain text/html text/xml
