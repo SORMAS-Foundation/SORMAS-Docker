@@ -1,5 +1,6 @@
 version: '3'
 services:
+  restart: unless-stopped
   sormas:
     links: 
       - postgres
@@ -14,6 +15,7 @@ services:
       - ${SORMAS_PATH}/sormas-backup:/root/deploy/sormas/backup
       - ${SORMAS_PATH}/sormas-web:/opt/domains
   postgres:
+    restart: unless-stopped
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
     image: hzibraunschweig/sormas-postgres:${SORMAS_VERSION}
     environment:
@@ -22,6 +24,7 @@ services:
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
   apache2:
+    restart: unless-stopped
     links:
       - sormas
     depends_on:
