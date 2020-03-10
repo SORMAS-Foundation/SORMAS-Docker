@@ -1,6 +1,6 @@
 FROM azul/zulu-openjdk:8
 EXPOSE 6080
-ENV SORMAS_VERSION=1.33.0
+ENV SORMAS_VERSION=1.35.0
 ENV SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip
 ENV MAIL_FROM=root@localhost
 RUN apt-get update \
