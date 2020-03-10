@@ -30,7 +30,7 @@ services:
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
     volumes:
-      - ./apache/certs/:/usr/local/apache2/certs/
+      - ./apache2/certs/:/usr/local/apache2/certs/
     ports:
       - "80:80"
       - "443:443"
