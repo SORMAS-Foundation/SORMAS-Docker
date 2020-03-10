@@ -4,29 +4,53 @@ services:
     build:
       context: sormas/.
       args:
-        SORMAS_URL: ${SORMAS_URL}
+        - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+        - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
+        - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+        - DB_HOST=${DB_HOST}
+        - DOMAIN_NAME=${DOMAIN_NAME}
+        - DB_NAME=${DB_NAME}
+        - DB_NAME_AUDIT=${DB_NAME_AUDIT}
+        - MAIL_HOST=${MAIL_HOST}
+        - MAIL_FROM=${MAIL_FROM}
+        - JVM_MAX=${JVM_MAX}
+        - SORMAS_VERSION=${SORMAS_VERSION}
     image: docker.netzlink.com/sormas/sormas:vm1.0
     environment:
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+      - DB_HOST=${DB_HOST}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - DB_NAME=${DB_NAME}
+      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
+      - MAIL_HOST=${MAIL_HOST}
       - MAIL_FROM=${MAIL_FROM}
+      - JVM_MAX=${JVM_MAX}
+      - SORMAS_VERSION=${SORMAS_VERSION}
     volumes:
       - sormas-backup:/root/deploy/sormas/backup
-      - sormas-web:/opt/domains
+    depends_on:
+      - postgres
   postgres:
     build: postgres/.
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
     image: docker.netzlink.com/sormas/postgres:vm1.0
     environment:
       - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - DB_NAME=sormas
+      - DB_NAME_AUDIT=sormas_audit
+      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
     volumes:
       - psqldata:/var/lib/postgresql/data
   apache2:
     build:
       context: apache2/.
+      args:
+        - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+        - SORMAS_VERSION=${SORMAS_VERSION}
     links:
       - sormas
     depends_on:
@@ -35,7 +59,7 @@ services:
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
     volumes:
-      - /etc/ssl/certs/:/usr/local/apache2/certs/
+      - ./apache2/certs:/usr/local/apache2/certs
     ports:
       - "80:80"
       - "443:443"
@@ -43,4 +67,3 @@ services:
 volumes:
   psqldata:
   sormas-backup:
-  sormas-web:
