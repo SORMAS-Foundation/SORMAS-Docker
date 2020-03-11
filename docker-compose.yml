@@ -34,6 +34,8 @@ services:
       - SEPARATOR=${SEPARATOR}
       - EMAIL_SENDER_ADDRESS=${EMAIL_SENDER_ADDRESS}
       - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
+      - LATITUDE=${LATITUDE}
+      - LONGITUDE=${LONGITUDE}
     volumes:
       - sormas-backup:/root/deploy/sormas/backup
     depends_on:
