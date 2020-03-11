@@ -12,7 +12,7 @@ ARG MAIL_FROM=sormas@localhost
 ARG JVM_MAX=4096m
 
 EXPOSE 6080
-ENV SORMAS_VERSION=1.33.0
+ENV SORMAS_VERSION=1.35.0
 ENV SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip
 ENV MAIL_FROM=root@localhost
 EXPOSE 6048
@@ -33,4 +33,5 @@ RUN useradd payara
 COPY setup-server.sh /setup-server.sh
 RUN /setup-server.sh
 COPY start-server.sh /start-server.sh
+RUN chmod +x /start-server.sh
 CMD ["/start-server.sh"]
