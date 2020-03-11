@@ -78,8 +78,9 @@ sed -i "s/#email.sender.name=.*/email.sender.name=/" ${DOMAIN_DIR}/sormas.proper
 sed -i "s/email.sender.name=.*/email.sender.name=${EMAIL_SENDER_NAME}/" ${DOMAIN_DIR}/sormas.properties
 
 # put deployments into place
-ls ${DOMAIN_DIR}/deployments
-mv ${DOMAIN_DIR}/deployments/* ${DOMAIN_DIR}/autodeploy
+for APP in $(ls ${DOMAIN_DIR}/deployments/*.{war,ear} 2>/dev/null);do
+  mv ${APP} ${DOMAIN_DIR}/autodeploy
+done
 
 echo "Server setup completed."
 
