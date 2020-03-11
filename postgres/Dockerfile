@@ -5,3 +5,4 @@ RUN apk add --no-cache openssl curl py-pip postgresql-dev make gcc musl-dev && \
     pgxnclient install temporal_tables
     
 COPY psql.conf /etc/postgresql/postgresql.conf
+COPY setup_sormas.sh /docker-entrypoint-initdb.d/
