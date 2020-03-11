@@ -33,4 +33,5 @@ RUN useradd payara
 COPY setup-server.sh /setup-server.sh
 RUN /setup-server.sh
 COPY start-server.sh /start-server.sh
+RUN chmod +x /start-server.sh
 CMD ["/start-server.sh"]
