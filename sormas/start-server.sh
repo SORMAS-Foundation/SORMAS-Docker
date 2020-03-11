@@ -82,8 +82,9 @@ sed -i "s/map.zoom=.*/map.zoom=10/" ${DOMAIN_DIR}/sormas.properties
 
 map.zoom=
 # put deployments into place
-ls ${DOMAIN_DIR}/deployments
-mv ${DOMAIN_DIR}/deployments/* ${DOMAIN_DIR}/autodeploy
+for APP in $(ls ${DOMAIN_DIR}/deployments/*.{war,ear} 2>/dev/null);do
+  mv ${APP} ${DOMAIN_DIR}/autodeploy
+done
 
 echo "Server setup completed."
 
