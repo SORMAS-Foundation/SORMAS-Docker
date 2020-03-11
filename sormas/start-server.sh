@@ -67,7 +67,9 @@ ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
 
 # put deployments into place
-mv ${DOMAIN_DIR}/deployments/* ${DOMAIN_DIR}/autodeploy
+for APP in $(ls /opt/domains/sormas/deployments/*.{war,ear} 2>/dev/null);do
+  mv ${APP} ${DOMAIN_DIR}/autodeploy
+done
 
 echo "Server setup completed."
 
