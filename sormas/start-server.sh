@@ -7,7 +7,7 @@ function check_db() {
 SLEEP=30
 COUNT=0
 while [ $(check_db) -ne 1 ];do
-  echo "Waiting for ${DB_NAME} DB to get ready ..." 
+  echo "Waiting for ${DB_NAME} DB to get ready ..."
   sleep ${SLEEP}
   COUNT=$(( ${COUNT} + 1 ))
   if [ ${COUNT} -gt 9 ];then
@@ -65,6 +65,17 @@ ${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.h
 
 ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
+
+#Edit properties
+
+sed -i "s/country.locale=.*/country.locale=${LOCALE}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/country.epidprefix=.*/country.epidprefix=${EPIDPREFIX}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/#csv.separator=.*/csv.separator=/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/csv.separator=.*/csv.separator=${SEPARATOR}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/#email.sender.address=.*/email.sender.address=/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/email.sender.address=.*/email.sender.address=${EMAIL_SENDER_ADDRESS}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/#email.sender.name=.*/email.sender.name=/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/email.sender.name=.*/email.sender.name=${EMAIL_SENDER_NAME}/" ${DOMAIN_DIR}/sormas.properties
 
 # put deployments into place
 for APP in $(ls ${DOMAIN_DIR}/deployments/*.{war,ear} 2>/dev/null);do
