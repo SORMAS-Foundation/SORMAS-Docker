@@ -1,0 +1,17 @@
+#!/bin/sh
+
+DATE=$( date +%F-%T )
+DUMP_PATH=/var/opt/db_dumps
+LOG=${DUMP_PATH}/pg_dump.log
+
+DBS="${DB_NAME} ${DB_NAME_AUDIT}"
+
+for d in ${DBS};do
+  BAK="${DUMP_PATH}/$d.${DATE}.sql"
+  echo "Backing up $d to ${BAK}" >> ${LOG}
+  pg_dump -h ${DB_HOST} -U ${SORMAS_POSTGRES_USER} ${d} > ${BAK}
+done
+
+echo "Deleting old dumps" >> ${LOG}
+find ${DUMP_PATH} -name \*.sql -mtime +1 | xargs -r rm 
+echo >> ${LOG};echo >> ${LOG}

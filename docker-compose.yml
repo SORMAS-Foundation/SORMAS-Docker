@@ -39,6 +39,16 @@ services:
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
+  pg_dump:
+    image: hzibraunschweig/sormas-pg-dump:${SORMAS_VERSION}
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=sormas
+      - DB_NAME_AUDIT=sormas_audit
+      - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+    volumes:
+      - ${SORMAS_PATH}/sormas-backup:/var/opt/db_dumps
   apache2:
     links:
       - sormas
