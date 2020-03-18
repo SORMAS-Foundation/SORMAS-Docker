@@ -13,5 +13,5 @@ for d in ${DBS};do
 done
 
 echo "Deleting old dumps" >> ${LOG}
-find ${DUMP_PATH} -name \*.sql -mtime +1 | xargs -r rm 
+find ${DUMP_PATH} -name \*.sql -mtime +0 | xargs -r rm
 echo >> ${LOG};echo >> ${LOG}
