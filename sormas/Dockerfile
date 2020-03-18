@@ -22,7 +22,8 @@ RUN apt-get update \
   && apt-get clean
     
 
-RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/' \
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 \
+  && add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/' \
   && apt-get update \
   && apt-get upgrade -y \
   && apt-get -y install wget unzip postgresql curl r-base\
