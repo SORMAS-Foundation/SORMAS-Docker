@@ -17,6 +17,10 @@ ENV SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/downl
 ENV MAIL_FROM=root@localhost
 EXPOSE 6048
 
+RUN apt-get update \
+  && apt-get install -y software-properties-common \
+  && apt-get clean
+    
 
 RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/' \
   && apt-get update \
