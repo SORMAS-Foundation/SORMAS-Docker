@@ -18,9 +18,10 @@ ENV MAIL_FROM=root@localhost
 EXPOSE 6048
 
 
-RUN apt-get update \
+RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/' \
+  && apt-get update \
   && apt-get upgrade -y \
-  && apt-get -y install wget unzip postgresql curl \
+  && apt-get -y install wget unzip postgresql curl r-base\
   && apt-get clean
 
 RUN wget -O /tmp/payara-5.192.zip "https://search.maven.org/remotecontent?filepath=fish/payara/distributions/payara/5.192/payara-5.192.zip" \
