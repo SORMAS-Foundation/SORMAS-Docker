@@ -19,7 +19,7 @@ Listen 443
 <VirtualHost *:443>
         ServerName ${SORMAS_SERVER_URL}
 
-	RedirectMatch "^(/(?!downloads).*)" https://${SORMAS_SERVER_URL}/sormas-ui/$1
+	RedirectMatch "^(/(?!downloads).*)" https://${SORMAS_SERVER_URL}/sormas-ui\$1
 	
         ErrorLog /usr/local/apache2/error.log
         LogLevel warn
