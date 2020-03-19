@@ -17,10 +17,13 @@ ENV SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/downl
 ENV MAIL_FROM=root@localhost
 EXPOSE 6048
 
-
 RUN apt-get update \
+  && apt-get install -y software-properties-common \
+  && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 \
+  && add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/' \
+  && apt-get update \
   && apt-get upgrade -y \
-  && apt-get -y install wget unzip postgresql curl \
+  && apt-get -y install wget unzip postgresql curl r-base\
   && apt-get clean
 
 RUN wget -O /tmp/payara-5.192.zip "https://search.maven.org/remotecontent?filepath=fish/payara/distributions/payara/5.192/payara-5.192.zip" \
