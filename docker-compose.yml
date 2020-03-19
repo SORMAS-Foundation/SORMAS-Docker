@@ -48,7 +48,7 @@ services:
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
     volumes:
-      - ${SORMAS_PATH}/sormas-backup:/var/opt/db_dumps
+      - /backup:/var/opt/db_dumps
   apache2:
     links:
       - sormas
