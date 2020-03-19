@@ -46,3 +46,31 @@ mkdir /srv/dockerdata/sormas/sormas-web
 ```
 docker-compose up
 ```
+
+
+## Advanced Installation
+
+To change some parameters edit the .env before running the docker-compose
+
+These Options are available to customize the installation:
+
+### Database
+SORMAS_POSTGRES_USER: User for the SORMAS Databases
+SORMAS_POSTGRES_PASSWORD: Password for this User
+DB_NAME: Name of the database for the SORMAS data
+DB_NAME_AUDIT: Name of the database for SORMAS audit data 
+DB_HOST: Hostname or IP if the database host
+### SORMAS
+SORMAS_VERSION: Version of SORMAS that should be installed (Dockerimages are provided starting from the Version 1.33.0)
+SORMAS_SERVER_URL: URL under which the SORMAS installation should be accessed
+DOMAIN_NAME: Name of the Domain in the Payara Server
+LOCALE: Default language of the SORMAS server 
+EPIDPREFIX: Prefix for the data
+MAIL_HOST: Hostname or IP of the SMTP host
+SEPARATOR: CSV separator 
+EMAIL_SENDER_ADDRESS: email from which the mail is going to be send
+EMAIL_SENDER_NAME: Name of the sender of the email
+LATITUDE: Latitude of the map center
+LONGITUDE: Logitude of the map center
+SORMAS_PATH: Path to store the Dockervolumes 
+JVM_MAX: Maximum amount of RAM given to the JVM 
