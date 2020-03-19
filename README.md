@@ -73,4 +73,4 @@ EMAIL_SENDER_NAME: Name of the sender of the email
 LATITUDE: Latitude of the map center
 LONGITUDE: Logitude of the map center
 SORMAS_PATH: Path to store the Dockervolumes 
-JVM_MAX: Maximum amount of RAM given to the JVM 
+JVM_MAX: Maximum amount of RAM given to the JVM
