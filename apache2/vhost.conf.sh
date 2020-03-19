@@ -44,9 +44,10 @@ Listen 443
         ProxyPassReverse /sormas-ui http://sormas:6080/sormas-ui
         ProxyPass /sormas-rest http://sormas:6080/sormas-rest
         ProxyPassReverse /sormas-rest http://sormas:6080/sormas-rest
+        RequestHeader set X-Forwarded-Proto https
 
         Options -Indexes
-        AliasMatch "/downloads/sormas-(.*)" "/var/www/sormas/downloads/sormas-$1"
+        AliasMatch "/downloads/sormas-(.*)" "/var/www/sormas/downloads/sormas-\$1"
 
         Alias "/downloads" "/var/www/sormas/downloads/"
 
