@@ -82,7 +82,6 @@ sed -i "s/country.center.latitude=.*/country.center.latitude=${LATITUDE}/" ${DOM
 sed -i "s/country.center.longitude=.*/country.center.longitude=${LONGITUDE}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/map.zoom=.*/map.zoom=10/" ${DOMAIN_DIR}/sormas.properties
 
-map.zoom=
 # put deployments into place
 for APP in $(ls ${DOMAIN_DIR}/deployments/*.{war,ear} 2>/dev/null);do
   mv ${APP} ${DOMAIN_DIR}/autodeploy
