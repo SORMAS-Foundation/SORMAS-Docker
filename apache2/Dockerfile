@@ -1,5 +1,4 @@
 FROM httpd:2.4-alpine
-ENV TZ=Europe/Berlin
 ARG SORMAS_SERVER_URL
 
 RUN mkdir -p /var/log/apache2/ \
