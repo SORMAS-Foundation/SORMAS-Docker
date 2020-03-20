@@ -33,11 +33,10 @@ RUN wget -O /tmp/payara-5.192.zip "https://search.maven.org/remotecontent?filepa
   && rm -R /opt/payara5/glassfish/domains \
   && rm /tmp/payara-5.192.zip
 
-
-
 ENV ASENV_PATH="/opt/payara5/glassfish/config/asenv.conf"
 RUN useradd payara
 COPY setup-server.sh /setup-server.sh
 RUN /setup-server.sh
 COPY start-server.sh /start-server.sh
+RUN chmod +x /start-server.sh
 CMD ["/start-server.sh"]

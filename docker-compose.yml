@@ -5,7 +5,6 @@ services:
       context: sormas/.
       args:
         SORMAS_URL: ${SORMAS_URL}
-
     links: 
       - postgres
     image: hzibraunschweig/sormas-application:${SORMAS_VERSION}
@@ -36,6 +35,7 @@ services:
   postgres:
     build:
       context: postgres/.
+    restart: unless-stopped
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
     image: hzibraunschweig/sormas-postgres:${SORMAS_VERSION}
     environment:
@@ -63,6 +63,7 @@ services:
   apache2:
     build:
       context: apache2/.
+    restart: unless-stopped
     links:
       - sormas
     depends_on:

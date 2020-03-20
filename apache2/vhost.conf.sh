@@ -56,6 +56,13 @@ Listen 443
             Options +Indexes
         </Directory>
 
+        Alias "/downloads" "/var/www/sormas/downloads/"
+
+        <Directory "/var/www/sormas/downloads/">
+            Require all granted
+            Options +Indexes
+        </Directory>
+
         <IfModule mod_deflate.c>
             AddOutputFilterByType DEFLATE text/plain text/html text/xml
             AddOutputFilterByType DEFLATE text/css text/javascript
