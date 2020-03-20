@@ -28,8 +28,6 @@ services:
       - LATITUDE=${LATITUDE}
       - LONGITUDE=${LONGITUDE}
       - TZ=${TZ}
-    volumes:
-      - ${SORMAS_PATH}/sormas-backup:/root/deploy/sormas/backup
     depends_on:
       - postgres
   postgres:
