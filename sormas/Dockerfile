@@ -13,7 +13,7 @@ ARG JVM_MAX=4096m
 
 EXPOSE 6080
 ENV SORMAS_VERSION=1.36.1
-ENV TZ=Europe/Berlin
+
 ENV SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/v${SORMAS_VERSION}/deploy.zip
 ENV MAIL_FROM=root@localhost
 ENV DEBIAN_FRONTEND=noninteractive
