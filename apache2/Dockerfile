@@ -1,6 +1,7 @@
 FROM httpd:2.4-alpine
 ARG SORMAS_SERVER_URL
 
+RUN apk add tzdata
 RUN mkdir -p /var/log/apache2/ \
   && mkdir /usr/local/apache2/conf.d/ \
   && chown -R www-data:www-data /var/log/apache2/
