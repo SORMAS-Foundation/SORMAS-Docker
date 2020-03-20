@@ -1,6 +1,11 @@
 version: '3'
 services:
   sormas:
+    build:
+      context: sormas/.
+      args:
+        SORMAS_URL: ${SORMAS_URL}
+
     links: 
       - postgres
     image: hzibraunschweig/sormas-application:${SORMAS_VERSION}
@@ -28,6 +33,8 @@ services:
     depends_on:
       - postgres
   postgres:
+    build:
+      context: postgres/.
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
     image: hzibraunschweig/sormas-postgres:${SORMAS_VERSION}
     environment:
@@ -39,6 +46,8 @@ services:
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
   pg_dump:
+    build:
+      context:  pg_dump/.
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_VERSION}
     environment:
       - DB_HOST=${DB_HOST}
@@ -49,6 +58,8 @@ services:
     volumes:
       - /backup:/var/opt/db_dumps
   apache2:
+    build:
+      context: apache2/.
     links:
       - sormas
     depends_on:
