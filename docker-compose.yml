@@ -28,6 +28,7 @@ services:
       - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
       - LATITUDE=${LATITUDE}
       - LONGITUDE=${LONGITUDE}
+      - TZ=Europe/Berlin
     volumes:
       - ${SORMAS_PATH}/sormas-backup:/root/deploy/sormas/backup
     depends_on:
@@ -43,6 +44,7 @@ services:
       - DB_NAME_AUDIT=sormas_audit
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - TZ=Europe/Berlin
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
   pg_dump:
@@ -55,6 +57,7 @@ services:
       - DB_NAME_AUDIT=sormas_audit
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - TZ=Europe/Berlin
     volumes:
       - /backup:/var/opt/db_dumps
   apache2:
@@ -67,6 +70,7 @@ services:
     image: hzibraunschweig/sormas-apache2:${SORMAS_VERSION}
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+      - TZ=Europe/Berlin
     volumes:
       - ./apache2/certs:/usr/local/apache2/certs
     ports:
