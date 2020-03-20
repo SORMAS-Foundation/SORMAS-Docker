@@ -1,6 +1,6 @@
 FROM alpine:3.8
 
-RUN apk add --no-cache postgresql-client dcron
+RUN apk add --no-cache postgresql-client dcron tzdata
 
 COPY pg_dump /etc/periodic/15min/pg_dump
 COPY entrypoint.sh /entrypoint.sh
