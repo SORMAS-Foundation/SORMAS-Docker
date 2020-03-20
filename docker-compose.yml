@@ -1,14 +1,12 @@
 version: '3'
 services:
   sormas:
-    restart: unless-stopped
     links: 
       - postgres
     image: hzibraunschweig/sormas-application:${SORMAS_VERSION}
     environment:
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
       - DB_HOST=${DB_HOST}
       - DOMAIN_NAME=${DOMAIN_NAME}
@@ -25,8 +23,7 @@ services:
       - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
       - LATITUDE=${LATITUDE}
       - LONGITUDE=${LONGITUDE}
-    volumes:
-      - ${SORMAS_PATH}/sormas-backup:/root/deploy/sormas/backup
+      - TZ=${TZ}
     depends_on:
       - postgres
   postgres:
@@ -39,8 +36,20 @@ services:
       - DB_NAME_AUDIT=sormas_audit
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - TZ=${TZ}
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
+  pg_dump: 
+    image: hzibraunschweig/sormas-pg-dump:${SORMAS_VERSION}
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=sormas
+      - DB_NAME_AUDIT=sormas_audit
+      - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - TZ=${TZ}
+    volumes:
+      - /backup:/var/opt/db_dumps
   apache2:
     restart: unless-stopped
     links:
@@ -50,6 +59,7 @@ services:
     image: hzibraunschweig/sormas-apache2:${SORMAS_VERSION}
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+      - TZ=${TZ}
     volumes:
       - ./apache2/certs:/usr/local/apache2/certs
     ports:

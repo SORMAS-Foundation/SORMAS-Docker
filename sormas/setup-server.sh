@@ -28,7 +28,7 @@ mkdir -p ${DEPLOY_PATH}
 mkdir -p ${DOWNLOADS_PATH}
 
 pushd ${DEPLOY_PATH}
-wget https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O ${DOMAIN_NAME}.zip 
+wget https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/v${SORMAS_VERSION}/deploy.zip -O ${DOMAIN_NAME}.zip 
 unzip ${DOMAIN_NAME}.zip
 rm ${DOMAIN_NAME}.zip
 popd
@@ -47,6 +47,9 @@ echo "Configuring domain and database connection..."
 # General domain settings
 ${ASADMIN} delete-jvm-options -Xmx512m
 ${ASADMIN} create-jvm-options -Xmx4096m
+
+# Set protocol in redirects according to X-Forwarded-Proto (set by reverse proxy)
+${ASADMIN} set server.network-config.protocols.protocol.http-listener-1.http.scheme-mapping=X-Forwarded-Proto
 
 # JDBC pool
 ${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool

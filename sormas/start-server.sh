@@ -4,6 +4,7 @@ function check_db() {
   psql -h ${DB_HOST} -U ${SORMAS_POSTGRES_USER} ${DB_NAME} --no-align --tuples-only --quiet --command="SELECT count(*) FROM pg_database WHERE datname='${DB_NAME}';" 2>/dev/null || echo "0"
 }
 
+export PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
 SLEEP=10
 COUNT=0
 while [ $(check_db) -ne 1 ];do
@@ -15,6 +16,7 @@ while [ $(check_db) -ne 1 ];do
     exit 1
   fi
 done
+unset PGPASSWORD
 
 ROOT_PREFIX=
 # make sure to update payara-sormas script when changing the user name
