@@ -32,7 +32,7 @@ RUN wget -O /tmp/payara-5.192.zip "https://search.maven.org/remotecontent?filepa
   && unzip -q -o /tmp/payara-5.192.zip -d /opt/ \
   && rm -R /opt/payara5/glassfish/domains \
   && rm /tmp/payara-5.192.zip
-RUN ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+
 
 
 ENV ASENV_PATH="/opt/payara5/glassfish/config/asenv.conf"
