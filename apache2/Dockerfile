@@ -16,7 +16,7 @@ RUN chmod +x /tmp/vhost.conf.sh
 RUN mkdir -p /var/www/sormas/downloads && \
     DEPLOY_PATH=$(mktemp -d) && \
     cd ${DEPLOY_PATH} && \
-    wget https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/v${SORMAS_VERSION}/deploy.zip -O sormas.zip && \
+    wget https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O sormas.zip && \
     unzip sormas.zip deploy/android/*  && \
     mv deploy/android/* /var/www/sormas/downloads/ && \
     cd - && \
