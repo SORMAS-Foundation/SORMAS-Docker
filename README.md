@@ -120,3 +120,21 @@ name: SunkSesa pw: Sunkanmi
 
 Surveillance Officer (mobile app)
 name: SanaObas pw: Sanaa
+
+### Changing the host name
+
+If you would like to run SORMAS using your own host name (e.g. https://sormas.example.com) , please follow these steps: 
+
+1. obtain a certificate and private key for the chosen host name using e.g. letsencrypt
+2. copy the certificate file (e.g. fullchain.pem if you use letsencrpyt) to the ./apache2/certs directory using these filenames: 
+- [hostname].crt for the certificate file (e.g. sormas.example.com.crt)
+- [hostname].key for the private key file (e.g. sormas.example.com.key)
+3. set the environment variable DOMAIN_NAME to the hostname you have chosen
+4. make sure dns resolves to the host name you have chosen
+4. run 
+```
+docker-compose up -d 
+```
+
+SORMAS should now be reachable via the given hostname. 
+your 
