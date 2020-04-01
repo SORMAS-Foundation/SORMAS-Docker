@@ -6,6 +6,3 @@ RUN apk add --no-cache openssl curl tzdata py-pip postgresql-dev make gcc musl-d
     
 COPY psql.conf /etc/postgresql/postgresql.conf
 COPY setup_sormas.sh /docker-entrypoint-initdb.d/
-
-
- 
