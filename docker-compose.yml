@@ -40,7 +40,7 @@ services:
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
     ports:
-      - "127.0.0.1:5432:5432"
+      - "5432:5432"
   pg_dump:
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_VERSION}
     environment:
