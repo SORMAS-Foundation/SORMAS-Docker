@@ -89,10 +89,7 @@ services:
 
 <p align="center">
   <a href="https://netzlink.com/">
-    <img 
-      src="/home/spe/SORMAS-Docker/Netzlink Logo Weiss-Rot.png"
-            height="300"
-           />
+   <img src="https://github.com/hzi-braunschweig/SORMAS-Docker/issues/11#issue-592494301"
   </a>
 </p>
 
