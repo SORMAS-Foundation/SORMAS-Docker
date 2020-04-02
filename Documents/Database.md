@@ -87,9 +87,12 @@ services:
 
 ```
 
-<p align="center"
+<p align="center">
   <a href="https://netzlink.com/">
-   <img src="https://github.com/hzi-braunschweig/SORMAS-Docker/issues/11#issue-592494301">
+   <img
+        src="../Netzlink Logo Weiss-Rot.png"
+        height="200"
+        />
   </a>
 </p>
 
