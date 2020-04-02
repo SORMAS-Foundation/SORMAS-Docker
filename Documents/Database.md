@@ -88,7 +88,11 @@ services:
 ```
 
 <p align="center">
-  <a href="https://sormas.org/">
+  <a href="https://netzlink.com/">
+    <img 
+      src="/home/spe/SORMAS-Docker/Netzlink Logo Weiss-Rot.png"
+            height="300"
+           />
   </a>
 </p>
-![](../Netzlink Logo Weiss-Rot.png)
+
