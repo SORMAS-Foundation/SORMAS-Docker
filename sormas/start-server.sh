@@ -81,6 +81,7 @@ sed -i "s/email.sender.name=.*/email.sender.name=${EMAIL_SENDER_NAME}/" ${DOMAIN
 sed -i "s/country.center.latitude=.*/country.center.latitude=${LATITUDE}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/country.center.longitude=.*/country.center.longitude=${LONGITUDE}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/map.zoom=.*/map.zoom=10/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/app.url=.*/app.url=https:\/\/${SORMAS_SERVER_URL}downloads/release/sormas-%version-release.apk " ${DOMAIN_DIR}/sormas.properties
 
 # put deployments into place
 for APP in $(ls ${DOMAIN_DIR}/deployments/*.{war,ear} 2>/dev/null);do
