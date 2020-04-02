@@ -1,7 +1,8 @@
 version: '3'
 services:
   sormas:
-    links: 
+    restart: unless-stopped
+    links:
       - postgres
     image: hzibraunschweig/sormas-application:${SORMAS_VERSION}
     environment:
@@ -39,7 +40,8 @@ services:
       - TZ=${TZ}
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
-  pg_dump: 
+  pg_dump:
+    restart: unless-stopped
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_VERSION}
     environment:
       - DB_HOST=${DB_HOST}
@@ -65,4 +67,3 @@ services:
     ports:
       - "80:80"
       - "443:443"
-
