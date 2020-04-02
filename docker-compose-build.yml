@@ -21,7 +21,7 @@ services:
     image: hzibraunschweig/sormas-postgres:${SORMAS_VERSION}
   pg_dump:
     build:
-      context:  pg_dump
+      context: pg_dump
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_VERSION}
     command: /bin/false
   apache2:

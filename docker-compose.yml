@@ -40,6 +40,8 @@ services:
       - TZ=${TZ}
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
   pg_dump:
     restart: unless-stopped
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_VERSION}
@@ -50,6 +52,9 @@ services:
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
+      - MIN=15,45 # Twice the hour on 15 and 45 (use crontab notation)
+      - HOUR= # Keep empty for every hour. Use crontab notation otherwise
+      - KEEP=1 # keep db dumps for one day in backup folder
     volumes:
       - /backup:/var/opt/db_dumps
   apache2:
