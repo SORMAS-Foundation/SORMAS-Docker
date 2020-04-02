@@ -12,7 +12,7 @@ ARG MAIL_FROM=sormas@localhost
 ARG JVM_MAX=4096m
 
 EXPOSE 6080
-ENV SORMAS_VERSION=1.37.0
+ENV SORMAS_VERSION=1.37.1
 
 ENV SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip
 ENV MAIL_FROM=root@localhost
