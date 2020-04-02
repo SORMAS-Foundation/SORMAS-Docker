@@ -89,11 +89,6 @@ services:
 
 <p align="center">
   <a href="https://sormas.org/">
-    <img
-      src="https://www.grouplink.de/wp-content/uploads/2014/01/logo_netzlink-300x300.jpg"
-      title="netzlink-Logo_weißrot"
-      alt="netzlink-Logo_weißrot"
-      height="200"
-    />
   </a>
 </p>
+![](../Netzlink Logo Weiss-Rot.png)
