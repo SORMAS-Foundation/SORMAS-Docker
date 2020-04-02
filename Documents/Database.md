@@ -86,6 +86,7 @@ services:
       - DB_NAME_AUDIT=${DB_NAME_AUDIT}
 
 ```
+### partner
 
 <p align="center">
   <a href="https://netzlink.com/">
