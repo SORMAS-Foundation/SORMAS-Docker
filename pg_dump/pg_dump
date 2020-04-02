@@ -3,15 +3,22 @@
 DATE=$( date +%F-%T )
 DUMP_PATH=/var/opt/db_dumps
 LOG=${DUMP_PATH}/pg_dump.log
+KEEP=${KEEP:-1}
 
 DBS="${DB_NAME} ${DB_NAME_AUDIT}"
 
 for d in ${DBS};do
-  BAK="${DUMP_PATH}/$d.${DATE}.sql"
-  echo "Backing up $d to ${BAK}" >> ${LOG}
-  pg_dump -h ${DB_HOST} -U ${SORMAS_POSTGRES_USER} ${d} > ${BAK}
+  BAK="${DUMP_PATH}/$d.${DATE}.sql.gz"
+  pg_dump -h ${DB_HOST} -U ${SORMAS_POSTGRES_USER} ${d} | gzip -c > ${BAK}
+  zgrep -q "PostgreSQL database dump complete" ${BAK}
+  if [ $? -eq 0 ];then
+    echo "Backup of ${d} to ${BAK} completed." >> ${LOG}
+  else
+    echo "Backup of ${d} to ${BAK} failed!!" >> ${LOG}
+  fi
 done
 
 echo "Deleting old dumps" >> ${LOG}
-find ${DUMP_PATH} -name \*.sql -mtime +0 | xargs -r rm
+# keep 1 day => delete all files with mtime +0
+find ${DUMP_PATH} -name \*.sql.gz -mtime +$(( ${KEEP} - 1 )) | xargs -r rm
 echo >> ${LOG};echo >> ${LOG}

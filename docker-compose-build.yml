@@ -1,0 +1,34 @@
+version: '3'
+services:
+  sormas:
+    build:
+      context: sormas
+      args:
+        - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+        - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
+        - DB_HOST=${DB_HOST}
+        - DOMAIN_NAME=${DOMAIN_NAME}
+        - DB_NAME=${DB_NAME}
+        - DB_NAME_AUDIT=${DB_NAME_AUDIT}
+        - MAIL_FROM=${MAIL_FROM}
+        - SORMAS_VERSION=${SORMAS_VERSION}
+    image: hzibraunschweig/sormas-application:${SORMAS_VERSION}
+    command: /bin/false
+  postgres:
+    build:
+      context: postgres
+    command: /bin/false
+    image: hzibraunschweig/sormas-postgres:${SORMAS_VERSION}
+  pg_dump:
+    build:
+      context: pg_dump
+    image: hzibraunschweig/sormas-pg-dump:${SORMAS_VERSION}
+    command: /bin/false
+  apache2:
+    build:
+      context: apache2
+      args:
+        - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+        - SORMAS_VERSION=${SORMAS_VERSION}
+    image: hzibraunschweig/sormas-apache2:${SORMAS_VERSION}
+    command: /bin/false
