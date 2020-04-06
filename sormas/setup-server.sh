@@ -27,11 +27,23 @@ mkdir -p ${CUSTOM_DIR}
 mkdir -p ${DEPLOY_PATH}
 mkdir -p ${DOWNLOADS_PATH}
 
-pushd ${DEPLOY_PATH}
-wget https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O ${DOMAIN_NAME}.zip 
-unzip ${DOMAIN_NAME}.zip
-rm ${DOMAIN_NAME}.zip
-popd
+# if sormas*.zip in dockerpath use that to deploy the sormas server
+if [[ -z /sormas*.zip ]]
+then
+  pushd ${DEPLOY_PATH}
+  cp /sormas.zip .
+  unzip sormas.zip
+  rm sormas.zip
+  popd
+else
+  pushd ${DEPLOY_PATH}
+  wget https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O ${DOMAIN_NAME}.zip
+  unzip ${DOMAIN_NAME}.zip
+  rm ${DOMAIN_NAME}.zip
+  popd
+fi
+
+
 
 # Setting ASADMIN_CALL and creating domain
 echo "Creating domain for Payara..."

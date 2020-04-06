@@ -36,6 +36,7 @@ RUN wget -O /tmp/payara-5.192.zip "https://search.maven.org/remotecontent?filepa
 ENV ASENV_PATH="/opt/payara5/glassfish/config/asenv.conf"
 RUN useradd payara
 RUN echo $(date)
+COPY sormas*.zip /sormas.zip
 COPY setup-server.sh /setup-server.sh
 RUN /setup-server.sh
 COPY start-server.sh /start-server.sh
