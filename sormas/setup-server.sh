@@ -27,8 +27,8 @@ mkdir -p ${CUSTOM_DIR}
 mkdir -p ${DEPLOY_PATH}
 mkdir -p ${DOWNLOADS_PATH}
 
-# if sormas*.zip in dockerpath use that to deploy the sormas server
-if [[ -z /sormas*.zip ]]
+# if sormas.zip in dockerpath use that to deploy the sormas server
+if [[ -z /sormas.zip ]]
 then
   pushd ${DEPLOY_PATH}
   cp /sormas.zip .
