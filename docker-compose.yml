@@ -25,6 +25,7 @@ services:
       - LONGITUDE=${LONGITUDE}
       - TZ=${TZ}
       - JVM_MAX=${JVM_MAX}
+      - GEO_UUID=${GEO_UUID}
     depends_on:
       - postgres
     cgroup_parent: ${SORMAS_CGROUP}
