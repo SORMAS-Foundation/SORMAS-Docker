@@ -1,6 +1,6 @@
 FROM httpd:2.4-alpine
 ARG SORMAS_SERVER_URL
-ENV SORMAS_VERSION=1.37.1
+ENV SORMAS_VERSION=1.37.2
 
 RUN apk add tzdata
 RUN mkdir -p /var/log/apache2/ \
