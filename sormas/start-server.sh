@@ -86,7 +86,11 @@ sed -i "s;app.url=.*;app.url=https://${SORMAS_SERVER_URL}/downloads/release/sorm
 
 
 # put deployments into place
-for APP in $(ls ${DOMAIN_DIR}/deployments/*.{war,ear} 2>/dev/null);do
+for APP in $(ls ${DOMAIN_DIR}/deployments/*.ear 2>/dev/null);do
+  mv ${APP} ${DOMAIN_DIR}/autodeploy
+done
+sleep 5
+for APP in $(ls ${DOMAIN_DIR}/deployments/*.war 2>/dev/null);do
   mv ${APP} ${DOMAIN_DIR}/autodeploy
 done
 
