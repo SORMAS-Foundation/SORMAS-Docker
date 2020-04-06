@@ -29,12 +29,7 @@ mkdir -p ${DOWNLOADS_PATH}
 
 # if sormas.zip in dockerpath use that to deploy the sormas server
 
-if [ -f "/sormas.zip" ]; then
-    echo "$FILE exist"
-else
-    echo "$FILE does not exist"
-fi
-if [[ -z "/sormas.zip" ]];
+if [[ -f "/sormas.zip" ]];
 then
   pushd ${DEPLOY_PATH}
   cp /sormas.zip .
