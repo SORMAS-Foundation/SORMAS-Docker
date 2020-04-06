@@ -82,7 +82,7 @@ sed -i "s/country.center.latitude=.*/country.center.latitude=${LATITUDE}/" ${DOM
 sed -i "s/country.center.longitude=.*/country.center.longitude=${LONGITUDE}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/map.zoom=.*/map.zoom=10/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s;app.url=.*;app.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk;" ${DOMAIN_DIR}/sormas.properties
-
+sed -i "s/\#geocodingOsgtsEndpoint=.*/geocodingOsgtsEndpoint=https:\/\/sg.geodatenzentrum.de\/gdz_geokodierung_bund__${GEO_UUID}/" ${DOMAIN_DIR}/sormas.properties
 
 
 # put deployments into place
