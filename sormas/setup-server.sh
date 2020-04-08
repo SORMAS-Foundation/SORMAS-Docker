@@ -28,7 +28,7 @@ mkdir -p ${DEPLOY_PATH}
 mkdir -p ${DOWNLOADS_PATH}
 
   pushd ${DEPLOY_PATH}
-  wget ${SORMAS_URL} -O ${DOMAIN_NAME}.zip
+  wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O ${DOMAIN_NAME}.zip
   unzip ${DOMAIN_NAME}.zip
   rm ${DOMAIN_NAME}.zip
   popd

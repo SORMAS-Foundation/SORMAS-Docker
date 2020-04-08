@@ -4,6 +4,7 @@ services:
     build:
       context: sormas
       args:
+        - SORMAS_URL=${SORMAS_URL}
         - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
         - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
         - DB_HOST=${DB_HOST}
@@ -28,6 +29,7 @@ services:
     build:
       context: apache2
       args:
+        - SORMAS_URL=${SORMAS_URL}
         - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
         - SORMAS_VERSION=${SORMAS_VERSION}
     image: hzibraunschweig/sormas-apache2:${SORMAS_VERSION}
