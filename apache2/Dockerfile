@@ -3,6 +3,7 @@ ARG SORMAS_SERVER_URL
 ENV SORMAS_VERSION=1.37.2
 
 RUN apk add tzdata
+RUN apk add openssl
 RUN mkdir -p /var/log/apache2/ \
   && mkdir /usr/local/apache2/conf.d/ \
   && chown -R www-data:www-data /var/log/apache2/
