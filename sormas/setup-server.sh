@@ -27,22 +27,11 @@ mkdir -p ${CUSTOM_DIR}
 mkdir -p ${DEPLOY_PATH}
 mkdir -p ${DOWNLOADS_PATH}
 
-# if sormas.zip in dockerpath use that to deploy the sormas server
-
-if [[ -f "/sormas.zip" ]];
-then
   pushd ${DEPLOY_PATH}
-  cp /sormas.zip .
-  unzip sormas.zip
-  rm sormas.zip
-  popd
-else
-  pushd ${DEPLOY_PATH}
-  wget https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O ${DOMAIN_NAME}.zip
+  wget ${SORMAS_URL} -O ${DOMAIN_NAME}.zip
   unzip ${DOMAIN_NAME}.zip
   rm ${DOMAIN_NAME}.zip
   popd
-fi
 
 
 
