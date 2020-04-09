@@ -4,6 +4,10 @@ function check_db() {
   psql -h ${DB_HOST} -U ${SORMAS_POSTGRES_USER} ${DB_NAME} --no-align --tuples-only --quiet --command="SELECT count(*) FROM pg_database WHERE datname='${DB_NAME}';" 2>/dev/null || echo "0"
 }
 
+function check_java() {
+  ps -ef | grep /usr/lib/jvm/zulu-8-amd64/bin/java | grep -v grep | wc -l
+}
+
 export PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
 SLEEP=10
 COUNT=0
@@ -83,11 +87,15 @@ sed -i "s/country.center.longitude=.*/country.center.longitude=${LONGITUDE}/" ${
 sed -i "s/map.zoom=.*/map.zoom=10/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s;app.url=.*;app.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk;" ${DOMAIN_DIR}/sormas.properties
 
-
-
 # put deployments into place
 for APP in $(ls ${DOMAIN_DIR}/deployments/*.{war,ear} 2>/dev/null);do
   mv ${APP} ${DOMAIN_DIR}/autodeploy
+done
+
+JAVA=$( check_java )
+while [ $(check_java) -gt 0 ];do
+  echo "Waiting for sormas server shutdown"
+  sleep 10
 done
 
 echo "Server setup completed."
