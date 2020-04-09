@@ -4,6 +4,7 @@ ARG SORMAS_VERSION=1.37.2
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 
 RUN apk add tzdata
+RUN apk add openssl
 RUN mkdir -p /var/log/apache2/ \
   && mkdir /usr/local/apache2/conf.d/ \
   && chown -R www-data:www-data /var/log/apache2/
