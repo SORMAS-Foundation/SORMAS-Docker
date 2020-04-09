@@ -10,11 +10,10 @@ ARG DB_NAME_AUDIT=sormas_audit
 ARG MAIL_HOST=localhost
 ARG MAIL_FROM=sormas@localhost
 ARG JVM_MAX=4096m
-
+ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 EXPOSE 6080
 ARG SORMAS_VERSION=1.37.2
 
-ENV SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip
 ENV MAIL_FROM=root@localhost
 ENV DEBIAN_FRONTEND=noninteractive
 EXPOSE 6048
@@ -35,7 +34,7 @@ RUN wget -O /tmp/payara-5.192.zip "https://search.maven.org/remotecontent?filepa
 
 ENV ASENV_PATH="/opt/payara5/glassfish/config/asenv.conf"
 RUN useradd payara
-RUN echo $(date)
+
 COPY setup-server.sh /setup-server.sh
 RUN /setup-server.sh
 COPY start-server.sh /start-server.sh

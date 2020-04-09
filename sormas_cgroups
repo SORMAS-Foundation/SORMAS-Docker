@@ -1,0 +1,60 @@
+#!/usr/bin/python
+from __future__ import print_function
+import os
+import sys
+import re
+import shlex
+
+def load_cfg(filename):
+    with open(filename, 'r') as fh:
+        return dict([ tuple([ l.strip() for l in line.split("=")]) for line in fh.readlines() if len(line.strip())>0])
+
+
+def validate_cgroup(cgname, cpus, mem_mb):
+    if not re.match(r"^[a-zA-Z_0-9.\-]+$", cgname):
+        print("Invalid cgroup name. May only contain alphanumerics (no special characters), dashes, underscores and dots-")
+        return -1,-1
+    try:
+        cpu_count = float(cpus)
+    except:
+        print("Invalid value for CPU count of %s" % (cgname))
+        return False
+    if cpu_count<=0.0:
+        print("Invalid value for CPU count of %s" % (cgname))
+        return -1, -1
+    mem_bytes = float(mem_mb)*1024*1024
+    if mem_bytes<=0.0:
+        print("MEM_MB setting has to be positive number")
+        return -1, -1
+    cpu_shares = int(cpu_count*1024)
+    print("Configured cgroup %s with %d cpu shares and %d bytes of memory allocated" % (cgname, cpu_shares, mem_bytes))
+    return cpu_shares, mem_bytes
+
+
+def create_cgroup(cgname, cpu_shares, mem_bytes):
+    ret = os.system("cgcreate -g cpu:%s -g memory:%s" % (cgname, cgname))
+    if ret==0:
+        print("Created cgroup %s" % (cgname))
+    else:
+        print("cgcreate command returned %d" % (ret))
+    with open('/sys/fs/cgroup/cpu/%s/cpu.shares' % (cgname), "w") as fh:
+        fh.write("%d" % (cpu_shares))
+    with open('/sys/fs/cgroup/memory/%s/memory.limit_in_bytes' % (cgname), "w") as fh:
+        fh.write("%d" % (mem_bytes))
+
+def main():
+    env = load_cfg('.env')
+    cg_basename = env['SORMAS_SERVER_URL']
+    cgnames = set()
+    for service in ['SORMAS', 'POSTGRES', 'APACHE2', 'PG_DUMP']:
+        cgname = env['%s_CGROUP' % (service)]
+        cgnames.add(cgname)
+    for cgname in cgnames:
+        cpu_shares, mem_bytes = validate_cgroup(cgname, env.get(cgname + "_CPUS", "1.0"), env.get(cgname + "_MEM_MB", 10000))
+        if cpu_shares>0 and mem_bytes>0:
+            create_cgroup(cgname, cpu_shares, mem_bytes)
+        else:
+            print("Skipping cgroup %s due to problems" % (cgname))
+
+if __name__=='__main__':
+    main()

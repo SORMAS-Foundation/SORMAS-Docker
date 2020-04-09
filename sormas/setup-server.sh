@@ -27,11 +27,13 @@ mkdir -p ${CUSTOM_DIR}
 mkdir -p ${DEPLOY_PATH}
 mkdir -p ${DOWNLOADS_PATH}
 
-pushd ${DEPLOY_PATH}
-wget https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O ${DOMAIN_NAME}.zip 
-unzip ${DOMAIN_NAME}.zip
-rm ${DOMAIN_NAME}.zip
-popd
+  pushd ${DEPLOY_PATH}
+  wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O ${DOMAIN_NAME}.zip
+  unzip ${DOMAIN_NAME}.zip
+  rm ${DOMAIN_NAME}.zip
+  popd
+
+
 
 # Setting ASADMIN_CALL and creating domain
 echo "Creating domain for Payara..."

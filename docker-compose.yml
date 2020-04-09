@@ -15,7 +15,6 @@ services:
       - DB_NAME_AUDIT=${DB_NAME_AUDIT}
       - MAIL_HOST=${MAIL_HOST}
       - MAIL_FROM=${MAIL_FROM}
-      - JVM_MAX=${JVM_MAX}
       - SORMAS_VERSION=${SORMAS_VERSION}
       - LOCALE=${LOCALE}
       - EPIDPREFIX=${EPIDPREFIX}
@@ -25,8 +24,11 @@ services:
       - LATITUDE=${LATITUDE}
       - LONGITUDE=${LONGITUDE}
       - TZ=${TZ}
+      - JVM_MAX=${JVM_MAX}
+      - GEO_UUID=${GEO_UUID}
     depends_on:
       - postgres
+    cgroup_parent: ${SORMAS_CGROUP}
   postgres:
     restart: unless-stopped
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
@@ -42,6 +44,7 @@ services:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    cgroup_parent: ${POSTGRES_CGROUP}
   pg_dump:
     restart: unless-stopped
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_VERSION}
@@ -57,6 +60,7 @@ services:
       - KEEP=1 # keep db dumps for one day in backup folder
     volumes:
       - /backup:/var/opt/db_dumps
+    cgroup_parent: ${PG_DUMP_CGROUP}
   apache2:
     restart: unless-stopped
     links:
@@ -72,3 +76,4 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    cgroup_parent: ${APACHE2_CGROUP}
