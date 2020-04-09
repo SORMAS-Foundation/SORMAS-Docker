@@ -17,6 +17,10 @@
 ## Project Objectives
 This project aims to build docker images for the SORMAS application.
 
+## Firewall
+ 
+The host running the Docker installation with the SORMAS application should be behind a external firewall. Several containers open ports on the underlying host and circumvent the local firewall on the host (iptables).
+
 ## Quick Start
 
 If you would like to set up a local instance for testing, follow these instructions
