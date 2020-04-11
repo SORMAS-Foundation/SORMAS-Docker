@@ -92,9 +92,19 @@ for APP in $(ls ${DOMAIN_DIR}/deployments/*.{war,ear} 2>/dev/null);do
   mv ${APP} ${DOMAIN_DIR}/autodeploy
 done
 
+SLEEP=10
+COUNT=0
 while [ $(check_java) -gt 0 ];do
-  echo "Waiting for sormas server shutdown"
-  sleep 10
+  echo "Waiting for sormas server shutdown ..."
+  sleep ${SLEEP}
+  if [ ${COUNT} -eq 5 ];then
+    ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
+  fi
+  COUNT=$(( ${COUNT} + 1 ))
+  if [ ${COUNT} -gt 9 ];then
+    echo "Sormas server still running. Exiting!"
+    exit 1
+  fi
 done
 
 echo "Server setup completed."
