@@ -92,7 +92,6 @@ for APP in $(ls ${DOMAIN_DIR}/deployments/*.{war,ear} 2>/dev/null);do
   mv ${APP} ${DOMAIN_DIR}/autodeploy
 done
 
-JAVA=$( check_java )
 while [ $(check_java) -gt 0 ];do
   echo "Waiting for sormas server shutdown"
   sleep 10
