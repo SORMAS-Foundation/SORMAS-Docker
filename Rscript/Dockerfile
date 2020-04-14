@@ -8,7 +8,7 @@ RUN apt-get update \
   && add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/' \
   && apt-get update \
   && apt-get upgrade -y \
-  && apt-get -y install r-base libpq-dev --no-install-recommends\
+  && apt-get -y install r-base libpq-dev gcc --no-install-recommends\
   && apt-get clean
 
 RUN Rscript -e 'install.packages(c("epicontacts", "outbreaks", "RPostgreSQL", "GGally", "network", "sna", "visNetwork", "dplyr"))'
