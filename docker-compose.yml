@@ -1,4 +1,4 @@
-version: '3'
+version: '2.4'
 services:
   sormas:
     restart: unless-stopped
@@ -24,11 +24,13 @@ services:
       - LATITUDE=${LATITUDE}
       - LONGITUDE=${LONGITUDE}
       - TZ=${TZ}
-      - JVM_MAX=${JVM_MAX}
+      - JVM_MAX=${APPSERVER_JVM_MAX}
       - GEO_UUID=${GEO_UUID}
     depends_on:
       - postgres
-    cgroup_parent: ${SORMAS_CGROUP}
+    cpus: ${APPSERVER_CPUS}
+    mem_limit: ${APPSERVER_MEM}
+    mem_reservation: ${APPSERVER_MEM_RESERVED}
   postgres:
     restart: unless-stopped
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
@@ -44,7 +46,9 @@ services:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    cgroup_parent: ${POSTGRES_CGROUP}
+    cpus: ${DB_CPUS}
+    mem_limit: ${DB_MEM}
+    mem_reservation: ${DB_MEM_RESERVED}
   pg_dump:
     restart: unless-stopped
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_VERSION}
@@ -60,7 +64,9 @@ services:
       - KEEP=1 # keep db dumps for one day in backup folder
     volumes:
       - /backup:/var/opt/db_dumps
-    cgroup_parent: ${PG_DUMP_CGROUP}
+    cpus: ${DB_DUMP_CPUS}
+    mem_limit: ${DB_DUMP_MEM}
+    mem_reservation: ${DB_DUMP_MEM_RESERVED}
   apache2:
     restart: unless-stopped
     links:
@@ -76,4 +82,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    cgroup_parent: ${APACHE2_CGROUP}
+    cpus: ${WEBSERVER_CPUS}
+    mem_limit: ${WEBSERVER_MEM}
+    mem_reservation: ${WEBSERVER_MEM_RESERVED}

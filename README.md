@@ -119,90 +119,26 @@ docker-compose up -d
 ```
 
 SORMAS should now be reachable via the given hostname. 
-your 
 
-### CPU and Memory resource limits
+#### CPU and memory usage limits and reservations
 
-#### Java Application Server Heap Size
-The heap size for the SORMAS application server is specified via 
+For all configuration options below, memory should be given as a positive integer number followed by an upper-case "M" - for example 1000M. CPU counts should be
+given as a floating point value with the dot ( . ) as decimal separator, for example "2.5".
 
-**JVM_MAX**: Maximum heap space to be used for the java application server used by SORMAS. (For example 4096M for 4096MB). 
+**APPSERVER_JVM_MAX**: Maximum heap space to be used for the java application server used by SORMAS. (For example 4096M for 4096MB).
+**APPSERVER_MEM**: Maximum available memory for SORMAS application server. Should be set to be at least 150 MB above SORMAS_JVM_MAX. (For example 4300M for 4300MB)
+**APPSERVER_MEM_RESERVED**: Memory reserved for SORMAS application server. This memory may not be used by other processes on the same host. (For example 4300M for 4300MB)
+**APPSERVER_CPUS**: CPU cores reserved for the SORMAS java application server. This should be a floating point value. (Example: 2.0 )
 
-*Please ensure that this is below the avilable memory limit for this process, which can be limited either due to actual
-physical resource constrains, or by using the cgroups mechanism below.
+**WEBSERVER_MEM**: Maximum available memory for the used web server.(For example 1000M for 1000MB)
+**WEBSERVER_MEM_RESERVED**: Memory reserved for the used web server. This memory may not be used by other processes on the same host. (For example 400M for 400MB)
+**WEBSERVER_CPUS**: CPU cores reserved for the used web server. This should be a floating point value. (Example: 2.0 )
 
-#### Cgroups based resource limits
+**DB_MEM**: Maximum available memory for the used database server.(For example 3000M for 3000MB)
+**DB_MEM_RESERVED**: Memory reserved for the used database server. This memory may not be used by other processes on the same host. (For example 2500M for 2500MB)
+**DB_CPUS**: CPU cores reserved for the used web server. This should be a floating point value. (Example: 3.0 )
 
-Memory and CPU resource limitation are performed via the cgroups subsystem. It is possible to apply limits per
-service or collectively over multiple services. **This should be done before you run docker-compose up** 
-
-#### Requirements for resource limitation 
-
-In order to be able to create and configure cgroups, the **cgcreate** tool has to be installed on the docker
-host system. This is available on all major Linux distributions, but they might differ in how it is installed.
-
- * Ubuntu (16.04+): cgcreate is part of the *cgroup-tools* package. Install via **sudo apt install cgroup-tools**. See [Ubuntu cgcreate manpage](http://manpages.ubuntu.com/manpages/bionic/man1/cgcreate.1.html)
- * RedHat Enterprise Linux 7+: cgcreate seems to be preinstalled. See [RHEL7 - Introduction to Cgroups](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/resource_management_guide/chap-introduction_to_control_groups)
-
-In doubt, please refer to your Linux distribution's documentation.
-
-#### What if I cannot meet the requirements for cgroups usage ?
-
-In this case, enforcing resource limits is not possible this way. **You can still run sormas without**. 
-
-#### Resource Limit Configuration
-
-For every service, specify a named cgroup via the following configuration options:
-
- * **SORMAS_CGROUP**: Cgroup name for the sormas application server.
- * **POSTGRES_CGROUP**: Cgroup name for the PostgreSQL database server. 
- * **PG_DUMP_CGROUP**: Cgroup name for the PG_DUMP service.
- * **APACHE2_CGROUP**: Cgroup name for the apache2 webserver.
-
-**Example**
-```
-SORMAS_CGROUP=SORMAS_TEST_APPSERVER
-POSTGRES_CGROUP=SORMAS_TEST_DB
-PG_DUMP_CGROUP=SORMAS_TEST_DUMP
-APACHE2_CGROUP=SORMAS_TEST_WEBSERVER
-```
-
-For *each* of these groups, you may then specify configuration options which specify resource limits and CPU shares. 
-
-Replace **CGNAME** below with the name of the actual Cgroup(s) you specified for the services above.
-
-**CGNAME**_CPUS: Number of CPUs to use for this Cgroup as a floating point number (values like 0.5 are possible). This is a soft limit. If more CPUs are free, they may be used.
-**CGNAME**_MEM_MB: Memory limit in MB for this Cgroup. 
-
-**Example**
-```
-SORMAS_TEST_APPSERVER_CPUS=6.0
-SORMAS_TEST_APPSERVER_MEM_MB=4500
-
-SORMAS_TEST_DB_CPUS=6.0
-SORMAS_TEST_DB_MEM_MB=3000
-
-SORMAS_TEST_DUMP_CPUS=0.5
-SORMAS_TEST_DUMP_MEM_MB=500
-
-SORMAS_TEST_WEBSERVER_CPUS=6.0
-SORMAS_TEST_WEBSERVER_MEM_MB=500
-```
-
-#### Creating the Cgroups for resource limits
-
-In order to create the cgroups, the script **sormas_cgroups** automates this process. 
-
-Once the configuration has been written or it has been updated, run this script with superuser
-privileges:
-
-```
-sudo ./sormas_cgroups
-```
-Just like docker-compose, the script requires an existing python interpreter (2.7+ or 3.x ). It also requires the
-cgroups tool to be installed (see above). It is not possible to run it successfully without superuser privileges 
-(e.g. you need to run it as root or via sudo )
-
-**Important** there is no linux-vendor agnostic way of persisting cgroups. Therefore this command should also be run
-after each reboot of the host machine, before executing docker-compose up.
+**DB_DUMP_MEM**: Maximum available memory for the database dump tool.(For example 500M for 500MB)
+**DB_DUMP_MEM_RESERVED**: Memory reserved for the database dump tool. This memory may not be used by other processes on the same host. (For example 100M for 100MB)
+**DB_DUMP_CPUS**: CPU cores reserved for the used web server. This should be a floating point value. (Example: 0.5 )
 
