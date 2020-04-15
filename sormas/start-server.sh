@@ -86,6 +86,8 @@ ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}AuditlogPool jd
 ${ASADMIN} delete-javamail-resource mail/MailSession
 ${ASADMIN} create-javamail-resource --mailhost ${MAIL_HOST} --mailuser "sormas" --fromaddress ${MAIL_FROM} mail/MailSession
 
+# Fix for https://github.com/hzi-braunschweig/SORMAS-Project/issues/1759
+${ASADMIN} set configs.config.server-config.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size=500
 # set FQDN for sormas domain
 ${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.hosts=${SORMAS_SERVER_URL}
 
@@ -106,9 +108,15 @@ sed -i "s/country.center.latitude=.*/country.center.latitude=${LATITUDE}/" ${DOM
 sed -i "s/country.center.longitude=.*/country.center.longitude=${LONGITUDE}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/map.zoom=.*/map.zoom=10/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s;app.url=.*;app.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk;" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/\#geocodingOsgtsEndpoint=.*/geocodingOsgtsEndpoint=https:\/\/sg.geodatenzentrum.de\/gdz_geokodierung_bund__${GEO_UUID}/" ${DOMAIN_DIR}/sormas.properties
+
 
 # put deployments into place
-for APP in $(ls ${DOMAIN_DIR}/deployments/*.{war,ear} 2>/dev/null);do
+for APP in $(ls ${DOMAIN_DIR}/deployments/*.ear 2>/dev/null);do
+  mv ${APP} ${DOMAIN_DIR}/autodeploy
+done
+sleep 5
+for APP in $(ls ${DOMAIN_DIR}/deployments/*.war 2>/dev/null);do
   mv ${APP} ${DOMAIN_DIR}/autodeploy
 done
 
