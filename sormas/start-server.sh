@@ -109,7 +109,12 @@ sed -i "s/country.center.longitude=.*/country.center.longitude=${LONGITUDE}/" ${
 sed -i "s/map.zoom=.*/map.zoom=10/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s;app.url=.*;app.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk;" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#geocodingOsgtsEndpoint=.*/geocodingOsgtsEndpoint=https:\/\/sg.geodatenzentrum.de\/gdz_geokodierung_bund__${GEO_UUID}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/\#rscript.executable=.*/rscript.executable=Rscript/" ${DOMAIN_DIR}/sormas.properties
 
+Rscript -e 'library(epicontacts)'
+Rscript -e 'library(RPostgreSQL)'
+Rscript -e 'library(visNetwork)'
+Rscript -e 'library(dplyr)'
 
 # put deployments into place
 for APP in $(ls ${DOMAIN_DIR}/deployments/*.ear 2>/dev/null);do
