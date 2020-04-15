@@ -4,6 +4,32 @@ function check_db() {
   psql -h ${DB_HOST} -U ${SORMAS_POSTGRES_USER} ${DB_NAME} --no-align --tuples-only --quiet --command="SELECT count(*) FROM pg_database WHERE datname='${DB_NAME}';" 2>/dev/null || echo "0"
 }
 
+function check_java() {
+  ps -ef | grep /usr/lib/jvm/zulu-8-amd64/bin/java | grep -v grep | wc -l
+}
+
+function delete_jdbc_connection_pool() {
+  echo "Deleting jdbc-resource $1"
+  ${ASADMIN} list-jdbc-resources | grep -q "$1"
+  if [ $? -ne 0 ];then
+    cat ${DOMAIN_DIR}/config/domain.xml
+    echo
+    echo "jdbc-resource $1 not found. Exiting!!"
+    exit 1
+  fi
+  ${ASADMIN} delete-jdbc-resource "$1"
+
+  ${ASADMIN} list-jdbc-connection-pools | grep -q "$2"
+  echo "Deleting jdbc-connection-pool $2"
+  if [ $? -ne 0 ];then
+    cat ${DOMAIN_DIR}/config/domain.xml
+    echo
+    echo "jdbc-connection-pool $2 not found. Exiting!!"
+    exit 1
+  fi
+  ${ASADMIN} delete-jdbc-connection-pool "$2"
+}
+
 export PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
 SLEEP=10
 COUNT=0
@@ -48,14 +74,12 @@ ${ASADMIN} delete-jvm-options -Xmx4096m
 ${ASADMIN} create-jvm-options -Xmx${JVM_MAX}
 
 # JDBC pool
-${ASADMIN} delete-jdbc-resource jdbc/${DOMAIN_NAME}DataPool
-${ASADMIN} delete-jdbc-connection-pool ${DOMAIN_NAME}DataPool
+delete_jdbc_connection_pool "jdbc/${DOMAIN_NAME}DataPool" "${DOMAIN_NAME}DataPool"
 ${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}DataPool jdbc/${DOMAIN_NAME}DataPool
 
 # Pool for audit log
-${ASADMIN} delete-jdbc-resource jdbc/AuditlogPool
-${ASADMIN} delete-jdbc-connection-pool ${DOMAIN_NAME}AuditlogPool
+delete_jdbc_connection_pool "jdbc/AuditlogPool" "${DOMAIN_NAME}AuditlogPool"
 ${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=5432:databaseName=${DB_NAME_AUDIT}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}AuditlogPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}AuditlogPool jdbc/AuditlogPool
 
@@ -94,6 +118,21 @@ done
 sleep 5
 for APP in $(ls ${DOMAIN_DIR}/deployments/*.war 2>/dev/null);do
   mv ${APP} ${DOMAIN_DIR}/autodeploy
+done
+
+SLEEP=10
+COUNT=0
+while [ $(check_java) -gt 0 ];do
+  echo "Waiting for sormas server shutdown ..."
+  sleep ${SLEEP}
+  if [ ${COUNT} -eq 5 ];then
+    ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
+  fi
+  COUNT=$(( ${COUNT} + 1 ))
+  if [ ${COUNT} -gt 9 ];then
+    echo "Sormas server still running. Exiting!"
+    exit 1
+  fi
 done
 
 echo "Server setup completed."
