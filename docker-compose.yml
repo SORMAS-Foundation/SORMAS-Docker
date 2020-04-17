@@ -79,7 +79,7 @@ services:
       - PGID=1000
       - TZ=${TZ}
       - URL=${DOMAIN_NAME}
-      - EMAIL=${MAIL_FROM}
+      - EMAIL=${LETSENCRYPT_MAIL}
       - DISABLE_CERTBOT=${DISABLE_CERTBOT}
     volumes:
       - /var/lib/docker/letsencrypt-config:/config
