@@ -107,7 +107,7 @@ server {
 #	}
 #}
 
-# enable subdomain method reverse proxy confs
-include /config/nginx/proxy-confs/*.subdomain.conf;
+# enable vhost config
+include /config/nginx/proxy-confs/vhost.conf;
 # enable proxy cache for auth
 proxy_cache_path cache/ keys_zone=auth_cache:10m;
