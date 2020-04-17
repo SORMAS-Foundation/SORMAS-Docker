@@ -79,6 +79,10 @@ cp /config/fail2ban/jail.local /etc/fail2ban/jail.local
 [[ ! -f /config/nginx/ldap.conf ]] && \
 	cp /defaults/ldap.conf /config/nginx/ldap.conf
 
+# Make vhost.conf.sh executable and run the script
+chmod +x /defaults/vhost.conf.sh
+./defaults/vhost.conf.sh
+
 # check to make sure DNSPLUGIN is selected if dns validation is used
 [[ "$VALIDATION" = "dns" ]] && [[ ! "$DNSPLUGIN" =~ ^(aliyun|cloudflare|cloudxns|cpanel|digitalocean|dnsimple|dnsmadeeasy|domeneshop|gandi|google|inwx|linode|luadns|nsone|ovh|rfc2136|route53|transip)$ ]] && \
   echo "Please set the DNSPLUGIN variable to a valid plugin name. See docker info for more details." && \
