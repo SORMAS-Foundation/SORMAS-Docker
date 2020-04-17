@@ -17,6 +17,10 @@
 ## Project Objectives
 This project aims to build docker images for the SORMAS application.
 
+## Firewall
+ 
+The host running the Docker installation with the SORMAS application should be behind a external firewall. Several containers open ports on the underlying host and circumvent the local firewall on the host (iptables).
+
 ## Quick Start
 
 If you would like to set up a local instance for testing, follow these instructions
@@ -99,9 +103,6 @@ LONGITUDE: Logitude of the map center
 
 SORMAS_PATH: Path to store the Dockervolumes 
 
-JVM_MAX: Maximum amount of RAM given to the JVM
-
-
 ### Changing the host name
 
 If you would like to run SORMAS using your own host name (e.g. https://sormas.example.com) , please follow these steps: 
@@ -118,4 +119,26 @@ docker-compose up -d
 ```
 
 SORMAS should now be reachable via the given hostname. 
-your 
+
+#### CPU and memory usage limits and reservations
+
+For all configuration options below, memory should be given as a positive integer number followed by an upper-case "M" - for example 1000M. CPU counts should be
+given as a floating point value with the dot ( . ) as decimal separator, for example "2.5".
+
+**APPSERVER_JVM_MAX**: Maximum heap space to be used for the java application server used by SORMAS. (For example 4096M for 4096MB).
+**APPSERVER_MEM**: Maximum available memory for SORMAS application server. Should be set to be at least 150 MB above SORMAS_JVM_MAX. (For example 4300M for 4300MB)
+**APPSERVER_MEM_RESERVED**: Memory reserved for SORMAS application server. This memory may not be used by other processes on the same host. (For example 4300M for 4300MB)
+**APPSERVER_CPUS**: CPU cores reserved for the SORMAS java application server. This should be a floating point value. (Example: 2.0 )
+
+**WEBSERVER_MEM**: Maximum available memory for the used web server.(For example 1000M for 1000MB)
+**WEBSERVER_MEM_RESERVED**: Memory reserved for the used web server. This memory may not be used by other processes on the same host. (For example 400M for 400MB)
+**WEBSERVER_CPUS**: CPU cores reserved for the used web server. This should be a floating point value. (Example: 2.0 )
+
+**DB_MEM**: Maximum available memory for the used database server.(For example 3000M for 3000MB)
+**DB_MEM_RESERVED**: Memory reserved for the used database server. This memory may not be used by other processes on the same host. (For example 2500M for 2500MB)
+**DB_CPUS**: CPU cores reserved for the used web server. This should be a floating point value. (Example: 3.0 )
+
+**DB_DUMP_MEM**: Maximum available memory for the database dump tool.(For example 500M for 500MB)
+**DB_DUMP_MEM_RESERVED**: Memory reserved for the database dump tool. This memory may not be used by other processes on the same host. (For example 100M for 100MB)
+**DB_DUMP_CPUS**: CPU cores reserved for the used web server. This should be a floating point value. (Example: 0.5 )
+

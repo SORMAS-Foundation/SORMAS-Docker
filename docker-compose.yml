@@ -1,4 +1,4 @@
-version: '3'
+version: '2.2'
 services:
   sormas:
     restart: unless-stopped
@@ -15,7 +15,6 @@ services:
       - DB_NAME_AUDIT=${DB_NAME_AUDIT}
       - MAIL_HOST=${MAIL_HOST}
       - MAIL_FROM=${MAIL_FROM}
-      - JVM_MAX=${JVM_MAX}
       - SORMAS_VERSION=${SORMAS_VERSION}
       - LOCALE=${LOCALE}
       - EPIDPREFIX=${EPIDPREFIX}
@@ -25,8 +24,16 @@ services:
       - LATITUDE=${LATITUDE}
       - LONGITUDE=${LONGITUDE}
       - TZ=${TZ}
+      - JVM_MAX=${APPSERVER_JVM_MAX}
+      - GEO_UUID=${GEO_UUID}
     depends_on:
       - postgres
+    volumes:
+      - ${SORMAS_PATH}/custom:/opt/sormas/custom
+      - ${SORMAS_PATH}/temp:/opt/sormas/temp
+    cpus: ${APPSERVER_CPUS}
+    mem_limit: ${APPSERVER_MEM}
+    mem_reservation: ${APPSERVER_MEM_RESERVED}
   postgres:
     restart: unless-stopped
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
@@ -40,8 +47,12 @@ services:
       - TZ=${TZ}
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
+      - ${SORMAS_PATH}/temp:/opt/sormas/temp
     ports:
       - "5432:5432"
+    cpus: ${DB_CPUS}
+    mem_limit: ${DB_MEM}
+    mem_reservation: ${DB_MEM_RESERVED}
   pg_dump:
     restart: unless-stopped
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_VERSION}
@@ -57,6 +68,9 @@ services:
       - KEEP=1 # keep db dumps for one day in backup folder
     volumes:
       - /backup:/var/opt/db_dumps
+    cpus: ${DB_DUMP_CPUS}
+    mem_limit: ${DB_DUMP_MEM}
+    mem_reservation: ${DB_DUMP_MEM_RESERVED}
   apache2:
     restart: unless-stopped
     links:
@@ -72,3 +86,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    cpus: ${WEBSERVER_CPUS}
+    mem_limit: ${WEBSERVER_MEM}
+    mem_reservation: ${WEBSERVER_MEM_RESERVED}
