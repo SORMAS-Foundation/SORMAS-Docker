@@ -4,6 +4,7 @@ services:
     restart: unless-stopped
     links:
       - postgres
+      - mail
     image: hzibraunschweig/sormas-application:${SORMAS_VERSION}
     environment:
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
@@ -13,14 +14,19 @@ services:
       - DOMAIN_NAME=${DOMAIN_NAME}
       - DB_NAME=${DB_NAME}
       - DB_NAME_AUDIT=${DB_NAME_AUDIT}
-      - MAIL_HOST=${MAIL_HOST}
-      - MAIL_FROM=${MAIL_FROM}
+      - SMTP_HOST=mail
+      - SMTP_USE_STARTTLS=false
+      - SMTP_PORT=25
+      - SMTP_LOCALHOST=
+      - SMTP_USER=
+      - SMTP_PASSWORD=
+      - EMAIL_SENDER_ADDRESS=${EMAIL_SENDER_ADDRESS}
+      - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
+      - EMAIL_ERROR_TO=${EMAIL_ERROR_TO}
       - SORMAS_VERSION=${SORMAS_VERSION}
       - LOCALE=${LOCALE}
       - EPIDPREFIX=${EPIDPREFIX}
       - SEPARATOR=${SEPARATOR}
-      - EMAIL_SENDER_ADDRESS=${EMAIL_SENDER_ADDRESS}
-      - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
       - LATITUDE=${LATITUDE}
       - LONGITUDE=${LONGITUDE}
       - TZ=${TZ}
@@ -89,3 +95,24 @@ services:
     cpus: ${WEBSERVER_CPUS}
     mem_limit: ${WEBSERVER_MEM}
     mem_reservation: ${WEBSERVER_MEM_RESERVED}
+  mail:
+    image: hzibraunschweig/sormas-mail:${SORMAS_VERSION}
+    links:
+      - example-mail-recipient
+    restart: unless-stopped
+    environment:
+      - MAILNAME=${SMTP_LOCALHOST}
+      - RELAY_HOST=${SMTP_HOST}
+      - RELAY_PORT=${SMTP_PORT}
+      - RELAY_USERNAME=${SMTP_USER}
+      - RELAY_PASSWORD=${SMTP_PASSWORD}
+    cpus: ${MAIL_CPUS}
+    mem_limit: ${MAIL_MEM}
+    mem_reservation: ${MAIL_MEM_RESERVED}
+  example-mail-recipient:
+    image: marvambass/versatile-postfix
+    restart: unless-stopped
+    environment:
+      - ALIASES=postmaster:root;hostmaster:root;webmaster:root;admin:root
+      - DISABLE_DKIM=true
+    command: example-mail-recipient ${SMTP_USER}:${SMTP_PASSWORD}

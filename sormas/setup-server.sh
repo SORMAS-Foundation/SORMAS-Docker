@@ -37,6 +37,7 @@ mkdir -p ${DOWNLOADS_PATH}
 
 # Setting ASADMIN_CALL and creating domain
 echo "Creating domain for Payara..."
+echo "${PAYARA_HOME}/bin/asadmin create-domain --domaindir ${DOMAINS_HOME} --portbase ${PORT_BASE} --nopassword ${DOMAIN_NAME}"
 ${PAYARA_HOME}/bin/asadmin create-domain --domaindir ${DOMAINS_HOME} --portbase ${PORT_BASE} --nopassword ${DOMAIN_NAME}
 ASADMIN="${PAYARA_HOME}/bin/asadmin --port ${PORT_ADMIN}"
 

@@ -84,8 +84,15 @@ ${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --dataso
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}AuditlogPool jdbc/AuditlogPool
 
 ${ASADMIN} delete-javamail-resource mail/MailSession
-${ASADMIN} create-javamail-resource --mailhost ${MAIL_HOST} --mailuser "sormas" --fromaddress ${MAIL_FROM} mail/MailSession
 
+if [ -z "$SMTP_USER" ]
+then
+      export MAIL_AUTH_OPTS=""
+else
+      export MAIL_AUTH_OPTS="--password \"${SMTP_PASSWORD}\" --mailuser ${SMTP_USER} --auth true "
+fi
+echo "${ASADMIN} create-javamail-resource --mailhost mail --mailuser "${SMTP_USER}" --fromaddress ${EMAIL_SENDER_ADDRESS} mail/MailSession ${MAIL_AUTH_OPTS}--property mail-smtp-starttls-enable=${SMTP_USE_STARTTLS}"
+${ASADMIN} create-javamail-resource --mailhost ${SMTP_HOST} --mailuser "${SMTP_USER}" --fromaddress ${EMAIL_SENDER_ADDRESS} ${MAIL_AUTH_OPTS}--property mail-smtp-starttls-enable=${SMTP_USE_STARTTLS} mail/MailSession
 # Fix for https://github.com/hzi-braunschweig/SORMAS-Project/issues/1759
 ${ASADMIN} set configs.config.server-config.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size=500
 # set FQDN for sormas domain
@@ -94,7 +101,31 @@ ${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.h
 ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
 
+cp /logback.xml /opt/domains/sormas/config/logback.xml
 #Edit properties
+sed -i "s/SMTP_HOST/${SMTP_HOST}/" /opt/domains/sormas/config/logback.xml
+sed -i "s/SMTP_PORT/${SMTP_PORT}/" /opt/domains/sormas/config/logback.xml
+sed -i "s/SMTP_USE_STARTTLS/${SMTP_USE_STARTTLS}/" /opt/domains/sormas/config/logback.xml
+sed -i "s/EMAIL_SENDER_ADDRESS/${EMAIL_SENDER_ADDRESS}/" /opt/domains/sormas/config/logback.xml
+sed -i "s/EMAIL_ERROR_TO/${EMAIL_ERROR_TO}/" /opt/domains/sormas/config/logback.xml
+if [ -z "$SMTP_LOCALHOST" ]
+then
+      sed -i "s/SMTP_LOCALHOST//" /opt/domains/sormas/config/logback.xml
+else
+      sed -i "s/SMTP_LOCALHOST/<username>${SMTP_LOCALHOST}<\/username>/" /opt/domains/sormas/config/logback.xml
+fi
+if [ -z "$SMTP_USER" ]
+then
+      sed -i "s/SMTP_USER//" /opt/domains/sormas/config/logback.xml
+else
+      sed -i "s/SMTP_USER/<username>${SMTP_USER}<\/username>/" /opt/domains/sormas/config/logback.xml
+fi
+if [ -z "$SMTP_PASSWORD" ]
+then
+      sed -i "s/SMTP_PASSWORD//" /opt/domains/sormas/config/logback.xml
+else
+      sed -i "s/SMTP_PASSWORD/<password>${SMTP_PASSWORD}<\/password>/" /opt/domains/sormas/config/logback.xml
+fi
 
 sed -i "s/country.locale=.*/country.locale=${LOCALE}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/country.epidprefix=.*/country.epidprefix=${EPIDPREFIX}/" ${DOMAIN_DIR}/sormas.properties
@@ -115,7 +146,6 @@ Rscript -e 'library(epicontacts)'
 Rscript -e 'library(RPostgreSQL)'
 Rscript -e 'library(visNetwork)'
 Rscript -e 'library(dplyr)'
-
 # put deployments into place
 for APP in $(ls ${DOMAIN_DIR}/deployments/*.ear 2>/dev/null);do
   mv ${APP} ${DOMAIN_DIR}/autodeploy
