@@ -13,17 +13,17 @@ services:
         - DB_NAME_AUDIT=${DB_NAME_AUDIT}
         - MAIL_FROM=${MAIL_FROM}
         - SORMAS_VERSION=${SORMAS_VERSION}
-    image: hzibraunschweig/sormas-application:${SORMAS_VERSION}
+    image: hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
     command: /bin/false
   postgres:
     build:
       context: postgres
     command: /bin/false
-    image: hzibraunschweig/sormas-postgres:${SORMAS_VERSION}
+    image: hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
   pg_dump:
     build:
       context: pg_dump
-    image: hzibraunschweig/sormas-pg-dump:${SORMAS_VERSION}
+    image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
     command: /bin/false
   apache2:
     build:
