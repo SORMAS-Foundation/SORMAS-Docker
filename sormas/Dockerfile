@@ -1,8 +1,8 @@
 FROM hzibraunschweig/sormas-rscript:3.5
 
-ARG SORMAS_POSTGRES_PASSWORD
+ARG SORMAS_POSTGRES_PASSWORD=password
 ARG SORMAS_POSTGRES_USER=sormas_user
-ARG SORMAS_SERVER_URL
+ARG SORMAS_SERVER_URL=sormas-docker-test.com
 ARG DB_HOST=postgres
 ARG DOMAIN_NAME=sormas
 ARG DB_NAME=sormas
