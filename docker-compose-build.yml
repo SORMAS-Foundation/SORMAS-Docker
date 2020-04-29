@@ -32,5 +32,5 @@ services:
         - SORMAS_URL=${SORMAS_URL}
         - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
         - SORMAS_VERSION=${SORMAS_VERSION}
-    image: hzibraunschweig/sormas-apache2:${SORMAS_VERSION}
+    image: hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
     command: /bin/false
