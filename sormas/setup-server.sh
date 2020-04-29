@@ -65,13 +65,13 @@ ${ASADMIN} create-javamail-resource --mailhost localhost --mailuser user --froma
 
 ${ASADMIN} create-custom-resource --restype java.util.Properties --factoryclass org.glassfish.resources.custom.factory.PropertiesFactory --property "org.glassfish.resources.custom.factory.PropertiesFactory.fileName=\${com.sun.aas.instanceRoot}/sormas.properties" sormas/Properties
 
-cp ${DEPLOY_PATH}/deploy/sormas.properties ${DOMAIN_DIR}
-cp ${DEPLOY_PATH}/deploy/start-payara-sormas.sh ${DOMAIN_DIR}
-cp ${DEPLOY_PATH}/deploy/stop-payara-sormas.sh ${DOMAIN_DIR}
-cp ${DEPLOY_PATH}/deploy/logback.xml ${DOMAIN_DIR}/config/
-cp ${DEPLOY_PATH}/deploy/loginsidebar.html ${CUSTOM_DIR}
-cp ${DEPLOY_PATH}/deploy/logindetails.html ${CUSTOM_DIR}
-cp ${DEPLOY_PATH}/deploy/loginmain.html ${CUSTOM_DIR}
+cp ${DEPLOY_PATH}/sormas.properties ${DOMAIN_DIR}
+cp ${DEPLOY_PATH}/start-payara-sormas.sh ${DOMAIN_DIR}
+cp ${DEPLOY_PATH}/stop-payara-sormas.sh ${DOMAIN_DIR}
+cp ${DEPLOY_PATH}/logback.xml ${DOMAIN_DIR}/config/
+cp ${DEPLOY_PATH}/loginsidebar.html ${CUSTOM_DIR}
+cp ${DEPLOY_PATH}/logindetails.html ${CUSTOM_DIR}
+cp ${DEPLOY_PATH}/loginmain.html ${CUSTOM_DIR}
 
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
 
@@ -108,13 +108,13 @@ ${ASADMIN} set-log-attributes com.sun.enterprise.server.logging.GFFileHandler.ro
 
 echo "Copying server libs..."
 
-cp ${DEPLOY_PATH}/deploy/serverlibs/* ${DOMAIN_DIR}/lib/
+cp ${DEPLOY_PATH}/serverlibs/* ${DOMAIN_DIR}/lib/
 
 echo "Copying apps..."
 
 mkdir -p ${DOMAIN_DIR}/deployments
-cp ${DEPLOY_PATH}/deploy/apps/*.ear ${DOMAIN_DIR}/deployments/
-cp ${DEPLOY_PATH}/deploy/apps/*.war ${DOMAIN_DIR}/deployments/
+cp ${DEPLOY_PATH}/apps/*.ear ${DOMAIN_DIR}/deployments/
+cp ${DEPLOY_PATH}/apps/*.war ${DOMAIN_DIR}/deployments/
 
 ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 

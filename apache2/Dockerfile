@@ -21,7 +21,7 @@ RUN mkdir -p /var/www/sormas/downloads && \
     DEPLOY_PATH=$(mktemp -d) && \
     cd ${DEPLOY_PATH} && \
     wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas-${SORMAS_VERSION}.zip -O sormas.zip && \
-    unzip sormas.zip deploy/android/*  && \
+    unzip sormas.zip android/*  && \
     mv deploy/android/* /var/www/sormas/downloads/ && \
     cd - && \
     rm -rf ${DEPLOY_PATH}
