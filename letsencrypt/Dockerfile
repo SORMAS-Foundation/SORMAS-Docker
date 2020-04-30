@@ -1,10 +1,11 @@
 FROM lsiobase/nginx:3.11
 
 # set version label
-ARG BUILD_DATE
-ARG VERSION
-ARG CERTBOT_VERSION
-LABEL build_version="Linuxserver.io version:- ${VERSION} Build-date:- ${BUILD_DATE}"
+
+ARG CERTBOT_VERSION=1.3.0
+ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
+ARG SORMAS_VERSION=1.39.0
+
 LABEL maintainer="aptalca"
 
 # environment settings
@@ -127,9 +128,9 @@ RUN \
  mkdir -p /defaults/www/sormas/downloads && \
  DEPLOY_PATH=$(mktemp -d) && \
  cd ${DEPLOY_PATH} && \
- wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O sormas.zip && \
- unzip sormas.zip deploy/android/*  && \
- mv deploy/android/* /defaults/www/sormas/downloads/ && \
+ wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas-${SORMAS_VERSION}.zip -O sormas.zip && \
+ unzip sormas.zip android/*  && \
+ mv android/* /defaults/www/sormas/downloads/ && \
  cd - && \
  rm -rf ${DEPLOY_PATH} && \
  echo "**** cleanup ****" && \
