@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk:8
+FROM azul/zulu-openjdk:8u202-8.36.0.1
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
   && apt-get upgrade -y \
