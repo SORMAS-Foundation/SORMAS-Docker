@@ -80,11 +80,12 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=${TZ}
-      - URL=${DOMAIN_NAME}
+      - URL=${SORMAS_SERVER_URL}
       - EMAIL=${LETSENCRYPT_MAIL}
       - DISABLE_CERTBOT=${DISABLE_CERTBOT}
     volumes:
       - /var/lib/docker/letsencrypt-config:/config
+      - ./letsencrypt/certs:/config/etc/letsencrypt/live
     ports:
       - 443:443
       - 80:80
