@@ -1,10 +1,10 @@
-version: '2.4'
+version: '2.2'
 services:
   sormas:
     restart: unless-stopped
     links:
       - postgres
-    image: hzibraunschweig/sormas-application:${SORMAS_VERSION}
+    image: hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
     environment:
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
@@ -28,13 +28,16 @@ services:
       - GEO_UUID=${GEO_UUID}
     depends_on:
       - postgres
+    volumes:
+      - ${SORMAS_PATH}/custom:/opt/sormas/custom
+      - ${SORMAS_PATH}/temp:/opt/sormas/temp
     cpus: ${APPSERVER_CPUS}
     mem_limit: ${APPSERVER_MEM}
     mem_reservation: ${APPSERVER_MEM_RESERVED}
   postgres:
     restart: unless-stopped
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
-    image: hzibraunschweig/sormas-postgres:${SORMAS_VERSION}
+    image: hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
     environment:
       - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - DB_NAME=sormas
@@ -44,6 +47,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
+      - ${SORMAS_PATH}/temp:/opt/sormas/temp
     ports:
       - "5432:5432"
     cpus: ${DB_CPUS}
@@ -51,7 +55,7 @@ services:
     mem_reservation: ${DB_MEM_RESERVED}
   pg_dump:
     restart: unless-stopped
-    image: hzibraunschweig/sormas-pg-dump:${SORMAS_VERSION}
+    image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
     environment:
       - DB_HOST=${DB_HOST}
       - DB_NAME=sormas
@@ -73,7 +77,7 @@ services:
       - sormas
     depends_on:
       - sormas
-    image: hzibraunschweig/sormas-letsencrypt:${SORMAS_VERSION}
+    image: hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
     environment:
       - PUID=1000
       - PGID=1000
