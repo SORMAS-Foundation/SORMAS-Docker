@@ -69,7 +69,7 @@ services:
     cpus: ${DB_DUMP_CPUS}
     mem_limit: ${DB_DUMP_MEM}
     mem_reservation: ${DB_DUMP_MEM_RESERVED}
-  letsencrypt:
+  apache2:
     restart: unless-stopped
     links:
       - sormas
