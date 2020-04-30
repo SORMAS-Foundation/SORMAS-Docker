@@ -25,7 +25,7 @@ services:
       context: pg_dump
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
     command: /bin/false
-  apache2:
+  letsencrypt:
     build:
       context: apache2
       args:
