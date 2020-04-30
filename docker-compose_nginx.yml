@@ -69,18 +69,23 @@ services:
     cpus: ${DB_DUMP_CPUS}
     mem_limit: ${DB_DUMP_MEM}
     mem_reservation: ${DB_DUMP_MEM_RESERVED}
-  apache2:
+  letsencrypt:
     restart: unless-stopped
     links:
       - sormas
     depends_on:
       - sormas
-    image: hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
+    image: hzibraunschweig/sormas-letsencrypt:${SORMAS_DOCKER_VERSION}
     environment:
-      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+      - PUID=1000
+      - PGID=1000
       - TZ=${TZ}
+      - URL=${SORMAS_SERVER_URL}
+      - EMAIL=${LETSENCRYPT_MAIL}
+      - DISABLE_CERTBOT=${DISABLE_CERTBOT}
     volumes:
-      - ./apache2/certs:/usr/local/apache2/certs
+      - /var/lib/docker/letsencrypt-config:/config
+      - ./letsencrypt/certs:/config/etc/letsencrypt/live
     ports:
       - 443:443
       - 80:80

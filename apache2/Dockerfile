@@ -1,7 +1,7 @@
 FROM httpd:2.4-alpine
 ARG SORMAS_SERVER_URL
 
-ARG SORMAS_VERSION=1.38.0
+ARG SORMAS_VERSION=1.39.0
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 
 
@@ -20,9 +20,9 @@ RUN chmod +x /tmp/vhost.conf.sh
 RUN mkdir -p /var/www/sormas/downloads && \
     DEPLOY_PATH=$(mktemp -d) && \
     cd ${DEPLOY_PATH} && \
-    wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O sormas.zip && \
-    unzip sormas.zip deploy/android/*  && \
-    mv deploy/android/* /var/www/sormas/downloads/ && \
+    wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas-${SORMAS_VERSION}.zip -O sormas.zip && \
+    unzip sormas.zip android/*  && \
+    mv android/* /var/www/sormas/downloads/ && \
     cd - && \
     rm -rf ${DEPLOY_PATH}
 
