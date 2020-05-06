@@ -128,9 +128,9 @@ RUN \
  mkdir -p /defaults/www/sormas/downloads && \
  DEPLOY_PATH=$(mktemp -d) && \
  cd ${DEPLOY_PATH} && \
- wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas-${SORMAS_VERSION}.zip -O sormas.zip && \
- unzip sormas.zip android/*  && \
- mv android/* /defaults/www/sormas/downloads/ && \
+ wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O sormas.zip && \
+ unzip sormas.zip deploy/android/*  && \
+ mv deploy/android/* /defaults/www/sormas/downloads/ && \
  cd - && \
  rm -rf ${DEPLOY_PATH} && \
  echo "**** cleanup ****" && \
