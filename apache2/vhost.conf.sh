@@ -21,10 +21,10 @@ Listen 443
 
 	RedirectMatch "^(/(?!downloads).*)" https://${SORMAS_SERVER_URL}/sormas-ui\$1
 	
-        ErrorLog /usr/local/apache2/error.log
+        ErrorLog /var/log/apache2/error.log
         LogLevel warn
         LogFormat "%h %l %u %t \"%r\" %>s %b _%D_ \"%{User}i\"  \"%{Connection}i\"  \"%{Referer}i\" \"%{User-agent}i\"" combined_ext
-        CustomLog /var/log/apache2/access.log combined_ext        
+        CustomLog /var/log/apache2/access.log combined_ext
 
         SSLEngine on
         SSLCertificateFile    /usr/local/apache2/certs/${SORMAS_SERVER_URL}.crt
@@ -36,7 +36,7 @@ Listen 443
         SSLCipherSuite TLS_AES_256_GCM_SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-CHACHA20-POLY1305
 	      SSLHonorCipherOrder on
         #SSLCompression off
-	
+
         ProxyRequests Off
         ProxyPreserveHost On
         ProxyPass /sormas-ui http://sormas:6080/sormas-ui connectiontimeout=5 timeout=600
@@ -62,7 +62,7 @@ Listen 443
             AddOutputFilterByType DEFLATE application/xml application/xhtml+xml
             AddOutputFilterByType DEFLATE application/javascript application/x-javascript
             DeflateCompressionLevel 1
-        </IfModule>        
+        </IfModule>
 </VirtualHost>
 EOF
 exec $@
