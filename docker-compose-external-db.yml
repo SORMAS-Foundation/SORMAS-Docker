@@ -34,42 +34,6 @@ services:
     cpus: ${APPSERVER_CPUS}
     mem_limit: ${APPSERVER_MEM}
     mem_reservation: ${APPSERVER_MEM_RESERVED}
-  postgres:
-    restart: unless-stopped
-    command: -c 'config_file=/etc/postgresql/postgresql.conf'
-    image: hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
-    environment:
-      - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - DB_NAME=sormas
-      - DB_NAME_AUDIT=sormas_audit
-      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
-      - TZ=${TZ}
-    volumes:
-      - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    cpus: ${DB_CPUS}
-    mem_limit: ${DB_MEM}
-    mem_reservation: ${DB_MEM_RESERVED}
-  pg_dump:
-    restart: unless-stopped
-    image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
-    environment:
-      - DB_HOST=${DB_HOST}
-      - DB_NAME=sormas
-      - DB_NAME_AUDIT=sormas_audit
-      - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
-      - TZ=${TZ}
-      - MIN=15,45 # Twice the hour on 15 and 45 (use crontab notation)
-      - HOUR= # Keep empty for every hour. Use crontab notation otherwise
-      - KEEP=1 # keep db dumps for one day in backup folder
-    volumes:
-      - /backup:/var/opt/db_dumps
-    cpus: ${DB_DUMP_CPUS}
-    mem_limit: ${DB_DUMP_MEM}
-    mem_reservation: ${DB_DUMP_MEM_RESERVED}
   apache2:
     restart: unless-stopped
     links:

@@ -23,6 +23,7 @@ services:
       - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
       - LATITUDE=${LATITUDE}
       - LONGITUDE=${LONGITUDE}
+      - MAP_ZOOM=${MAP_ZOOM}
       - TZ=${TZ}
       - JVM_MAX=${APPSERVER_JVM_MAX}
       - GEO_UUID=${GEO_UUID}
