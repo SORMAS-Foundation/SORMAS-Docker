@@ -1,0 +1,55 @@
+version: '2.2'
+services:
+  sormas:
+    restart: unless-stopped
+    links:
+      - postgres
+    image: hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
+    environment:
+      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+      - DB_HOST=${DB_HOST}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - DB_NAME=${DB_NAME}
+      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_FROM=${MAIL_FROM}
+      - SORMAS_VERSION=${SORMAS_VERSION}
+      - LOCALE=${LOCALE}
+      - EPIDPREFIX=${EPIDPREFIX}
+      - SEPARATOR=${SEPARATOR}
+      - EMAIL_SENDER_ADDRESS=${EMAIL_SENDER_ADDRESS}
+      - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
+      - LATITUDE=${LATITUDE}
+      - LONGITUDE=${LONGITUDE}
+      - MAP_ZOOM=${MAP_ZOOM}
+      - TZ=${TZ}
+      - JVM_MAX=${APPSERVER_JVM_MAX}
+      - GEO_UUID=${GEO_UUID}
+    depends_on:
+      - postgres
+    volumes:
+      - ${SORMAS_PATH}/custom:/opt/sormas/custom
+    cpus: ${APPSERVER_CPUS}
+    mem_limit: ${APPSERVER_MEM}
+    mem_reservation: ${APPSERVER_MEM_RESERVED}
+  apache2:
+    restart: unless-stopped
+    links:
+      - sormas
+    depends_on:
+      - sormas
+    image: hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
+    environment:
+      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+      - TZ=${TZ}
+    volumes:
+      - ./apache2/certs:/usr/local/apache2/certs
+      - ${SORMAS_PATH}/apache2_log:/var/log/apache2
+    ports:
+      - 443:443
+      - 80:80
+    cpus: ${WEBSERVER_CPUS}
+    mem_limit: ${WEBSERVER_MEM}
+    mem_reservation: ${WEBSERVER_MEM_RESERVED}

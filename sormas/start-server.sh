@@ -137,7 +137,7 @@ sed -i "s/#email.sender.name=.*/email.sender.name=/" ${DOMAIN_DIR}/sormas.proper
 sed -i "s/email.sender.name=.*/email.sender.name=${EMAIL_SENDER_NAME}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/country.center.latitude=.*/country.center.latitude=${LATITUDE}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/country.center.longitude=.*/country.center.longitude=${LONGITUDE}/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/map.zoom=.*/map.zoom=10/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/map.zoom=.*/map.zoom=${MAP_ZOOM}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s;app.url=.*;app.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk;" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#geocodingOsgtsEndpoint=.*/geocodingOsgtsEndpoint=https:\/\/sg.geodatenzentrum.de\/gdz_geokodierung_bund__${GEO_UUID}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#rscript.executable=.*/rscript.executable=Rscript/" ${DOMAIN_DIR}/sormas.properties

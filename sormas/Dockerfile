@@ -1,8 +1,8 @@
 FROM hzibraunschweig/sormas-rscript:3.5
 
-ARG SORMAS_POSTGRES_PASSWORD
+ARG SORMAS_POSTGRES_PASSWORD=password
 ARG SORMAS_POSTGRES_USER=sormas_user
-ARG SORMAS_SERVER_URL
+ARG SORMAS_SERVER_URL=sormas-docker-test.com
 ARG DB_HOST=postgres
 ARG DOMAIN_NAME=sormas
 ARG DB_NAME=sormas
@@ -21,7 +21,7 @@ ARG EMAIL_ERROR_TO=sormas-admin@localhost
 ARG JVM_MAX=4096m
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 EXPOSE 6080
-ARG SORMAS_VERSION=1.38.0
+ARG SORMAS_VERSION=1.40.1
 
 ENV MAIL_FROM=root@localhost
 ENV DEBIAN_FRONTEND=noninteractive
