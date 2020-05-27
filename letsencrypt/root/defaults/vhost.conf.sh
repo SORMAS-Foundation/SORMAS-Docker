@@ -36,7 +36,7 @@ server {
     access_log  /config/log/nginx/access.log;
     error_log   /config/log/nginx/error.log crit;
 
-    location ~ "^(/(?!(downloads|sormas-ui)).*)" {
+    location ~ "^(/(?!(downloads|sormas-ui|sormas-rest)).*)" {
         rewrite ^(.*)$ https://${URL}/sormas-ui\\\$1 redirect;
     }
 
