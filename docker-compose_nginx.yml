@@ -27,6 +27,7 @@ services:
       - TZ=${TZ}
       - JVM_MAX=${APPSERVER_JVM_MAX}
       - GEO_UUID=${GEO_UUID}
+      - DEVMODE=${DEVMODE}
     depends_on:
       - postgres
     volumes:
