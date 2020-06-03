@@ -1,11 +1,23 @@
 #!/bin/bash
 
+function stop_payara() {
+  echo "Stopping server ${DOMAIN_NAME}." >> ${LOG_FILE_PATH}/server.log
+  ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
+  exit
+}
+
 function check_db() {
   psql -h ${DB_HOST} -U ${SORMAS_POSTGRES_USER} ${DB_NAME} --no-align --tuples-only --quiet --command="SELECT count(*) FROM pg_database WHERE datname='${DB_NAME}';" 2>/dev/null || echo "0"
 }
 
 function check_java() {
   ps -ef | grep /usr/lib/jvm/zulu-8-amd64/bin/java | grep -v grep | wc -l
+}
+
+function start_sormas() {
+  # for some reasons, we have to "open" the linked server.log after a few seconds to get payara to use it.
+  ( sleep 20 && echo >> ${LOG_FILE_PATH}/server.log ) &
+  ${PAYARA_HOME}/bin/asadmin start-domain --domaindir ${DOMAINS_HOME} ${DOMAIN_NAME}
 }
 
 function delete_jdbc_connection_pool() {
@@ -65,7 +77,18 @@ LOG_FILE_NAME=configure_`date +"%Y-%m-%d_%H-%M-%S"`.log
 
 ASADMIN="${PAYARA_HOME}/bin/asadmin --port ${PORT_ADMIN}"
 
-${PAYARA_HOME}/bin/asadmin start-domain --domaindir ${DOMAINS_HOME} ${DOMAIN_NAME}
+# first delete all deployed applications - fresh start
+rm -rf ${DOMAIN_DIR}/applications
+rm -rf ${DOMAIN_DIR}/generated
+rm -rf ${DOMAIN_DIR}/logs/*
+rm -rf ${DOMAIN_DIR}/osgi-cache/*
+rm -rf ${DOMAIN_DIR}/autodeploy/.autodeploystatus
+rm -f ${DOMAIN_DIR}/autodeploy/*
+
+# link server.log with stdout of PID 1
+ln -sf /proc/1/fd/1 ${LOG_FILE_PATH}/server.log
+
+start_sormas
 
 echo "Configuring domain and database connection..."
 
@@ -120,11 +143,11 @@ Rscript -e 'library(dplyr)'
 
 # put deployments into place
 for APP in $(ls ${DOMAIN_DIR}/deployments/*.ear 2>/dev/null);do
-  mv ${APP} ${DOMAIN_DIR}/autodeploy
+  cp ${APP} ${DOMAIN_DIR}/autodeploy
 done
 sleep 5
 for APP in $(ls ${DOMAIN_DIR}/deployments/*.war 2>/dev/null);do
-  mv ${APP} ${DOMAIN_DIR}/autodeploy
+  cp ${APP} ${DOMAIN_DIR}/autodeploy
 done
 
 SLEEP=10
@@ -143,6 +166,19 @@ while [ $(check_java) -gt 0 ];do
 done
 
 echo "Server setup completed."
+echo
+echo "Starting server ${DOMAIN_NAME}."
 
-${PAYARA_HOME}/bin/asadmin start-domain --domaindir ${DOMAINS_HOME} ${DOMAIN_NAME}
-tail -f $LOG_FILE_PATH/server.log
+start_sormas
+
+#sleep 60
+#echo >> ${LOG_FILE_PATH}/server.log
+
+# on SIGTERM (POD shutdown) stop payara and exit
+trap stop_payara SIGTERM
+
+# keep running
+while true
+do
+    sleep 5
+done
