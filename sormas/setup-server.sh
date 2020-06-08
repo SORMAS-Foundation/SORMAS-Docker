@@ -76,11 +76,11 @@ cp ${DEPLOY_PATH}/deploy/loginmain.html ${CUSTOM_DIR}
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
 
 # Logging
+# Disable payara log rotation.
+# When server.log is rotated, we loose logging on console ($LOG_FILE_PATH/server.log is linked to stdout)
 echo "Configuring logging..."
 ${ASADMIN} create-jvm-options -Dlogback.configurationFile=\${com.sun.aas.instanceRoot}/config/logback.xml
-${ASADMIN} set-log-attributes com.sun.enterprise.server.logging.GFFileHandler.maxHistoryFiles=14
 ${ASADMIN} set-log-attributes com.sun.enterprise.server.logging.GFFileHandler.rotationLimitInBytes=0
-${ASADMIN} set-log-attributes com.sun.enterprise.server.logging.GFFileHandler.rotationOnDateChange=true
 
 #${ASADMIN} set-log-levels org.wamblee.glassfish.auth.HexEncoder=SEVERE
 #${ASADMIN} set-log-levels javax.enterprise.system.util=SEVERE

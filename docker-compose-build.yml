@@ -1,6 +1,18 @@
 version: '2.2'
 services:
+  payara:
+    build:
+      context: payara
+    image: hzibraunschweig/sormas-payara:5.192
+  rscript:
+    depends_on:
+      - payara
+    build:
+      context: Rscript
+    image: hzibraunschweig/sormas-rscript:3.5
   sormas:
+    depends_on:
+     - rscript
     build:
       context: sormas
       args:

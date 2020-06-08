@@ -3,7 +3,7 @@
 cat << EOF > /config/nginx/proxy-confs/vhost.conf
 server {
     listen 80;
-    server_name ${URL}; 
+    server_name ${URL};
     return 301 https://\$host\$request_uri;
 }
 server {
@@ -23,7 +23,7 @@ server {
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
     ssl_prefer_server_ciphers off;
- 
+
     proxy_hide_header X-Powered-By;
     proxy_cookie_domain ~(?P<secure_domain>([-0-9a-z]+\.)?[-0-9a-z]+\.[a-z]+)$ "\$secure_domain; secure";
 
@@ -42,16 +42,18 @@ server {
 
     location /sormas-ui {
         proxy_pass http://sormas:6080/sormas-ui;
+        proxy_read_timeout 600s;
         proxy_set_header X-Forwarded-Host \$host:\$server_port;
         proxy_set_header X-Forwarded-Server \$host;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;        
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
     }
 
     location /sormas-rest {
         proxy_pass http://sormas:6080/sormas-rest;
+        proxy_read_timeout 600s;
         proxy_set_header X-Forwarded-Host \$host:\$server_port;
         proxy_set_header X-Forwarded-Server \$host;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;        
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
     }
 
     location /downloads {
