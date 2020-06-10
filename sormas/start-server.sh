@@ -86,7 +86,7 @@ rm -rf ${DOMAIN_DIR}/autodeploy/.autodeploystatus
 rm -f ${DOMAIN_DIR}/autodeploy/*
 
 # link server.log with stdout of PID 1
-ln -sf /proc/1/fd/1 ${LOG_FILE_PATH}/server.log
+# ln -sf /proc/1/fd/1 ${LOG_FILE_PATH}/server.log
 
 start_sormas
 
@@ -175,10 +175,10 @@ start_sormas
 #echo >> ${LOG_FILE_PATH}/server.log
 
 # on SIGTERM (POD shutdown) stop payara and exit
-trap stop_payara SIGTERM
-
-# keep running
-while true
-do
-    sleep 5
-done
+# trap stop_payara SIGTERM
+tail -f $LOG_FILE_PATH/server.log
+# # keep running
+# while true
+# do
+#     sleep 5
+# done
