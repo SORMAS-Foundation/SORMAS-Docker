@@ -38,7 +38,7 @@ services:
     mem_limit: ${APPSERVER_MEM}
     mem_reservation: ${APPSERVER_MEM_RESERVED}
     healthcheck:
-      test: ["CMD", "curl", "-f", "-I", "http://localhost:6080"]
+      test: ["CMD", "curl", "-f", "-I", "http://localhost:6080/sormas-ui/login"]
       interval: 30s
       timeout: 3s
       retries: 3
