@@ -114,9 +114,9 @@ ${ASADMIN} set configs.config.server-config.thread-pools.thread-pool.http-thread
 # set FQDN for sormas domain
 ${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.hosts=${SORMAS_SERVER_URL}
 
-# switch to json log formatting if loki server is set
-if [ -n "$LOKI_SERVER" ]; then
-echo "Enabled json logging for pushing logs to loki"
+# switch to json log formatting if JSON_LOGGIN is set to true
+if [ "$JSON_LOGGING" == true ]; then
+echo "Enabling logging in JSON format"
 ${ASADMIN} set-log-attributes com.sun.enterprise.server.logging.GFFileHandler.formatter='fish.payara.enterprise.server.logging.JSONLogFormatter'
 fi
 
