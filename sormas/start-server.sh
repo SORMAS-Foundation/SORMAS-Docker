@@ -114,6 +114,12 @@ ${ASADMIN} set configs.config.server-config.thread-pools.thread-pool.http-thread
 # set FQDN for sormas domain
 ${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.hosts=${SORMAS_SERVER_URL}
 
+# switch to json log formatting if JSON_LOGGIN is set to true
+if [ "$JSON_LOGGING" == true ]; then
+echo "Enabling logging in JSON format"
+${ASADMIN} set-log-attributes com.sun.enterprise.server.logging.GFFileHandler.formatter='fish.payara.enterprise.server.logging.JSONLogFormatter'
+fi
+
 ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
 
