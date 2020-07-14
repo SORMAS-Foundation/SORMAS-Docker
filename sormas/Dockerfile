@@ -1,8 +1,9 @@
-FROM hzibraunschweig/sormas-rscript:3.5
+FROM hzibraunschweig/sormas-rscript:3.5-5.2020.2
 
 ARG SORMAS_POSTGRES_PASSWORD=password
 ARG SORMAS_POSTGRES_USER=sormas_user
 ARG SORMAS_SERVER_URL=sormas-docker-test.com
+ARG DB_JDBC_MAXPOOLSIZE=128
 ARG DB_HOST=postgres
 ARG DOMAIN_NAME=sormas
 ARG DB_NAME=sormas

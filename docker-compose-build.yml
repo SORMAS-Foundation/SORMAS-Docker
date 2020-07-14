@@ -27,24 +27,6 @@ services:
         - SORMAS_VERSION=${SORMAS_VERSION}
     image: hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
     command: /bin/false
-  sormas-new:
-    depends_on:
-     - rscript
-    build:
-      dockerfile: Dockerfile-5.2020.2
-      context: sormas
-      args:
-        - SORMAS_URL=${SORMAS_URL}
-        - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
-        - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-        - DB_HOST=${DB_HOST}
-        - DOMAIN_NAME=${DOMAIN_NAME}
-        - DB_NAME=${DB_NAME}
-        - DB_NAME_AUDIT=${DB_NAME_AUDIT}
-        - MAIL_FROM=${MAIL_FROM}
-        - SORMAS_VERSION=${SORMAS_VERSION}
-    image: hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}-5.2020.2
-    command: /bin/false
   postgres:
     build:
       context: postgres
