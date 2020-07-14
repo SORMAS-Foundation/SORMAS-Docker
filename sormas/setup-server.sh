@@ -37,7 +37,7 @@ mkdir -p ${DOWNLOADS_PATH}
 
 # Setting ASADMIN_CALL and creating domain
 echo "Creating domain for Payara..."
-${PAYARA_HOME}/bin/asadmin create-domain --domaindir ${DOMAINS_HOME} --portbase ${PORT_BASE} --nopassword ${DOMAIN_NAME}
+${PAYARA_HOME}/bin/asadmin create-domain --domaindir ${DOMAINS_HOME} --portbase ${PORT_BASE} --nopassword --template ${PAYARA_HOME}/glassfish/common/templates/gf/production-domain.jar "${DOMAIN_NAME}"
 ASADMIN="${PAYARA_HOME}/bin/asadmin --port ${PORT_ADMIN}"
 
 chown -R ${USER_NAME}:${USER_NAME} ${PAYARA_HOME}
@@ -47,18 +47,22 @@ ${PAYARA_HOME}/bin/asadmin start-domain --domaindir ${DOMAINS_HOME} ${DOMAIN_NAM
 echo "Configuring domain and database connection..."
 
 # General domain settings
-${ASADMIN} delete-jvm-options -Xmx512m
+${ASADMIN} delete-jvm-options -Xms2G
+${ASADMIN} delete-jvm-options -Xmx2G
 ${ASADMIN} create-jvm-options -Xmx4096m
+
+${ASADMIN} set configs.config.server-config.admin-service.das-config.autodeploy-enabled=true
+${ASADMIN} set configs.config.server-config.admin-service.das-config.dynamic-reload-enabled=true
 
 # Set protocol in redirects according to X-Forwarded-Proto (set by reverse proxy)
 ${ASADMIN} set server.network-config.protocols.protocol.http-listener-1.http.scheme-mapping=X-Forwarded-Proto
 
 # JDBC pool
-${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool
+${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}DataPool jdbc/${DOMAIN_NAME}DataPool
 
 # Pool for audit log
-${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --property "portNumber=5432:databaseName=${DB_NAME_AUDIT}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}AuditlogPool
+${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME_AUDIT}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}AuditlogPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}AuditlogPool jdbc/AuditlogPool
 
 ${ASADMIN} create-javamail-resource --mailhost localhost --mailuser user --fromaddress ${MAIL_FROM} mail/MailSession
