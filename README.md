@@ -12,6 +12,13 @@
 
 # Docker Images for SORMAS
 
+---
+**NOTE**
+
+For production usage, ONLY checkout from the release-tags, because only these contain working and tested images!
+
+---
+
 **SORMAS** (Surveillance Outbreak Response Management and Analysis System) is an open source eHealth system - consisting of separate web and mobile apps - that is geared towards optimizing the processes used in monitoring the spread of infectious diseases and responding to outbreak situations.
 
 ## Project Objectives
@@ -101,7 +108,27 @@ LATITUDE: Latitude of the map center
 
 LONGITUDE: Logitude of the map center
 
-SORMAS_PATH: Path to store the Dockervolumes 
+MAP_ZOOM: Zoom level of the map
+
+SORMAS_PATH: Path to store the Dockervolumes
+
+TZ: The timezone to chose (available timezones can be found here: https://nodatime.org/TimeZones)
+
+DEVMODE: Enables the devmode for testing
+
+JSON_LOGGING: Change the output of sormas server.log to JSON format
+
+DB_JDBC_MAXPOOLSIZE: Sets the maximum number of database connections
+### NGINX (experimental)
+If you choose to use the nginx with built in certbot, use the docker-compose_nginx.yml.<br>
+Please note this is still in experimental state und not tested in production.
+
+DISABLE_CERTBOT: Choose if nginx will generate LetsEncrypt certificates
+
+LETSENCRYPT_MAIL: Mail address for LetsEncrypt expiry notifications
+
+TZ: The timezone to chose (available timezones can be found here: https://nodatime.org/TimeZones)
+
 
 ### Changing the host name
 
