@@ -25,6 +25,7 @@ ENV ASENV_PATH="/opt/payara5/glassfish/config/asenv.conf"
 RUN useradd payara
 
 COPY setup-server.sh /setup-server.sh
+RUN chmod +x /setup-server.sh
 RUN /setup-server.sh
 COPY start-server.sh /start-server.sh
 RUN chmod +x /start-server.sh
