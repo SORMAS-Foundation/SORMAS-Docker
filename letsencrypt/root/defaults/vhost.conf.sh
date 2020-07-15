@@ -42,7 +42,7 @@ server {
 
     location /sormas-ui {
         proxy_pass http://sormas:6080/sormas-ui;
-        proxy_read_timeout 600s;
+        proxy_read_timeout 3600s;
         proxy_set_header X-Forwarded-Host \$host:\$server_port;
         proxy_set_header X-Forwarded-Server \$host;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -50,7 +50,7 @@ server {
 
     location /sormas-rest {
         proxy_pass http://sormas:6080/sormas-rest;
-        proxy_read_timeout 600s;
+        proxy_read_timeout 3600s;
         proxy_set_header X-Forwarded-Host \$host:\$server_port;
         proxy_set_header X-Forwarded-Server \$host;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
