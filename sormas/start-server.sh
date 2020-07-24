@@ -143,6 +143,12 @@ sed -i "s/\#\s\devmode=.*/devmode=${DEVMODE}/" ${DOMAIN_DIR}/sormas.properties
 if [ ! -z "$PIA_URL" ];then
 sed -i "s/\#interface.pia.url=.*/interface.pia.url=${PIA_URL}/" ${DOMAIN_DIR}/sormas.properties
 fi
+if [ ! -z "$CUSTOMBRANDING_ENABLED" ];then
+sed -i "s/\#custombranding=false/custombranding=${CUSTOMBRANDING_ENABLED}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/\#custombranding.name=.*/custombranding.name=${CUSTOMBRANDING_NAME}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/\#custombranding.logo.path=.*/custombranding.logo.path=${CUSTOMBRANDING_LOGO_PATH}/" ${DOMAIN_DIR}/sormas.properties
+fi
+
 
 Rscript -e 'library(epicontacts)'
 Rscript -e 'library(RPostgreSQL)'
