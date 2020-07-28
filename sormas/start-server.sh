@@ -142,7 +142,17 @@ sed -i "s/\#rscript.executable=.*/rscript.executable=Rscript/" ${DOMAIN_DIR}/sor
 sed -i "s/\#\s\devmode=.*/devmode=${DEVMODE}/" ${DOMAIN_DIR}/sormas.properties
 if [ ! -z "$PIA_URL" ];then
 sed -i "s/\#interface.pia.url=.*/interface.pia.url=${PIA_URL}/" ${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.symptomjournal.url = ${SJ_URL}" >>${DOMAIN_DIR}/sormas.properties
+echo "interface.symptomjournal.authurl = ${SJ_AUTH}" >>${DOMAIN_DIR}/sormas.properties
+echo "interface.symptomjournal.clientid = ${SJ_CLIENTID}" >>${DOMAIN_DIR}/sormas.properties
+echo "interface.symptomjournal.secret = ${SJ_SECRET}" >>${DOMAIN_DIR}/sormas.properties
 fi
+if [ ! -z "$CUSTOMBRANDING_ENABLED" ];then
+sed -i "s/\#custombranding=false/custombranding=${CUSTOMBRANDING_ENABLED}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/\#custombranding.name=.*/custombranding.name=${CUSTOMBRANDING_NAME}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/\#custombranding.logo.path=.*/custombranding.logo.path=${CUSTOMBRANDING_LOGO_PATH}/" ${DOMAIN_DIR}/sormas.properties
+fi
+
 
 Rscript -e 'library(epicontacts)'
 Rscript -e 'library(RPostgreSQL)'
