@@ -150,7 +150,7 @@ fi
 if [ ! -z "$CUSTOMBRANDING_ENABLED" ];then
 sed -i "s/\#custombranding=false/custombranding=${CUSTOMBRANDING_ENABLED}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#custombranding.name=.*/custombranding.name=${CUSTOMBRANDING_NAME}/" ${DOMAIN_DIR}/sormas.properties
-echo "custombranding.logo.path = ${CUSTOMBRANDING_LOGO_PATH}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ncustombranding.logo.path = ${CUSTOMBRANDING_LOGO_PATH}" >>${DOMAIN_DIR}/sormas.properties
 
 fi
 
