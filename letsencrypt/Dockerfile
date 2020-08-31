@@ -4,7 +4,7 @@ FROM lsiobase/nginx:3.11
 
 ARG CERTBOT_VERSION=1.3.0
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
-ARG SORMAS_VERSION=1.46.0
+ARG SORMAS_VERSION=1.47.0-SNAPSHOT
 
 LABEL maintainer="aptalca"
 
@@ -128,7 +128,7 @@ RUN \
  mkdir -p /defaults/www/sormas/downloads && \
  DEPLOY_PATH=$(mktemp -d) && \
  cd ${DEPLOY_PATH} && \
- wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O sormas.zip && \
+ wget ${SORMAS_URL} -O sormas.zip && \
  unzip sormas.zip deploy/android/*  && \
  mv deploy/android/* /defaults/www/sormas/downloads/ && \
  cd - && \

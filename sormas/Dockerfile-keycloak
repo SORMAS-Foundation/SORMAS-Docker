@@ -17,9 +17,10 @@ ARG SORMAS_VERSION=1.47.0-SNAPSHOT
 
 ENV MAIL_FROM=root@localhost
 ENV DEBIAN_FRONTEND=noninteractive
+
 EXPOSE 6048
 
-
+COPY /certs /tmp
 
 ENV ASENV_PATH="/opt/payara5/glassfish/config/asenv.conf"
 RUN useradd payara
