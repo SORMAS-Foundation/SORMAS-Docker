@@ -13,7 +13,7 @@ ARG MAIL_FROM=sormas@localhost
 ARG JVM_MAX=4096m
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 EXPOSE 6080
-ARG SORMAS_VERSION=1.46.0
+ARG SORMAS_VERSION=1.47.0
 
 ENV MAIL_FROM=root@localhost
 ENV DEBIAN_FRONTEND=noninteractive
