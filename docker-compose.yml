@@ -108,6 +108,7 @@ services:
     image: hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+      - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
       - TZ=${TZ}
     volumes:
       - ./apache2/certs:/usr/local/apache2/certs
