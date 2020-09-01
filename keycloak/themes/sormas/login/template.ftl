@@ -37,11 +37,11 @@
     </head>
 
     <body class="${properties.kcBodyClass!}">
+    <#if totp??>
+    <div class="${properties.kcLoginClass!} otp">
+    <#else>
     <div class="${properties.kcLoginClass!}">
-        <div id="kc-header" class="${properties.kcHeaderClass!}">
-            <div id="kc-header-wrapper"
-                 class="${properties.kcHeaderWrapperClass!}"></div>
-        </div>
+    </#if>
         <div class="${properties.kcFormCardClass!} <#if displayWide>${properties.kcFormCardAccountClass!}</#if>">
             <header class="${properties.kcFormHeaderClass!}">
                 <#if realm.internationalizationEnabled  && locale.supported?size gt 1>
