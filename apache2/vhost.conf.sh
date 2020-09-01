@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 cat << EOF > /usr/local/apache2/conf.d/000_${SORMAS_SERVER_URL}.conf
 <VirtualHost *:80>
