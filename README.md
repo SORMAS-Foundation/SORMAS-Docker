@@ -130,6 +130,47 @@ Please note this is still in experimental state und not tested in production.
 
 **TZ** The timezone to chose (available timezones can be found here: https://nodatime.org/TimeZones)
 
+### Keycloak (experimental)
+If deploying SORMAS bundled with Keycloak use the docker-compose-keycloak.yml<br>
+Please note this is still in experimental state und not tested in production.
+
+In order to build a Keycloak bundled sormas the following alternative images have to be built:
+- *postgres*: `Dockerfile-keycloak`
+- *sormas*: `Dockerfile-keycloak`
+
+#### Database for Keycloak
+**KEYCLOAK_DB_USER** User for the Keycloak database
+
+**KEYCLOAK_DB_PASSWORD** Password of the Keycloak database user
+
+**KEYCLOAK_DB_HOST** Hostname or IP of the Keycloak database host
+
+**KEYCLOAK_DB_NAME** Name of the Keycloak database
+
+**KEYCLOAK_DB_VENDOR** Vendor for the Keycloak database (postgres by default)
+
+#### Keycloak server
+**KEYCLOAK_ADMIN_USER** User for the Keycloak admin console
+
+**KEYCLOAK_ADMIN_PASSWORD** Password for the Keycloak admin user
+
+**KEYCLOAK_SORMAS_UI_SECRET** Secret code for the sormas-ui client
+
+**KEYCLOAK_SORMAS_REST_SECRET** Secret code for the sormas-rest client. Also used by the SORMAS application
+
+**KEYCLOAK_SORMAS_BACKEND_SECRET** Secret code for the sormas-backend client. Also used by the SORMAS application
+
+#### SORMAS Configs for using with keycloak
+**CACERTS_PASS** Password for Payara certificate store
+
+**KEYSTORE_PASS** Password for Payara keystore
+
+#### CPU and memory usage limitation for Keycloak
+**KEYCLOAK_CPUS**  CPU cores reserved for the used web server. This should be a floating point value. (Example: 3.0 )
+
+**KEYCLOAK_MEM** Maximum available memory for the used web server. (For example 1000M for 1000MB)
+
+**KEYCLOAK_MEM_RESERVED** Memory reserved for the used web server. This memory may not be used by other processes on the same host. (For example 400M for 400MB)
 
 ### Changing the host name
 
