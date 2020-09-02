@@ -160,7 +160,10 @@ if [ ! -z "$CUSTOMBRANDING_ENABLED" ];then
 sed -i "s/\#custombranding=false/custombranding=${CUSTOMBRANDING_ENABLED}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#custombranding.name=.*/custombranding.name=${CUSTOMBRANDING_NAME}/" ${DOMAIN_DIR}/sormas.properties
 echo -e "\ncustombranding.logo.path = ${CUSTOMBRANDING_LOGO_PATH}" >>${DOMAIN_DIR}/sormas.properties
-
+fi
+if [ ! -z "$SORMAS2SORMAS_ENABLED" ];then
+echo -e "\nsormas2sormas.keyAlias = ${SORMAS2SORMAS_KEYALIAS}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nsormas2sormas.keyPassword = ${SORMAS2SORMAS_KEYPASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 fi
 if [ ! -z "$AUTHENTICATION_PROVIDER" ];then
 sed -i "/^authentication.provider=/{h;s/=.*/=${AUTHENTICATION_PROVIDER}/};\${x;/^$/{s//authentication.provider=${AUTHENTICATION_PROVIDER}/;H};x}" ${DOMAIN_DIR}/sormas.properties

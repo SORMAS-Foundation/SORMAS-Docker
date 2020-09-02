@@ -36,6 +36,7 @@ services:
       - JSON_LOGGING=${JSON_LOGGING}
     volumes:
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
+      - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
       - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
     cpus: ${APPSERVER_CPUS}
     mem_limit: ${APPSERVER_MEM}
@@ -108,6 +109,7 @@ services:
     image: hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+      - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
       - TZ=${TZ}
     volumes:
       - ./apache2/certs:/usr/local/apache2/certs

@@ -12,6 +12,7 @@ CUSTOM_DIR=${ROOT_PREFIX}/opt/${DOMAIN_NAME}/custom
 
 DEPLOY_PATH=/tmp/${DOMAIN_NAME}
 DOWNLOADS_PATH=/var/www/${DOMAIN_NAME}/downloads
+SORMAS2SORMAS_DIR=${ROOT_PREFIX}/opt/sormas/sormas2sormas
 
 PORT_BASE=6000
 PORT_ADMIN=6048
@@ -26,6 +27,7 @@ mkdir -p ${GENERATED_DIR}
 mkdir -p ${CUSTOM_DIR}
 mkdir -p ${DEPLOY_PATH}
 mkdir -p ${DOWNLOADS_PATH}
+mkdir -p ${SORMAS2SORMAS_DIR}
 
   pushd ${DEPLOY_PATH}
   wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O ${DOMAIN_NAME}.zip

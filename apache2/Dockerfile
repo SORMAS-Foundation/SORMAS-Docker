@@ -1,7 +1,7 @@
 FROM httpd:2.4-alpine
 ARG SORMAS_SERVER_URL
 
-ARG SORMAS_VERSION=1.47.0-SNAPSHOT
+ARG SORMAS_VERSION=1.47.0
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 
 
