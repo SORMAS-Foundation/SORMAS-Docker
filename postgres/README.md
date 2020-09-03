@@ -36,12 +36,6 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 ```
 
-If the image is build from [](./Dockerfile-keycloak) the following additional script is ran
-```sql
-CREATE USER ${KEYCLOAK_DB_USER} WITH PASSWORD '${KEYCLOAK_DB_PASSWORD}' CREATEDB;
-CREATE DATABASE ${KEYCLOAK_DB_NAME} WITH OWNER = '${KEYCLOAK_DB_USER}' ENCODING = 'UTF8';
-``` 
-
 <p align="center">
   <a href="https://sormas.org/">
     <img

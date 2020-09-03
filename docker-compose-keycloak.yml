@@ -43,11 +43,10 @@ services:
     volumes:
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
       - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
+      - ./apache2/certs:/tmp/certs
     cpus: ${APPSERVER_CPUS}
     mem_limit: ${APPSERVER_MEM}
     mem_reservation: ${APPSERVER_MEM_RESERVED}
-    ports:
-      - 6048:6048
     healthcheck:
       test: ["CMD", "curl", "-f", "-I", "http://localhost:6048"]
       interval: 30s
@@ -57,13 +56,15 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      keycloak:
+        condition: service_healthy
 
   keycloak:
     restart: unless-stopped
     labels:
       - autoheal=true
     links:
-      - postgres
+      - keycloak-postgres
     image: hzibraunschweig/sormas-keycloak:${SORMAS_DOCKER_VERSION}
     environment:
       - KEYCLOAK_USER=${KEYCLOAK_ADMIN_USER}
@@ -89,7 +90,7 @@ services:
       retries: 3
       start_period: 300s
     depends_on:
-      postgres:
+      keycloak-postgres:
         condition: service_healthy
 
   postgres:
@@ -104,9 +105,6 @@ services:
       - DB_NAME_AUDIT=sormas_audit
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
-      - KEYCLOAK_DB_USER=${KEYCLOAK_DB_USER}
-      - KEYCLOAK_DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
-      - KEYCLOAK_DB_NAME=${KEYCLOAK_DB_NAME}
       - TZ=${TZ}
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
@@ -117,6 +115,33 @@ services:
     mem_reservation: ${DB_MEM_RESERVED}
     healthcheck:
       test: ["CMD", "psql", "-U", "${SORMAS_POSTGRES_USER}", "-c", "SELECT 1;", "${DB_NAME}"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+
+  keycloak-postgres:
+    restart: unless-stopped
+    labels:
+      - autoheal=true
+    command: -c 'config_file=/etc/postgresql/postgresql.conf'
+    image: hzibraunschweig/sormas--keycloak-postgres:${SORMAS_DOCKER_VERSION}
+    environment:
+      - POSTGRES_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+      - POSTGRES_USER=${KEYCLOAK_DB_USER}
+      - POSTGRES_DB=${KEYCLOAK_DB_NAME}
+      - TZ=${TZ}
+    volumes:
+      - ${SORMAS_PATH}/keycloak/psqldata:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    expose:
+      - 5432
+    cpus: ${KEYCLOAK_DB_CPUS}
+    mem_limit: ${KEYCLOAK_DB_MEM}
+    mem_reservation: ${KEYCLOAK_DB_MEM_RESERVED}
+    healthcheck:
+      test: ["CMD", "psql", "-U", "${KEYCLOAK_DB_USER}", "-c", "SELECT 1;", "${KEYCLOAK_DB_NAME}"]
       interval: 30s
       timeout: 3s
       retries: 3

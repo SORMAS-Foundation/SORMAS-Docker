@@ -118,8 +118,6 @@ These Options are available to customize the installation:
 
 **JSON_LOGGING** Change the output of sormas server.log to JSON format
 
-**PROMETHEUS_SERVERS** One or more ip-addresses from prometheus monitoring servers (to scrape metrics from payara) seperated by spaces. If you don't have one, just leave it at 127.0.0.1
-
 ### NGINX (experimental)
 If you choose to use the nginx with built in certbot, use the docker-compose_nginx.yml.<br>
 Please note this is still in experimental state und not tested in production.
@@ -134,11 +132,9 @@ Please note this is still in experimental state und not tested in production.
 If deploying SORMAS bundled with Keycloak use the docker-compose-keycloak.yml<br>
 Please note this is still in experimental state und not tested in production.
 
-In order to build a Keycloak bundled sormas the following alternative images have to be built:
-- *postgres*: `Dockerfile-keycloak`
-- *sormas*: `Dockerfile-keycloak`
-
 #### Database for Keycloak
+See also [keycloak-postgres](./keycloak-postgres/README.md)
+
 **KEYCLOAK_DB_USER** User for the Keycloak database
 
 **KEYCLOAK_DB_PASSWORD** Password of the Keycloak database user
