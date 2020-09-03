@@ -110,10 +110,10 @@ services:
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
       - TZ=${TZ}
+      - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
     volumes:
       - ./apache2/certs:/usr/local/apache2/certs
       - ${SORMAS_PATH}/apache2_log:/var/log/apache2
-      - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
     ports:
       - 443:443
       - 80:80
