@@ -169,6 +169,27 @@ services:
       postgres:
         condition: service_healthy
 
+  pg_dump_keycloak:
+    restart: unless-stopped
+    image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+    environment:
+      - DB_HOST=${KEYCLOAK_DB_HOST}
+      - DB_NAME=${KEYCLOAK_DB_NAME}
+      - PGPASSWORD=${KEYCLOAK_DB_PASSWORD}
+      - SORMAS_POSTGRES_USER=${KEYCLOAK_DB_USER}
+      - TZ=${TZ}
+      - MIN=0 # At 0 Minutes
+      - HOUR=*/4 # Every 4 hours
+      - KEEP=1 # keep db dumps for one day in backup folder
+    volumes:
+      - /backup-keycloak:/var/opt/db_dumps
+    cpus: ${DB_DUMP_CPUS}
+    mem_limit: ${DB_DUMP_MEM}
+    mem_reservation: ${DB_DUMP_MEM_RESERVED}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   apache2:
     restart: unless-stopped
     labels:
