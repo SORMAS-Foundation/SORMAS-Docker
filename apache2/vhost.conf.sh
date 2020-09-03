@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 cat << EOF > /usr/local/apache2/conf.d/000_${SORMAS_SERVER_URL}.conf
 <VirtualHost *:80>
@@ -19,7 +19,7 @@ Listen 443
 <VirtualHost *:443>
         ServerName ${SORMAS_SERVER_URL}
 
-	RedirectMatch "^(/(?!downloads|metrics|keycloak).*)" https://${SORMAS_SERVER_URL}/sormas-ui\$1
+	RedirectMatch "^(/(?!downloads|keycloak).*)" https://${SORMAS_SERVER_URL}/sormas-ui\$1
 	
         ErrorLog /var/log/apache2/error.log
         LogLevel warn
@@ -45,13 +45,6 @@ Listen 443
         ProxyPassReverse /sormas-rest http://sormas:6080/sormas-rest
         ProxyPass /keycloak http://keycloak:8080/keycloak connectiontimeout=5 timeout=600
         ProxyPassReverse /keycloak http://keycloak:8080/keycloak
-        <Location /metrics>
-            ProxyPass  http://sormas:6080/metrics connectiontimeout=5 timeout=600
-            ProxyPassReverse http://sormas:6080/metrics
-            Order deny,allow
-            Deny from all
-            Allow from ${PROMETHEUS_SERVERS}
-        </Location>
         RequestHeader set X-Forwarded-Proto https
 
         Options -Indexes
