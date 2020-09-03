@@ -71,6 +71,14 @@ ${ASADMIN} create-javamail-resource --mailhost localhost --mailuser user --froma
 
 ${ASADMIN} create-custom-resource --restype java.util.Properties --factoryclass org.glassfish.resources.custom.factory.PropertiesFactory --property "org.glassfish.resources.custom.factory.PropertiesFactory.fileName=\${com.sun.aas.instanceRoot}/sormas.properties" sormas/Properties
 
+# Configure OpenID
+${ASADMIN} set-config-property --propertyName=payara.security.openid.clientSecret --propertyValue=secret --source=domain
+${ASADMIN} set-config-property --propertyName=payara.security.openid.clientId --propertyValue=sormas-ui --source=domain
+${ASADMIN} set-config-property --propertyName=payara.security.openid.scope --propertyValue=openid --source=domain
+${ASADMIN} set-config-property --propertyName=payara.security.openid.providerURI --propertyValue=https://${SORMAS_SERVER_URL}/keycloak/auth/realms/SORMAS --source=domain
+${ASADMIN} set-config-property --propertyName=sormas.rest.security.oidc.json --propertyValue="{\"realm\":\"SORMAS\",\"auth-server-url\":\"https://${SORMAS_SERVER_URL}/keycloak/auth\",\"ssl-required\":\"external\",\"resource\":\"sormas-rest\",\"credentials\":{\"secret\":\"secret\"},\"confidential-port\":0,\"principal-attribute\":\"preferred_username\",\"enable-basic-auth\":true}" --source=domain
+${ASADMIN} set-config-property --propertyName=sormas.backend.security.oidc.json --propertyValue="{\"realm\":\"SORMAS\",\"auth-server-url\":\"https://${SORMAS_SERVER_URL}/keycloak/auth/\",\"ssl-required\":\"external\",\"resource\":\"sormas-backend\",\"credentials\":{\"secret\":\"secret\"},\"confidential-port\":0}" --source=domain
+
 cp ${DEPLOY_PATH}/deploy/sormas.properties ${DOMAIN_DIR}
 cp ${DEPLOY_PATH}/deploy/start-payara-sormas.sh ${DOMAIN_DIR}
 cp ${DEPLOY_PATH}/deploy/stop-payara-sormas.sh ${DOMAIN_DIR}
