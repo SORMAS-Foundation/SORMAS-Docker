@@ -125,7 +125,7 @@ services:
     labels:
       - autoheal=true
     command: -c 'config_file=/etc/postgresql/postgresql.conf'
-    image: hzibraunschweig/sormas--keycloak-postgres:${SORMAS_DOCKER_VERSION}
+    image: hzibraunschweig/keycloak-postgres:${SORMAS_DOCKER_VERSION}
     environment:
       - POSTGRES_PASSWORD=${KEYCLOAK_DB_PASSWORD}
       - POSTGRES_USER=${KEYCLOAK_DB_USER}
