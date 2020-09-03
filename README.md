@@ -162,17 +162,17 @@ See also [keycloak-postgres](./keycloak-postgres/README.md)
 **KEYSTORE_PASS** Password for Payara keystore
 
 #### CPU and memory usage limitation for Keycloak
-**KEYCLOAK_CPUS**  CPU cores reserved for the used web server. This should be a floating point value. (Example: 3.0 )
+**KEYCLOAK_MEM** Maximum available memory for the Keycloak web server. (For example 1000M for 1000MB)
 
-**KEYCLOAK_MEM** Maximum available memory for the used web server. (For example 1000M for 1000MB)
+**KEYCLOAK_MEM_RESERVED** Memory reserved for the Keycloak web server. This memory may not be used by other processes on the same host. (For example 400M for 400MB)
 
-**KEYCLOAK_MEM_RESERVED** Memory reserved for the used web server. This memory may not be used by other processes on the same host. (For example 400M for 400MB)
+**KEYCLOAK_CPUS**  CPU cores reserved for the Keycloak web server. This should be a floating point value. (Example: 3.0 )
 
 **KEYCLOAK_DB_MEM** Maximum available memory for the Keycloak database server. (For example 3000M for 3000MB)
 
 **KEYCLOAK_DB_MEM_RESERVED** Memory reserved for the Keycloak database server. This memory may not be used by other processes on the same host. (For example 2500M for 2500MB)
 
-**KEYCLOAK_DB_CPUS** CPU cores reserved for the Keycloak web server. This should be a floating point value. (Example: 3.0 )
+**KEYCLOAK_DB_CPUS** CPU cores reserved for the Keycloak database server. This should be a floating point value. (Example: 3.0 )
 
 
 ### Changing the host name
