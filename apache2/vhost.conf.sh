@@ -48,7 +48,7 @@ Listen 443
             ProxyPassReverse http://sormas:6080/metrics
             Order deny,allow
             Deny from all
-            Allow from $(sed 's/\"//g' <<< ${PROMETHEUS_SERVERS})
+            Allow from ${PROMETHEUS_SERVERS}
         </Location>
         RequestHeader set X-Forwarded-Proto https
 
