@@ -168,6 +168,13 @@ See also [keycloak-postgres](./keycloak-postgres/README.md)
 
 **KEYCLOAK_MEM_RESERVED** Memory reserved for the used web server. This memory may not be used by other processes on the same host. (For example 400M for 400MB)
 
+**KEYCLOAK_DB_MEM** Maximum available memory for the Keycloak database server. (For example 3000M for 3000MB)
+
+**KEYCLOAK_DB_MEM_RESERVED** Memory reserved for the Keycloak database server. This memory may not be used by other processes on the same host. (For example 2500M for 2500MB)
+
+**KEYCLOAK_DB_CPUS** CPU cores reserved for the Keycloak web server. This should be a floating point value. (Example: 3.0 )
+
+
 ### Changing the host name
 
 If you would like to run SORMAS using your own host name (e.g. https://sormas.example.com) , please follow these steps: 
