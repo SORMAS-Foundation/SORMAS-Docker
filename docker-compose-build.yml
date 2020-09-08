@@ -4,12 +4,14 @@ services:
     build:
       context: payara
     image: hzibraunschweig/sormas-payara:5.192
+
   rscript:
     depends_on:
       - payara
     build:
       context: Rscript
     image: hzibraunschweig/sormas-rscript:3.5
+
   sormas:
     depends_on:
      - rscript
@@ -27,16 +29,19 @@ services:
         - SORMAS_VERSION=${SORMAS_VERSION}
     image: hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
     command: /bin/false
+
   postgres:
     build:
       context: postgres
-    command: /bin/false
     image: hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
+    command: /bin/false
+
   pg_dump:
     build:
       context: pg_dump
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
     command: /bin/false
+
   letsencrypt:
     build:
       context: letsencrypt
@@ -61,9 +66,10 @@ services:
     build:
       context: keycloak
     image: hzibraunschweig/sormas-keycloak:${SORMAS_DOCKER_VERSION}
+    command: /bin/false
 
   keycloak-postgres:
     build:
       context: keycloak-postgres
     image: hzibraunschweig/keycloak-postgres:${SORMAS_DOCKER_VERSION}
-
+    command: /bin/false
