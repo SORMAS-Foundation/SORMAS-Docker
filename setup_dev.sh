@@ -10,4 +10,4 @@ sudo docker-compose -f /home/deploy/SORMAS-Docker/docker-compose.yml down
 sudo docker-compose -f /home/deploy/SORMAS-Docker/docker-compose.yml rm --force
 sudo docker image prune -f -a
 sudo docker-compose -f /home/deploy/SORMAS-Docker/docker-compose-build.yml build --no-cache sormas postgres keycloak keycloak-postgres pg_dump apache2
-sudo docker-compose -f /home/deploy/SORMAS-Docker/docker-compose.yml up -d
+sudo docker-compose -f /home/deploy/SORMAS-Docker/docker-compose-keycloak.yml up -d
