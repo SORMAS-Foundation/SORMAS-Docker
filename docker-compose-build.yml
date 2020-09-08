@@ -56,3 +56,14 @@ services:
         - SORMAS_VERSION=${SORMAS_VERSION}
     image: hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
     command: /bin/false
+
+  keycloak:
+    build:
+      context: keycloak
+    image: hzibraunschweig/sormas-keycloak:${SORMAS_DOCKER_VERSION}
+
+  keycloak-postgres:
+    build:
+      context: keycloak-postgres
+    image: hzibraunschweig/keycloak-postgres:${SORMAS_DOCKER_VERSION}
+
