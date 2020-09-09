@@ -60,6 +60,11 @@ services:
   keycloak:
     build:
       context: keycloak
+      args:
+        - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+        - KEYCLOAK_SORMAS_REST_SECRET=${KEYCLOAK_SORMAS_REST_SECRET}
+        - KEYCLOAK_SORMAS_UI_SECRET=${KEYCLOAK_SORMAS_UI_SECRET}
+        - KEYCLOAK_SORMAS_BACKEND_SECRET=${KEYCLOAK_SORMAS_BACKEND_SECRET}
     image: hzibraunschweig/sormas-keycloak:${SORMAS_DOCKER_VERSION}
 
   keycloak-postgres:
