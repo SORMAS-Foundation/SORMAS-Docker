@@ -1,5 +1,10 @@
 FROM jboss/keycloak:11.0.0
 
+ARG SORMAS_SERVER_URL=sormas-docker-test.com
+ARG KEYCLOAK_SORMAS_REST_SECRET=changeit
+ARG KEYCLOAK_SORMAS_UI_SECRET=changeit
+ARG KEYCLOAK_SORMAS_BACKEND_SECRET=changeit
+
 RUN sed -i -e 's/<web-context>auth<\/web-context>/<web-context>keycloak\/auth<\/web-context>/' $JBOSS_HOME/standalone/configuration/standalone.xml
 RUN sed -i -e 's/<web-context>auth<\/web-context>/<web-context>keycloak\/auth<\/web-context>/' /opt/jboss/keycloak/standalone/configuration/standalone-ha.xml
 RUN sed -i -e 's/name="\/"/name="\/keycloak\/"/' $JBOSS_HOME/standalone/configuration/standalone.xml

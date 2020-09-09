@@ -122,7 +122,10 @@ fi
 
 # update keycloak client secrets
 if [ ! -z "$AUTHENTICATION_PROVIDER" -a "$AUTHENTICATION_PROVIDER" = "KEYCLOAK" ];then
-  echo "Updating Keycloak secrets"
+  echo "Updating Keycloak connection"
+  ${ASADMIN} set-config-property --propertyName=payara.security.openid.clientId --propertyValue=sormas-ui --source=domain
+  ${ASADMIN} set-config-property --propertyName=payara.security.openid.scope --propertyValue=openid --source=domain
+  ${ASADMIN} set-config-property --propertyName=payara.security.openid.providerURI --propertyValue=https://${SORMAS_SERVER_URL}/keycloak/auth/realms/SORMAS --source=domain
   ${ASADMIN} set-config-property --propertyName=payara.security.openid.clientSecret --propertyValue=${KEYCLOAK_SORMAS_UI_SECRET} --source=domain
   ${ASADMIN} set-config-property --propertyName=payara.security.openid.providerURI --propertyValue=https://${SORMAS_SERVER_URL}/keycloak/auth/realms/SORMAS --source=domain
   ${ASADMIN} set-config-property --propertyName=sormas.rest.security.oidc.json --propertyValue="{\"realm\":\"SORMAS\",\"auth-server-url\":\"https://${SORMAS_SERVER_URL}/keycloak/auth\",\"ssl-required\":\"external\",\"resource\":\"sormas-rest\",\"credentials\":{\"secret\":\"${KEYCLOAK_SORMAS_REST_SECRET}\"},\"confidential-port\":0,\"principal-attribute\":\"preferred_username\",\"enable-basic-auth\":true}" --source=domain
