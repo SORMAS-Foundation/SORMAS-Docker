@@ -15,7 +15,7 @@ ADD themes $JBOSS_HOME/themes
 
 COPY SORMAS.json $JBOSS_HOME/SORMAS.json
 COPY setup-keycloak.sh /opt/jboss/startup-scripts/
-RUN chown jboss:jboos /opt/jboss/startup-scripts/setup-keycloak.sh && \
+RUN chown jboss /opt/jboss/startup-scripts/setup-keycloak.sh && \
   chmod +x /opt/jboss/startup-scripts/setup-keycloak.sh
 
 ENV KEYCLOAK_IMPORT $JBOSS_HOME/SORMAS.json
