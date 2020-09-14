@@ -66,15 +66,15 @@ services:
     build:
       context: keycloak
       args:
+        - SORMAS_URL=${SORMAS_URL}
+        - SORMAS_VERSION=${SORMAS_VERSION}
         - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
         - KEYCLOAK_SORMAS_REST_SECRET=${KEYCLOAK_SORMAS_REST_SECRET}
         - KEYCLOAK_SORMAS_UI_SECRET=${KEYCLOAK_SORMAS_UI_SECRET}
         - KEYCLOAK_SORMAS_BACKEND_SECRET=${KEYCLOAK_SORMAS_BACKEND_SECRET}
     image: hzibraunschweig/sormas-keycloak:${SORMAS_DOCKER_VERSION}
-    command: /bin/false
 
   keycloak-postgres:
     build:
       context: keycloak-postgres
     image: hzibraunschweig/keycloak-postgres:${SORMAS_DOCKER_VERSION}
-    command: /bin/false
