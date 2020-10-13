@@ -161,6 +161,10 @@ echo "interface.symptomjournal.secret = ${SJ_SECRET}" >>${DOMAIN_DIR}/sormas.pro
 fi
 if [ ! -z "$PD_URL" ];then
 echo -e "\ninterface.patientdiary.url=${PD_URL}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.patientdiary.externaldataurl=${PD_EXTERNAL_DATA_URL}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.patientdiary.authurl=${PD_AUTH_URL}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.patientdiary.email=${PD_EMAIL}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.patientdiary.password=${PD_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 fi
 if [ ! -z "$CUSTOMBRANDING_ENABLED" ];then
 sed -i "s/\#custombranding=false/custombranding=${CUSTOMBRANDING_ENABLED}/" ${DOMAIN_DIR}/sormas.properties
