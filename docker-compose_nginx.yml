@@ -11,6 +11,7 @@ services:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
       - DB_HOST=${DB_HOST}
       - DOMAIN_NAME=${DOMAIN_NAME}
+      - DB_JDBC_MAXPOOLSIZE=${DB_JDBC_MAXPOOLSIZE}
       - DB_NAME=${DB_NAME}
       - DB_NAME_AUDIT=${DB_NAME_AUDIT}
       - MAIL_HOST=${MAIL_HOST}
@@ -29,10 +30,9 @@ services:
       - GEO_UUID=${GEO_UUID}
       - DEVMODE=${DEVMODE}
       - JSON_LOGGING=${JSON_LOGGING}
-    depends_on:
-      - postgres
     volumes:
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
+      - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
       - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
     cpus: ${APPSERVER_CPUS}
     mem_limit: ${APPSERVER_MEM}
@@ -87,6 +87,7 @@ services:
       - URL=${SORMAS_SERVER_URL}
       - EMAIL=${LETSENCRYPT_MAIL}
       - DISABLE_CERTBOT=${DISABLE_CERTBOT}
+      - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
     volumes:
       - /var/lib/docker/letsencrypt-config:/config
       - ./letsencrypt/certs:/config/etc/letsencrypt/live

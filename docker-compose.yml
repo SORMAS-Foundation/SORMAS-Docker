@@ -34,6 +34,11 @@ services:
       - GEO_UUID=${GEO_UUID}
       - DEVMODE=${DEVMODE}
       - JSON_LOGGING=${JSON_LOGGING}
+      - CUSTOMBRANDING_ENABLED=${CUSTOMBRANDING_ENABLED}
+      - CUSTOMBRANDING_NAME=${CUSTOMBRANDING_NAME}
+      - CUSTOMBRANDING_LOGO_PATH=${CUSTOMBRANDING_LOGO_PATH}
+      - CUSTOMBRANDING_USE_LOGINSIDEBAR=${CUSTOMBRANDING_USE_LOGINSIDEBAR}
+      - CUSTOMBRANDING_LOGINBACKGROUND_PATH=${CUSTOMBRANDING_LOGINBACKGROUND_PATH}
     volumes:
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
       - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
@@ -110,6 +115,7 @@ services:
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
       - TZ=${TZ}
+      - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
     volumes:
       - ./apache2/certs:/usr/local/apache2/certs
       - ${SORMAS_PATH}/apache2_log:/var/log/apache2
