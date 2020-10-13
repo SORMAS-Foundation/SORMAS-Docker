@@ -159,15 +159,22 @@ echo "interface.symptomjournal.authurl = ${SJ_AUTH}" >>${DOMAIN_DIR}/sormas.prop
 echo "interface.symptomjournal.clientid = ${SJ_CLIENTID}" >>${DOMAIN_DIR}/sormas.properties
 echo "interface.symptomjournal.secret = ${SJ_SECRET}" >>${DOMAIN_DIR}/sormas.properties
 fi
-echo -e "\ninterface.patientdiary.url = ${PD_URL}" >>${DOMAIN_DIR}/sormas.properties
+if [ ! -z "$PD_URL" ];then
+echo -e "\ninterface.patientdiary.url=${PD_URL}" >>${DOMAIN_DIR}/sormas.properties
+fi
 if [ ! -z "$CUSTOMBRANDING_ENABLED" ];then
 sed -i "s/\#custombranding=false/custombranding=${CUSTOMBRANDING_ENABLED}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#custombranding.name=.*/custombranding.name=${CUSTOMBRANDING_NAME}/" ${DOMAIN_DIR}/sormas.properties
-echo -e "\ncustombranding.logo.path = ${CUSTOMBRANDING_LOGO_PATH}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ncustombranding.logo.path=${CUSTOMBRANDING_LOGO_PATH}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ncustombranding.useloginsidebar=${CUSTOMBRANDING_USE_LOGINSIDEBAR}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ncustombranding.loginbackground.path=${CUSTOMBRANDING_LOGINBACKGROUND_PATH}" >>${DOMAIN_DIR}/sormas.properties
 fi
 if [ ! -z "$SORMAS2SORMAS_ENABLED" ];then
-echo -e "\nsormas2sormas.keyAlias = ${SORMAS2SORMAS_KEYALIAS}" >>${DOMAIN_DIR}/sormas.properties
-echo -e "\nsormas2sormas.keyPassword = ${SORMAS2SORMAS_KEYPASSWORD}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nsormas2sormas.keyAlias=${SORMAS2SORMAS_KEYALIAS}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nsormas2sormas.keystoreName=${SORMAS2SORMAS_KEYSTORENAME}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nsormas2sormas.keystorePass=${SORMAS2SORMAS_KEYPASSWORD}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nsormas2sormas.truststoreName=${SORMAS2SORMAS_TRUSTSTORENAME}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nsormas2sormas.truststorePass=${SORMAS2SORMAS_TRUSTSTOREPASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 fi
 if [ ! -z "$AUTHENTICATION_PROVIDER" ];then
 sed -i "/^authentication.provider=/{h;s/=.*/=${AUTHENTICATION_PROVIDER}/};\${x;/^$/{s//authentication.provider=${AUTHENTICATION_PROVIDER}/;H};x}" ${DOMAIN_DIR}/sormas.properties

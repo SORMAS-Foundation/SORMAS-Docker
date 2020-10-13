@@ -6,6 +6,7 @@ server {
     server_name ${URL};
     return 301 https://\$host\$request_uri;
 }
+
 server {
     listen 80;
     listen 443 ssl;
@@ -36,7 +37,7 @@ server {
     access_log  /config/log/nginx/access.log;
     error_log   /config/log/nginx/error.log crit;
 
-    location ~ "^(/(?!(downloads|sormas-ui|sormas-rest)).*)" {
+    location ~ "^(/(?!(downloads|sormas-ui|sormas-rest|metrics)).*)" {
         rewrite ^(.*)$ https://${URL}/sormas-ui\\\$1 redirect;
     }
 
@@ -50,6 +51,19 @@ server {
 
     location /sormas-rest {
         proxy_pass http://sormas:6080/sormas-rest;
+        proxy_read_timeout 3600s;
+        proxy_set_header X-Forwarded-Host \$host:\$server_port;
+        proxy_set_header X-Forwarded-Server \$host;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    }
+
+    location /metrics {
+        $(for server in ${PROMETHEUS_SERVERS}
+        do
+          echo "allow $server;"
+        done)
+        deny all;
+        proxy_pass http://sormas:6080/metrics;
         proxy_read_timeout 3600s;
         proxy_set_header X-Forwarded-Host \$host:\$server_port;
         proxy_set_header X-Forwarded-Server \$host;
