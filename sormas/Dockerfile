@@ -25,8 +25,8 @@ ENV ASENV_PATH="/opt/payara5/glassfish/config/asenv.conf"
 RUN useradd payara
 
 COPY setup-server.sh /setup-server.sh
-COPY s2s-generate-cert.sh /s2s-generate-cert.sh
-COPY s2s-import-to-truststore.sh /s2s-import-to-truststore.sh
+COPY s2s-generate-cert.sh /opt/sormas/s2s-generate-cert.sh
+COPY s2s-import-to-truststore.sh /opt/sormas/s2s-import-to-truststore.sh
 
 RUN chmod +x /setup-server.sh
 RUN /setup-server.sh
