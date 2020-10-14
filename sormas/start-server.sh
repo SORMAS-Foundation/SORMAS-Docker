@@ -173,8 +173,8 @@ export SORMAS_S2S_CERT_PASS=${SORMAS_S2S_CERT_PASS}
 export SORMAS_S2S_REST_PASSWORD=${SORMAS_S2S_REST_PASSWORD}
 export S2S_NON_INTERACTIVE
 
-  if [ ! -d /opt/sormas/sormas2sormas/${SORMAS_SERVER_URL}.sormas2sormas.keystore.p12 ];then
-    bash /opt/sormas/sormas2sormas/s2s-generate-cert.sh
+  if [ ! -f /opt/sormas/sormas2sormas/${SORMAS_SERVER_URL}.sormas2sormas.keystore.p12 ];then
+    bash /opt/sormas/s2s-generate-cert.sh
   fi
 
 fi
