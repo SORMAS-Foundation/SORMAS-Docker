@@ -13,7 +13,7 @@ ARG MAIL_FROM=sormas@localhost
 ARG JVM_MAX=4096m
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 EXPOSE 6080
-ARG SORMAS_VERSION=1.49.1
+ARG SORMAS_VERSION=1.50.0
 
 ENV MAIL_FROM=root@localhost
 ENV DEBIAN_FRONTEND=noninteractive
@@ -25,6 +25,12 @@ ENV ASENV_PATH="/opt/payara5/glassfish/config/asenv.conf"
 RUN useradd payara
 
 COPY setup-server.sh /setup-server.sh
+COPY s2s-generate-cert.sh /opt/sormas/s2s-generate-cert.sh
+RUN chmod +x /opt/sormas/s2s-generate-cert.sh
+COPY s2s-import-to-truststore.sh /opt/sormas/s2s-import-to-truststore.sh
+RUN chmod +x /opt/sormas/s2s-import-to-truststore.sh
+
+
 RUN chmod +x /setup-server.sh
 RUN /setup-server.sh
 COPY start-server.sh /start-server.sh

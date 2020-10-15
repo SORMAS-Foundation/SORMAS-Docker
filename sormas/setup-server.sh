@@ -121,6 +121,9 @@ echo "Copying apps..."
 mkdir -p ${DOMAIN_DIR}/deployments
 cp ${DEPLOY_PATH}/deploy/apps/*.ear ${DOMAIN_DIR}/deployments/
 cp ${DEPLOY_PATH}/deploy/apps/*.war ${DOMAIN_DIR}/deployments/
+cp ${DEPLOY_PATH}/deploy/s2s-generate-cert.sh /opt/sormas/sormas2sormas
+cp ${DEPLOY_PATH}/deploy/s2s-import-to-truststore.sh /opt/sormas/sormas2sormas
+
 
 ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 
