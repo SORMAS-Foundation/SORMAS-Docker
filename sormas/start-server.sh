@@ -179,6 +179,20 @@ echo -e "\nsormas2sormas.keystoreName=${SORMAS2SORMAS_KEYSTORENAME}" >>${DOMAIN_
 echo -e "\nsormas2sormas.keystorePass=${SORMAS2SORMAS_KEYPASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.truststoreName=${SORMAS2SORMAS_TRUSTSTORENAME}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.truststorePass=${SORMAS2SORMAS_TRUSTSTOREPASSWORD}" >>${DOMAIN_DIR}/sormas.properties
+
+export SORMAS2SORMAS_DIR=/opt/sormas/sormas2sormas
+export SORMAS_ORG_ID=${SORMAS_ORG_ID}
+export SORMAS_ORG_NAME=${SORMAS_ORG_NAME}
+export SORMAS_HOST_NAME=${SORMAS_SERVER_URL}
+export SORMAS_HTTPS_PORT=443
+export SORMAS_S2S_CERT_PASS=${SORMAS_S2S_CERT_PASS}
+export SORMAS_S2S_REST_PASSWORD=${SORMAS_S2S_REST_PASSWORD}
+export S2S_NON_INTERACTIVE
+
+  if [ ! -f /opt/sormas/sormas2sormas/${SORMAS_SERVER_URL}.sormas2sormas.keystore.p12 ];then
+    bash /opt/sormas/s2s-generate-cert.sh
+  fi
+
 fi
 if [ ! -z "$AUTHENTICATION_PROVIDER" ];then
 sed -i "/^authentication.provider=/{h;s/=.*/=${AUTHENTICATION_PROVIDER}/};\${x;/^$/{s//authentication.provider=${AUTHENTICATION_PROVIDER}/;H};x}" ${DOMAIN_DIR}/sormas.properties
