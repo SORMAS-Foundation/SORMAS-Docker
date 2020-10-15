@@ -174,7 +174,8 @@ echo -e "\ncustombranding.useloginsidebar=${CUSTOMBRANDING_USE_LOGINSIDEBAR}" >>
 echo -e "\ncustombranding.loginbackground.path=${CUSTOMBRANDING_LOGINBACKGROUND_PATH}" >>${DOMAIN_DIR}/sormas.properties
 fi
 if [ ! -z "$SORMAS2SORMAS_ENABLED" ];then
-echo -e "\nsormas2sormas.keyAlias=${SORMAS2SORMAS_KEYALIAS}" >>${DOMAIN_DIR}/sormas.properties
+#echo -e "\nsormas2sormas.keyAlias=${SORMAS2SORMAS_KEYALIAS}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nsormas2sormas.serverAccessDataFileName=${SORMAS_SERVER_URL}-server-access-data.csv" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.keystoreName=${SORMAS2SORMAS_KEYSTORENAME}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.keystorePass=${SORMAS2SORMAS_KEYPASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.truststoreName=${SORMAS2SORMAS_TRUSTSTORENAME}" >>${DOMAIN_DIR}/sormas.properties
