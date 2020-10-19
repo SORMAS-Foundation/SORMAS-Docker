@@ -118,7 +118,39 @@ These Options are available to customize the installation:
 
 **JSON_LOGGING** Change the output of sormas server.log to JSON format
 
-**PROMETHEUS_SERVERS** One or more ip-addresses from prometheus monitoring servers (to scrape metrics from payara) seperated by spaces. If you don't have one, just leave it at 127.0.0.1
+**PROMETHEUS_SERVERS** One or more ip-addresses of prometheus monitoring servers (to scrape metrics from payara) seperated by spaces. If you don't have one, just leave it at 127.0.0.1
+
+**CUSTOMBRANDING_ENABLED** Enables the custombranding feature
+
+**CUSTOMBRANDING_NAME** Name of the custombranding
+
+**CUSTOMBRANDING_LOGO_PATH** Path to the custom logo
+
+**CUSTOMBRANDING_USE_LOGINSIDEBAR** Enables the customization of the loginsidebar
+
+**CUSTOMBRANDING_LOGINBACKGROUND_PATH** Path to the custom loginsidebar image
+
+**SORMAS2SORMAS_ENABLED** Enables the "Sormas to Sormas" feature
+
+**SORMAS2SORMAS_KEYALIAS** Alias of the key
+
+**SORMAS2SORMAS_KEYSTORENAME** Name of the used keystore
+
+**SORMAS2SORMAS_KEYPASSWORD** Password for the keystore
+
+**SORMAS2SORMAS_TRUSTSTORENAME** Name of the truststore
+
+**SORMAS2SORMAS_TRUSTSTOREPASSWORD** Password for the truststore
+
+**SORMAS2SORMAS_DIR** Path to the sormas to sormas directory
+
+**SORMAS_ORG_ID** ID of the organisiation
+
+**SORMAS_ORG_NAME** Name of the organisation
+
+**SORMAS_S2S_CERT_PASS** Password for the certificate
+
+**SORMAS_S2S_REST_PASSWORD** Password for the rest user to connect to sormas
 
 ### NGINX (experimental)
 If you choose to use the nginx with built in certbot, use the docker-compose_nginx.yml.<br>
