@@ -8,12 +8,14 @@ KEEP=${KEEP:-1}
 DBS="${DB_NAME} ${DB_NAME_AUDIT}"
 
 for d in ${DBS};do
-  BAK="${DUMP_PATH}/$d.${DATE}.sql.gz"
-  pg_dump -h ${DB_HOST} -U ${SORMAS_POSTGRES_USER} ${d} | gzip -c > ${BAK}
-  zgrep -q "PostgreSQL database dump complete" ${BAK}
+  BAK="${DUMP_PATH}/$d.${DATE}.sql"
+  pg_dump -h ${DB_HOST} -U ${SORMAS_POSTGRES_USER} ${d} > ${BAK}
+  grep -q "PostgreSQL database dump complete" ${BAK}
   if [ $? -eq 0 ];then
-    echo "Backup of ${d} to ${BAK} completed." >> ${LOG}
+    gzip ${BAK}
+    echo "Backup of ${d} to ${BAK}.gz completed." >> ${LOG}
   else
+    rm ${BAK}
     echo "Backup of ${d} to ${BAK} failed!!" >> ${LOG}
   fi
 done
@@ -21,4 +23,5 @@ done
 echo "Deleting old dumps" >> ${LOG}
 # keep 1 day => delete all files with mtime +0
 find ${DUMP_PATH} -name \*.sql.gz -mtime +$(( ${KEEP} - 1 )) | xargs -r rm
+find ${DUMP_PATH} -name \*.sql -mtime +$(( ${KEEP} - 1 )) | xargs -r rm
 echo >> ${LOG};echo >> ${LOG}
