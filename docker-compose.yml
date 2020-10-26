@@ -43,7 +43,6 @@ services:
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
       - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
       - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
-    cpus: ${APPSERVER_CPUS}
     mem_limit: ${APPSERVER_MEM}
     mem_reservation: ${APPSERVER_MEM_RESERVED}
     healthcheck:
@@ -73,7 +72,6 @@ services:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    cpus: ${DB_CPUS}
     mem_limit: ${DB_MEM}
     mem_reservation: ${DB_MEM_RESERVED}
     healthcheck:
