@@ -39,10 +39,20 @@ services:
       - CUSTOMBRANDING_LOGO_PATH=${CUSTOMBRANDING_LOGO_PATH}
       - CUSTOMBRANDING_USE_LOGINSIDEBAR=${CUSTOMBRANDING_USE_LOGINSIDEBAR}
       - CUSTOMBRANDING_LOGINBACKGROUND_PATH=${CUSTOMBRANDING_LOGINBACKGROUND_PATH}
+      - SORMAS2SORMAS_ENABLED=${SORMAS2SORMAS_ENABLED}
+      - S2S_NON_INTERACTIVE=true
+      - SORMAS2SORMAS_DIR=${SORMAS2SORMAS_DIR}
+      - SORMAS_ORG_ID=${SORMAS_ORG_ID}1.03.1.01.
+      - SORMAS_ORG_NAME=${SORMAS_ORG_NAME}"Stadt Braunschweig"
+      - SORMAS_HOST_NAME=${SORMAS_SERVER_URL}
+      - SORMAS_HTTPS_PORT=443
+      - SORMAS_S2S_CERT_PASS=${SORMAS_S2S_CERT_PASS}password
+      - SORMAS_S2S_REST_PASSWORD=${SORMAS_S2S_REST_PASSWORD}passwordpassword
     volumes:
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
       - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
       - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
+    cpus: ${APPSERVER_CPUS}
     mem_limit: ${APPSERVER_MEM}
     mem_reservation: ${APPSERVER_MEM_RESERVED}
     healthcheck:
@@ -72,6 +82,7 @@ services:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    cpus: ${DB_CPUS}
     mem_limit: ${DB_MEM}
     mem_reservation: ${DB_MEM_RESERVED}
     healthcheck:
