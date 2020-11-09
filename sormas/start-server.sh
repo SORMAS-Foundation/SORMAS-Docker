@@ -161,13 +161,25 @@ echo "interface.symptomjournal.authurl = ${SJ_AUTH}" >>${DOMAIN_DIR}/sormas.prop
 echo "interface.symptomjournal.clientid = ${SJ_CLIENTID}" >>${DOMAIN_DIR}/sormas.properties
 echo "interface.symptomjournal.secret = ${SJ_SECRET}" >>${DOMAIN_DIR}/sormas.properties
 fi
-if [ ! -z "$PD_URL" ];then
+
+
+#------------------CLIMEDO CONFIG
+sed -i "/^interface\.patientdiary\.url/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^interface\.patientdiary\.externaldataurl/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^interface\.patientdiary\.authurl/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^interface\.patientdiary\.email/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^interface\.patientdiary\.password/d" "${DOMAIN_DIR}/sormas.properties"
+
+if [ ! -z "$PATIENTDIARY_ENABLED" ];then
 echo -e "\ninterface.patientdiary.url=${PD_URL}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.externaldataurl=${PD_EXTERNAL_DATA_URL}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.authurl=${PD_AUTH_URL}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.email=${PD_EMAIL}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.password=${PD_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 fi
+
+
+#------------------BRANDING CONFIG
 if [ ! -z "$CUSTOMBRANDING_ENABLED" ];then
 sed -i "s/\#custombranding=false/custombranding=${CUSTOMBRANDING_ENABLED}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#custombranding.name=.*/custombranding.name=${CUSTOMBRANDING_NAME}/" ${DOMAIN_DIR}/sormas.properties
@@ -175,13 +187,23 @@ echo -e "\ncustombranding.logo.path=${CUSTOMBRANDING_LOGO_PATH}" >>${DOMAIN_DIR}
 echo -e "\ncustombranding.useloginsidebar=${CUSTOMBRANDING_USE_LOGINSIDEBAR}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ncustombranding.loginbackground.path=${CUSTOMBRANDING_LOGINBACKGROUND_PATH}" >>${DOMAIN_DIR}/sormas.properties
 fi
+
+
+#------------------SORMAS2SORMAS CONFIG
+sed -i "/^sormas2sormas\.serverAccessDataFileName/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^sormas2sormas\.keystoreName/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^sormas2sormas\.keystorePass/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^sormas2sormas\.truststoreName/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^sormas2sormas\.truststorePass/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^sormas2sormas\.path/d" "${DOMAIN_DIR}/sormas.properties"
+
 if [ ! -z "$SORMAS2SORMAS_ENABLED" ];then
-#echo -e "\nsormas2sormas.keyAlias=${SORMAS2SORMAS_KEYALIAS}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.serverAccessDataFileName=${SORMAS_SERVER_URL}-server-access-data.csv" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.keystoreName=${SORMAS2SORMAS_KEYSTORENAME}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.keystorePass=${SORMAS2SORMAS_KEYPASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.truststoreName=${SORMAS2SORMAS_TRUSTSTORENAME}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.truststorePass=${SORMAS2SORMAS_TRUSTSTOREPASSWORD}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nsormas2sormas.path=${SORMAS2SORMAS_DIR}" >>${DOMAIN_DIR}/sormas.properties
 
 export SORMAS2SORMAS_DIR=/opt/sormas/sormas2sormas
 export SORMAS_ORG_ID=${SORMAS_ORG_ID}
@@ -197,11 +219,22 @@ export S2S_NON_INTERACTIVE
   fi
 
 fi
+
+
+#------------------AUTHENTICATION PROVIDER CONFIG
 if [ ! -z "$AUTHENTICATION_PROVIDER" ];then
 sed -i "/^authentication.provider=/{h;s/=.*/=${AUTHENTICATION_PROVIDER}/};\${x;/^$/{s//authentication.provider=${AUTHENTICATION_PROVIDER}/;H};x}" ${DOMAIN_DIR}/sormas.properties
 fi
 
 
+#------------------SURVNET CONFIG
+sed -i "/^survnet\.url/d" "${DOMAIN_DIR}/sormas.properties"
+if [ ! -z "$SURVNET_ENABLED" ];then
+echo -e "\nsurvnet.url=${SURVNET_URL}" >>${DOMAIN_DIR}/sormas.properties
+fi
+
+
+# import R library
 Rscript -e 'library(epicontacts)'
 Rscript -e 'library(RPostgreSQL)'
 Rscript -e 'library(visNetwork)'
