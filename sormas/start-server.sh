@@ -137,7 +137,15 @@ sed -i "s/country.center.latitude=.*/country.center.latitude=${LATITUDE}/" ${DOM
 sed -i "s/country.center.longitude=.*/country.center.longitude=${LONGITUDE}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/map.zoom=.*/map.zoom=${MAP_ZOOM}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s;app.url=.*;app.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk;" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/\#geocodingOsgtsEndpoint=.*/geocodingOsgtsEndpoint=https:\/\/sg.geodatenzentrum.de\/gdz_geokodierung_bund__${GEO_UUID}/" ${DOMAIN_DIR}/sormas.properties
+
+#------------------GEOCODING
+sed -i "s/^geocodingServiceUrlTemplate.*/d " ${DOMAIN_DIR}/sormas.properties
+sed -i "s/^geocodingLongitudeJsonPath.*/d " ${DOMAIN_DIR}/sormas.properties
+sed -i "s/^geocodingLatitudeJsonPath.*/d " ${DOMAIN_DIR}/sormas.properties
+echo -e "geocodingServiceUrlTemplate=https://sg.geodatenzentrum.de/gdz_geokodierung_bund__${GEO_UUID}/geosearch.json?query=\${street}+\${houseNumber},\${postalCode}+\${city}&filter=typ:haus&count1" >>${DOMAIN_DIR}/sormas.properties
+echo -e "geocodingLongitudeJsonPath=$.features[0].geometry.coordinates[0]" >>${DOMAIN_DIR}/sormas.properties
+echo -e "geocodingLatitudeJsonPath=$.features[0].geometry.coordinates[1]" >>${DOMAIN_DIR}/sormas.properties
+
 sed -i "s/\#rscript.executable=.*/rscript.executable=Rscript/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#\s\devmode=.*/devmode=${DEVMODE}/" ${DOMAIN_DIR}/sormas.properties
 if [ ! -z "$PIA_URL" ];then
