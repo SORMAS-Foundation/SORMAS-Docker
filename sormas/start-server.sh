@@ -142,9 +142,9 @@ sed -i "s;app.url=.*;app.url=https://${SORMAS_SERVER_URL}/downloads/release/sorm
 sed -i "s/^geocodingServiceUrlTemplate.*/d " ${DOMAIN_DIR}/sormas.properties
 sed -i "s/^geocodingLongitudeJsonPath.*/d " ${DOMAIN_DIR}/sormas.properties
 sed -i "s/^geocodingLatitudeJsonPath.*/d " ${DOMAIN_DIR}/sormas.properties
-echo -e "geocodingServiceUrlTemplate=https://sg.geodatenzentrum.de/gdz_geokodierung_bund__${GEO_UUID}/geosearch.json?query=\${street}+\${houseNumber},\${postalCode}+\${city}&filter=typ:haus&count1" >>${DOMAIN_DIR}/sormas.properties
-echo -e "geocodingLongitudeJsonPath=$.features[0].geometry.coordinates[0]" >>${DOMAIN_DIR}/sormas.properties
-echo -e "geocodingLatitudeJsonPath=$.features[0].geometry.coordinates[1]" >>${DOMAIN_DIR}/sormas.properties
+echo -e "geocodingServiceUrlTemplate=${GEO_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "geocodingLongitudeJsonPath=${GEO_LONG_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "geocodingLatitudeJsonPath=${GEO_LAT_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
 
 sed -i "s/\#rscript.executable=.*/rscript.executable=Rscript/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#\s\devmode=.*/devmode=${DEVMODE}/" ${DOMAIN_DIR}/sormas.properties
