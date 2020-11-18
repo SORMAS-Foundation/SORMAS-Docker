@@ -57,6 +57,8 @@ services:
       - GEO_TEMPLATE=${GEO_TEMPLATE}
       - GEO_LONG_TEMPLATE=${GEO_LONG_TEMPLATE}
       - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}
+      - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
+      - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
     volumes:
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
       - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs

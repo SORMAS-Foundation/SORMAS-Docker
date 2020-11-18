@@ -48,6 +48,8 @@ services:
       - SORMAS_HTTPS_PORT=443
       - SORMAS_S2S_CERT_PASS=${SORMAS_S2S_CERT_PASS}password
       - SORMAS_S2S_REST_PASSWORD=${SORMAS_S2S_REST_PASSWORD}passwordpassword
+      - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
+      - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
     volumes:
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
       - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
