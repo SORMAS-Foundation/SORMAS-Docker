@@ -30,6 +30,9 @@ services:
       - GEO_UUID=${GEO_UUID}
       - DEVMODE=${DEVMODE}
       - JSON_LOGGING=${JSON_LOGGING}
+      - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
+      - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
+
     volumes:
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
       - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
