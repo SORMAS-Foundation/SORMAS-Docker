@@ -120,6 +120,18 @@ echo "Enabling logging in JSON format"
 ${ASADMIN} set-log-attributes com.sun.enterprise.server.logging.GFFileHandler.formatter='fish.payara.enterprise.server.logging.JSONLogFormatter'
 fi
 
+# update keycloak client secrets
+if [ ! -z "$AUTHENTICATION_PROVIDER" -a "$AUTHENTICATION_PROVIDER" = "KEYCLOAK" ];then
+  echo "Updating Keycloak connection"
+  ${ASADMIN} set-config-property --propertyName=payara.security.openid.clientId --propertyValue=sormas-ui --source=domain
+  ${ASADMIN} set-config-property --propertyName=payara.security.openid.scope --propertyValue=openid --source=domain
+  ${ASADMIN} set-config-property --propertyName=payara.security.openid.providerURI --propertyValue=https://${SORMAS_SERVER_URL}/keycloak/auth/realms/SORMAS --source=domain
+  ${ASADMIN} set-config-property --propertyName=payara.security.openid.clientSecret --propertyValue=${KEYCLOAK_SORMAS_UI_SECRET} --source=domain
+  ${ASADMIN} set-config-property --propertyName=payara.security.openid.providerURI --propertyValue=https://${SORMAS_SERVER_URL}/keycloak/auth/realms/SORMAS --source=domain
+  ${ASADMIN} set-config-property --propertyName=sormas.rest.security.oidc.json --propertyValue="{\"realm\":\"SORMAS\",\"auth-server-url\":\"https://${SORMAS_SERVER_URL}/keycloak/auth\",\"ssl-required\":\"external\",\"resource\":\"sormas-rest\",\"credentials\":{\"secret\":\"${KEYCLOAK_SORMAS_REST_SECRET}\"},\"confidential-port\":0,\"principal-attribute\":\"preferred_username\",\"enable-basic-auth\":true}" --source=domain
+  ${ASADMIN} set-config-property --propertyName=sormas.backend.security.oidc.json --propertyValue="{\"realm\":\"SORMAS\",\"auth-server-url\":\"https://${SORMAS_SERVER_URL}/keycloak/auth/\",\"ssl-required\":\"external\",\"resource\":\"sormas-backend\",\"credentials\":{\"secret\":\"${KEYCLOAK_SORMAS_BACKEND_SECRET}\"},\"confidential-port\":0}" --source=domain
+fi
+
 ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
 
@@ -137,9 +149,20 @@ sed -i "s/country.center.latitude=.*/country.center.latitude=${LATITUDE}/" ${DOM
 sed -i "s/country.center.longitude=.*/country.center.longitude=${LONGITUDE}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/map.zoom=.*/map.zoom=${MAP_ZOOM}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s;app.url=.*;app.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk;" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/\#geocodingOsgtsEndpoint=.*/geocodingOsgtsEndpoint=https:\/\/sg.geodatenzentrum.de\/gdz_geokodierung_bund__${GEO_UUID}/" ${DOMAIN_DIR}/sormas.properties
+
+#------------------GEOCODING
+sed -i "/^geocodingServiceUrlTemplate/d " ${DOMAIN_DIR}/sormas.properties
+sed -i "/^geocodingLongitudeJsonPath/d " ${DOMAIN_DIR}/sormas.properties
+sed -i "/^geocodingLatitudeJsonPath/d " ${DOMAIN_DIR}/sormas.properties
+echo -e "geocodingServiceUrlTemplate=${GEO_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "geocodingLongitudeJsonPath=${GEO_LONG_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "geocodingLatitudeJsonPath=${GEO_LAT_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
+sed -i "s/\${GEO_UUID}/${GEO_UUID}/" ${DOMAIN_DIR}/sormas.properties
+
 sed -i "s/\#rscript.executable=.*/rscript.executable=Rscript/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#\s\devmode=.*/devmode=${DEVMODE}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/\#\s\daysAfterCaseGetsArchived=.*/daysAfterCaseGetsArchived=${CASEARCHIVEDAYS}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/\#\s\daysAfterEventGetsArchived=.*/daysAfterEventGetsArchived=${EVENTARCHIVEDAYS}/" ${DOMAIN_DIR}/sormas.properties
 if [ ! -z "$PIA_URL" ];then
 sed -i "s/\#interface.pia.url=.*/interface.pia.url=${PIA_URL}/" ${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.symptomjournal.url = ${SJ_URL}" >>${DOMAIN_DIR}/sormas.properties
@@ -147,9 +170,25 @@ echo "interface.symptomjournal.authurl = ${SJ_AUTH}" >>${DOMAIN_DIR}/sormas.prop
 echo "interface.symptomjournal.clientid = ${SJ_CLIENTID}" >>${DOMAIN_DIR}/sormas.properties
 echo "interface.symptomjournal.secret = ${SJ_SECRET}" >>${DOMAIN_DIR}/sormas.properties
 fi
-if [ ! -z "$PD_URL" ];then
+
+
+#------------------CLIMEDO CONFIG
+sed -i "/^interface\.patientdiary\.url/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^interface\.patientdiary\.externaldataurl/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^interface\.patientdiary\.authurl/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^interface\.patientdiary\.email/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^interface\.patientdiary\.password/d" "${DOMAIN_DIR}/sormas.properties"
+
+if [ ! -z "$PATIENTDIARY_ENABLED" ];then
 echo -e "\ninterface.patientdiary.url=${PD_URL}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.patientdiary.externaldataurl=${PD_EXTERNAL_DATA_URL}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.patientdiary.authurl=${PD_AUTH_URL}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.patientdiary.email=${PD_EMAIL}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.patientdiary.password=${PD_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 fi
+
+
+#------------------BRANDING CONFIG
 if [ ! -z "$CUSTOMBRANDING_ENABLED" ];then
 sed -i "s/\#custombranding=false/custombranding=${CUSTOMBRANDING_ENABLED}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#custombranding.name=.*/custombranding.name=${CUSTOMBRANDING_NAME}/" ${DOMAIN_DIR}/sormas.properties
@@ -157,12 +196,23 @@ echo -e "\ncustombranding.logo.path=${CUSTOMBRANDING_LOGO_PATH}" >>${DOMAIN_DIR}
 echo -e "\ncustombranding.useloginsidebar=${CUSTOMBRANDING_USE_LOGINSIDEBAR}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ncustombranding.loginbackground.path=${CUSTOMBRANDING_LOGINBACKGROUND_PATH}" >>${DOMAIN_DIR}/sormas.properties
 fi
+
+
+#------------------SORMAS2SORMAS CONFIG
+sed -i "/^sormas2sormas\.serverAccessDataFileName/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^sormas2sormas\.keystoreName/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^sormas2sormas\.keystorePass/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^sormas2sormas\.truststoreName/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^sormas2sormas\.truststorePass/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^sormas2sormas\.path/d" "${DOMAIN_DIR}/sormas.properties"
+
 if [ ! -z "$SORMAS2SORMAS_ENABLED" ];then
-echo -e "\nsormas2sormas.keyAlias=${SORMAS2SORMAS_KEYALIAS}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nsormas2sormas.serverAccessDataFileName=${SORMAS_SERVER_URL}-server-access-data.csv" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.keystoreName=${SORMAS2SORMAS_KEYSTORENAME}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.keystorePass=${SORMAS2SORMAS_KEYPASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.truststoreName=${SORMAS2SORMAS_TRUSTSTORENAME}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.truststorePass=${SORMAS2SORMAS_TRUSTSTOREPASSWORD}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nsormas2sormas.path=${SORMAS2SORMAS_DIR}" >>${DOMAIN_DIR}/sormas.properties
 
 export SORMAS2SORMAS_DIR=/opt/sormas/sormas2sormas
 export SORMAS_ORG_ID=${SORMAS_ORG_ID}
@@ -180,6 +230,20 @@ export S2S_NON_INTERACTIVE
 fi
 
 
+#------------------AUTHENTICATION PROVIDER CONFIG
+if [ ! -z "$AUTHENTICATION_PROVIDER" ];then
+sed -i "/^authentication.provider=/{h;s/=.*/=${AUTHENTICATION_PROVIDER}/};\${x;/^$/{s//authentication.provider=${AUTHENTICATION_PROVIDER}/;H};x}" ${DOMAIN_DIR}/sormas.properties
+fi
+
+
+#------------------SURVNET CONFIG
+sed -i "/^survnet\.url/d" "${DOMAIN_DIR}/sormas.properties"
+if [ ! -z "$SURVNET_ENABLED" ];then
+echo -e "\nsurvnet.url=${SURVNET_URL}" >>${DOMAIN_DIR}/sormas.properties
+fi
+
+
+# import R library
 Rscript -e 'library(epicontacts)'
 Rscript -e 'library(RPostgreSQL)'
 Rscript -e 'library(visNetwork)'
@@ -208,6 +272,13 @@ while [ $(check_java) -gt 0 ];do
     exit 1
   fi
 done
+
+if [ ! -z "$AUTHENTICATION_PROVIDER" -a "$AUTHENTICATION_PROVDER" != "SORMAS" ];then
+  echo "Updating payara keystores"
+  keytool -storepass ${CACERTS_PASS} -importcert -trustcacerts -destkeystore ${DOMAIN_DIR}/config/cacerts.jks -file /tmp/certs/sormas-docker-test.com.crt -alias sormas-docker-test.com -noprompt
+  openssl pkcs12 -export -in /tmp/certs/sormas-docker-test.com.crt -inkey /tmp/certs/sormas-docker-test.com.key -out sormas-docker-test.com.p12 -name sormas-docker-test.com -password pass:${KEYSTORE_PASS}
+  keytool -storepass ${KEYSTORE_PASS} -importkeystore -destkeystore ${DOMAIN_DIR}/config/keystore.jks -srckeystore sormas-docker-test.com.p12 -srcstoretype PKCS12 -srcstorepass changeit -alias sormas-docker-test.com -noprompt
+fi
 
 echo "Server setup completed."
 echo

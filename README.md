@@ -118,7 +118,43 @@ These Options are available to customize the installation:
 
 **JSON_LOGGING** Change the output of sormas server.log to JSON format
 
-**PROMETHEUS_SERVERS** One or more ip-addresses from prometheus monitoring servers (to scrape metrics from payara) seperated by spaces. If you don't have one, just leave it at 127.0.0.1
+**PROMETHEUS_SERVERS** One or more ip-addresses of prometheus monitoring servers (to scrape metrics from payara) seperated by spaces. If you don't have one, just leave it at 127.0.0.1
+
+**CASEARCHIVEDAYS** The number of days without any changes after which cases are automatically archived (i.e. they will no longer be displayed in the normal directories, but still count towards statistics or counts on the dashboard and can still be viewed by users with the respective user right). If set to 0, automatic archiving is disabled.
+
+**EVENTARCHIVEDAYS** The number of days without any changes after which events are automatically archived (i.e. they will no longer be displayed in the normal directories, but still count towards statistics or counts on the dashboard and can still be viewed by users with the respective user right). If set to 0, automatic archiving is disabled.
+
+**CUSTOMBRANDING_ENABLED** Enables the custombranding feature
+
+**CUSTOMBRANDING_NAME** Name of the custombranding
+
+**CUSTOMBRANDING_LOGO_PATH** Path to the custom logo
+
+**CUSTOMBRANDING_USE_LOGINSIDEBAR** Enables the customization of the loginsidebar
+
+**CUSTOMBRANDING_LOGINBACKGROUND_PATH** Path to the custom loginsidebar image
+
+**SORMAS2SORMAS_ENABLED** Enables the "Sormas to Sormas" feature
+
+**SORMAS2SORMAS_KEYALIAS** Alias of the key
+
+**SORMAS2SORMAS_KEYSTORENAME** Name of the used keystore
+
+**SORMAS2SORMAS_KEYPASSWORD** Password for the keystore
+
+**SORMAS2SORMAS_TRUSTSTORENAME** Name of the truststore
+
+**SORMAS2SORMAS_TRUSTSTOREPASSWORD** Password for the truststore
+
+**SORMAS2SORMAS_DIR** Path to the sormas to sormas directory
+
+**SORMAS_ORG_ID** ID of the organisiation
+
+**SORMAS_ORG_NAME** Name of the organisation
+
+**SORMAS_S2S_CERT_PASS** Password for the certificate
+
+**SORMAS_S2S_REST_PASSWORD** Password for the rest user to connect to sormas
 
 ### NGINX (experimental)
 If you choose to use the nginx with built in certbot, use the docker-compose_nginx.yml.<br>
@@ -129,6 +165,52 @@ Please note this is still in experimental state und not tested in production.
 **LETSENCRYPT_MAIL** Mail address for LetsEncrypt expiry notifications
 
 **TZ** The timezone to chose (available timezones can be found here: https://nodatime.org/TimeZones)
+
+### Keycloak (experimental)
+If deploying SORMAS bundled with Keycloak use the docker-compose-keycloak.yml<br>
+Please note this is still in experimental state und not tested in production.
+
+#### Database for Keycloak
+See also [keycloak-postgres](./keycloak-postgres/README.md)
+
+**KEYCLOAK_DB_USER** User for the Keycloak database
+
+**KEYCLOAK_DB_PASSWORD** Password of the Keycloak database user
+
+**KEYCLOAK_DB_HOST** Hostname or IP of the Keycloak database host
+
+**KEYCLOAK_DB_NAME** Name of the Keycloak database
+
+**KEYCLOAK_DB_VENDOR** Vendor for the Keycloak database (postgres by default)
+
+#### Keycloak server
+**KEYCLOAK_ADMIN_USER** User for the Keycloak admin console
+
+**KEYCLOAK_ADMIN_PASSWORD** Password for the Keycloak admin user
+
+**KEYCLOAK_SORMAS_UI_SECRET** Secret code for the sormas-ui client
+
+**KEYCLOAK_SORMAS_REST_SECRET** Secret code for the sormas-rest client. Also used by the SORMAS application
+
+**KEYCLOAK_SORMAS_BACKEND_SECRET** Secret code for the sormas-backend client. Also used by the SORMAS application
+
+#### SORMAS Configs for using with keycloak
+**CACERTS_PASS** Password for Payara certificate store
+
+**KEYSTORE_PASS** Password for Payara keystore
+
+#### CPU and memory usage limitation for Keycloak
+**KEYCLOAK_MEM** Maximum available memory for the Keycloak web server. (For example 1000M for 1000MB)
+
+**KEYCLOAK_MEM_RESERVED** Memory reserved for the Keycloak web server. This memory may not be used by other processes on the same host. (For example 400M for 400MB)
+
+**KEYCLOAK_CPUS**  CPU cores reserved for the Keycloak web server. This should be a floating point value. (Example: 3.0 )
+
+**KEYCLOAK_DB_MEM** Maximum available memory for the Keycloak database server. (For example 3000M for 3000MB)
+
+**KEYCLOAK_DB_MEM_RESERVED** Memory reserved for the Keycloak database server. This memory may not be used by other processes on the same host. (For example 2500M for 2500MB)
+
+**KEYCLOAK_DB_CPUS** CPU cores reserved for the Keycloak database server. This should be a floating point value. (Example: 3.0 )
 
 
 ### Changing the host name
