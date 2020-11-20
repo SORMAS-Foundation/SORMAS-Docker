@@ -7,6 +7,7 @@ USER_NAME=payara
 PAYARA_HOME=${ROOT_PREFIX}/opt/payara5
 DOMAINS_HOME=${ROOT_PREFIX}/opt/domains
 TEMP_DIR=${ROOT_PREFIX}/opt/${DOMAIN_NAME}/temp
+DOCUMENTS_DIR=${ROOT_PREFIX}/opt/${DOMAIN_NAME}/documents
 GENERATED_DIR=${ROOT_PREFIX}/opt/${DOMAIN_NAME}/generated
 CUSTOM_DIR=${ROOT_PREFIX}/opt/${DOMAIN_NAME}/custom
 
@@ -23,6 +24,7 @@ LOG_FILE_NAME=server_update_`date +"%Y-%m-%d_%H-%M-%S"`.log
 mkdir -p ${PAYARA_HOME}
 mkdir -p ${DOMAINS_HOME}
 mkdir -p ${TEMP_DIR}
+mkdir -p ${DOCUMENTS_DIR}
 mkdir -p ${GENERATED_DIR}
 mkdir -p ${CUSTOM_DIR}
 mkdir -p ${DEPLOY_PATH}
