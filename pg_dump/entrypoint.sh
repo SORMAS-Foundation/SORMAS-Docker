@@ -14,7 +14,9 @@ set -e
 # MIN="17"
 # HOUR="*/2"
 
-MIN=${MIN:-15,45}
+RAND=$(( $RANDOM % 19 + 1 ))
+
+MIN=${MIN:-${RAND},$(( ${RAND} + 30 ))}
 HOUR=${HOUR:-*}
 
 cat<<EOF | crontab -

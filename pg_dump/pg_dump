@@ -3,7 +3,7 @@
 DATE=$( date +%F-%T )
 DUMP_PATH=/var/opt/db_dumps
 LOG=${DUMP_PATH}/pg_dump.log
-KEEP=${KEEP:-1}
+KEEP=${KEEP:-300}
 
 DBS="${DB_NAME} ${DB_NAME_AUDIT}"
 
@@ -22,6 +22,6 @@ done
 
 echo "Deleting old dumps" >> ${LOG}
 # keep 1 day => delete all files with mtime +0
-find ${DUMP_PATH} -name \*.sql.gz -mtime +$(( ${KEEP} - 1 )) | xargs -r rm
-find ${DUMP_PATH} -name \*.sql -mtime +$(( ${KEEP} - 1 )) | xargs -r rm
+find ${DUMP_PATH} -name \*.sql.gz -mmin +$(( ${KEEP} - 1 )) | xargs -r rm
+find ${DUMP_PATH} -name \*.sql -mmin +$(( ${KEEP} - 1 )) | xargs -r rm
 echo >> ${LOG};echo >> ${LOG}
