@@ -43,6 +43,7 @@ services:
       - GEO_LONG_TEMPLATE=${GEO_LONG_TEMPLATE}
       - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}
     volumes:
+      - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
       - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
       - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
