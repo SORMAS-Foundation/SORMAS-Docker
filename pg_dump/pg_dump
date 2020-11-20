@@ -21,7 +21,6 @@ for d in ${DBS};do
 done
 
 echo "Deleting old dumps" >> ${LOG}
-# keep 1 day => delete all files with mtime +0
-find ${DUMP_PATH} -name \*.sql.gz -mmin +$(( ${KEEP} - 1 )) | xargs -r rm
-find ${DUMP_PATH} -name \*.sql -mmin +$(( ${KEEP} - 1 )) | xargs -r rm
-echo >> ${LOG};echo >> ${LOG}
+# keep 1 day => delete all but the last 10 dumps
+ls -rt ${DUMP_PATH}/sormas.20*.gz | head -n -10 | xargs -r rm
+ls -rt ${DUMP_PATH}/sormas_audit.20*.gz | head -n -10 | xargs -r rm
