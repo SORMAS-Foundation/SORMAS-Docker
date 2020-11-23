@@ -42,6 +42,8 @@ services:
       - GEO_TEMPLATE=${GEO_TEMPLATE}
       - GEO_LONG_TEMPLATE=${GEO_LONG_TEMPLATE}
       - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}
+      - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
+      - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
     volumes:
       - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
@@ -95,9 +97,6 @@ services:
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
-      - MIN=15,45 # Twice the hour on 15 and 45 (use crontab notation)
-      - HOUR= # Keep empty for every hour. Use crontab notation otherwise
-      - KEEP=1 # keep db dumps for one day in backup folder
     volumes:
       - /backup:/var/opt/db_dumps
     cpus: ${DB_DUMP_CPUS}
