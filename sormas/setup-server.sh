@@ -126,6 +126,10 @@ cp ${DEPLOY_PATH}/deploy/apps/*.war ${DOMAIN_DIR}/deployments/
 cp ${DEPLOY_PATH}/deploy/s2s-generate-cert.sh /opt/sormas/sormas2sormas
 cp ${DEPLOY_PATH}/deploy/s2s-import-to-truststore.sh /opt/sormas/sormas2sormas
 
+#Der String "300" tritt ausschließlich an Stellen auf an denen die (txn-)Timeouts definiert werden. Diese werden auf "0" gesetzt um die Timeouts zu deaktivieren
+echo "Configure payara timeouts ..."
+sed -i 's/"300"/"0"/g' ${DOMAIN_DIR}/config/domain.xml
+
 
 ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 
