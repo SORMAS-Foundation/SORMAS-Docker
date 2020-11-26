@@ -16,12 +16,15 @@ set -e
 
 RAND=$(( $RANDOM % 19 + 1 ))
 
-MIN=${MIN:-${RAND},$(( ${RAND} + 30 ))}
-HOUR=${HOUR:-0,4,7,8,9,10,11,12,13,14,15,16,17,18,20}
+MIN00=${MIN:-${RAND}}
+MIN30=${MIN:-$(( ${RAND} + 30 ))}
+HOUR00=${HOUR:-0,4,7-18,20}
+HOUR30=${HOUR:-7-18}
 
 cat<<EOF | crontab -
 # min     hour      day     month     weekday command
-${MIN}    ${HOUR}   *       *         *       /root/pg_dump
+${MIN00}    ${HOUR00}   *       *         *       /root/pg_dump
+${MIN30}    ${HOUR30}   *       *         *       /root/pg_dump
 EOF
 
 # see: https://github.com/dubiousjim/dcron/issues/13
