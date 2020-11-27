@@ -170,22 +170,28 @@ echo -e "\ninterface.symptomjournal.url = ${SJ_URL}" >>${DOMAIN_DIR}/sormas.prop
 echo "interface.symptomjournal.authurl = ${SJ_AUTH}" >>${DOMAIN_DIR}/sormas.properties
 echo "interface.symptomjournal.clientid = ${SJ_CLIENTID}" >>${DOMAIN_DIR}/sormas.properties
 echo "interface.symptomjournal.secret = ${SJ_SECRET}" >>${DOMAIN_DIR}/sormas.properties
+echo "interface.symptomjournal.defaultuser.username = ${SJ_DEFAULT_USERNAME}" >>${DOMAIN_DIR}/sormas.properties
+echo "interface.symptomjournal.defaultuser.password = ${SJ_DEFAULT_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 fi
 
 
 #------------------CLIMEDO CONFIG
 sed -i "/^interface\.patientdiary\.url/d" "${DOMAIN_DIR}/sormas.properties"
-sed -i "/^interface\.patientdiary\.externaldataurl/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^interface\.patientdiary\.probandsurl/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^interface\.patientdiary\.authurl/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^interface\.patientdiary\.email/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^interface\.patientdiary\.password/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^interface\.patientdiary\.defaultuser\.username/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^interface\.patientdiary\.defaultuser\.password/d" "${DOMAIN_DIR}/sormas.properties"
 
 if [ ! -z "$PATIENTDIARY_ENABLED" ];then
 echo -e "\ninterface.patientdiary.url=${PD_URL}" >>${DOMAIN_DIR}/sormas.properties
-echo -e "\ninterface.patientdiary.externaldataurl=${PD_EXTERNAL_DATA_URL}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.patientdiary.probandsurl=${PD_PROBANDS_URL}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.authurl=${PD_AUTH_URL}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.email=${PD_EMAIL}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.password=${PD_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.patientdiary.defaultuser.username=${PD_DEFAULT_USERNAME}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.patientdiary.defaultuser.password=${PD_DEFAULT_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 fi
 
 
