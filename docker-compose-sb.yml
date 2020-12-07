@@ -1,0 +1,137 @@
+version: '2.3'
+
+networks:
+  sormas:
+    name: sormas
+
+services:
+  sormas:
+    restart: unless-stopped
+    labels:
+      - autoheal=true
+        # override for stop timeout seconds during restart
+      - autoheal.stop.timeout=30
+    links:
+      - postgres
+    image: hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
+    environment:
+      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+      - DB_HOST=${DB_HOST}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - DB_JDBC_MAXPOOLSIZE=${DB_JDBC_MAXPOOLSIZE}
+      - DB_NAME=${DB_NAME}
+      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_FROM=${MAIL_FROM}
+      - SORMAS_VERSION=${SORMAS_VERSION}
+      - LOCALE=${LOCALE}
+      - EPIDPREFIX=${EPIDPREFIX}
+      - SEPARATOR=${SEPARATOR}
+      - EMAIL_SENDER_ADDRESS=${EMAIL_SENDER_ADDRESS}
+      - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
+      - LATITUDE=${LATITUDE}
+      - LONGITUDE=${LONGITUDE}
+      - MAP_ZOOM=${MAP_ZOOM}
+      - TZ=${TZ}
+      - JVM_MAX=${APPSERVER_JVM_MAX}
+      - GEO_UUID=${GEO_UUID}
+      - DEVMODE=${DEVMODE}
+      - JSON_LOGGING=${JSON_LOGGING}
+      - CUSTOMBRANDING_ENABLED=${CUSTOMBRANDING_ENABLED}
+      - CUSTOMBRANDING_NAME=${CUSTOMBRANDING_NAME}
+      - CUSTOMBRANDING_LOGO_PATH=${CUSTOMBRANDING_LOGO_PATH}
+      - CUSTOMBRANDING_USE_LOGINSIDEBAR=${CUSTOMBRANDING_USE_LOGINSIDEBAR}
+      - CUSTOMBRANDING_LOGINBACKGROUND_PATH=${CUSTOMBRANDING_LOGINBACKGROUND_PATH}
+      - GEO_TEMPLATE=${GEO_TEMPLATE}
+      - GEO_LONG_TEMPLATE=${GEO_LONG_TEMPLATE}
+      - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}
+      - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
+      - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
+    volumes:
+      - ${SORMAS_PATH}/documents:/opt/sormas/documents
+      - ${SORMAS_PATH}/custom:/opt/sormas/custom
+      - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
+      - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
+    mem_limit: ${APPSERVER_MEM}
+    mem_reservation: ${APPSERVER_MEM_RESERVED}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-I", "http://localhost:6080/sormas-ui/login"]
+      interval: 30s
+      timeout: 7s
+      retries: 3
+      start_period: 300s
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      sormas:
+
+  postgres:
+    restart: unless-stopped
+    labels:
+      - autoheal=true
+    command: -c 'config_file=/etc/postgresql/postgresql.conf'
+    image: hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
+    environment:
+      - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - DB_NAME=sormas
+      - DB_NAME_AUDIT=sormas_audit
+      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - TZ=${TZ}
+    volumes:
+      - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    mem_limit: ${DB_MEM}
+    mem_reservation: ${DB_MEM_RESERVED}
+    healthcheck:
+      test: ["CMD", "psql", "-U", "${SORMAS_POSTGRES_USER}", "-c", "SELECT 1;", "${DB_NAME}"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    networks:
+      sormas:
+
+  pg_dump:
+    restart: unless-stopped
+    image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=sormas
+      - DB_NAME_AUDIT=sormas_audit
+      - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - TZ=${TZ}
+    volumes:
+      - /backup:/var/opt/db_dumps
+    cpus: ${DB_DUMP_CPUS}
+    mem_limit: ${DB_DUMP_MEM}
+    mem_reservation: ${DB_DUMP_MEM_RESERVED}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      sormas:
+
+  autoheal:
+    restart: unless-stopped
+    image: willfarrell/autoheal
+    environment:
+        # watch all running containers.
+      - AUTOHEAL_CONTAINER_LABEL=all
+        # check every 10 seconds
+      - AUTOHEAL_INTERVAL=10
+        # wait 0 seconds before first health check
+      - AUTOHEAL_START_PERIOD=0
+        # Docker waits max 10 seconds (the Docker default) for a container to stop before killing
+      - AUTOHEAL_DEFAULT_STOP_TIMEOUT=10
+        # Unix socket for curl requests to Docker API
+      - DOCKER_SOCK=/var/run/docker.sock
+        # --max-time seconds for curl requests to Docker API
+      - CURL_TIMEOUT=30
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock 
