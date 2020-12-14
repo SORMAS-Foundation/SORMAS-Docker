@@ -49,6 +49,11 @@ services:
       - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}
       - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
       - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
+      - PIA_URL=${PIA_URL}
+      - SJ_URL=https://${PIA_URL}/user/connectSormas
+      - SJ_AUTH=https://${PIA_URL}/user/requestToken
+      - SJ_CLIENTID=${SJ_CLIENTID}
+      - SJ_SECRET=${SJ_SECRET}
     volumes:
       - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
