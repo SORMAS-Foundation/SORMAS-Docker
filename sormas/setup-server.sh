@@ -133,6 +133,7 @@ echo "Set logging fo documents to WARNING level"
 sed -i '/<root level="debug">/i\ \ \ \ <logger name="fr.opensagres.xdocreport" level="WARN" />' ${DOMAIN_DIR}/config/logback.xml
 
 
+
 ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 
 rm -rf ${DOMAIN_DIR}/osgi-cache/*
