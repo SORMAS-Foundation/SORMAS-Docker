@@ -130,7 +130,8 @@ cp ${DEPLOY_PATH}/deploy/s2s-import-to-truststore.sh /opt/sormas/sormas2sormas
 echo "Configure payara timeouts ..."
 sed -i 's/"300"/"0"/g' ${DOMAIN_DIR}/config/domain.xml
 echo "Set logging fo documents to WARNING level"
-sed -i '/^<\/configuration>/i <\/root>\n<logger name="fr.opensagres.xdocreport" level="WARN" \/>' ${DOMAIN_DIR}/config/logback.xml
+sed -i '/<root level="debug">/i\ \ \ \ <logger name="fr.opensagres.xdocreport" level="WARN" />' ${DOMAIN_DIR}/config/logback.xml
+
 
 
 ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
