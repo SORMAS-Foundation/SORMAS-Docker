@@ -97,6 +97,13 @@ echo "Configuring domain and database connection..."
 ${ASADMIN} delete-jvm-options -Xmx4096m
 ${ASADMIN} create-jvm-options -Xmx${JVM_MAX}
 
+# Proxy settings
+if [ ! -z "$PROXY_HOST" ];then
+  echo "Updating Proxy Settings"
+${ASADMIN} create-system-properties --target server-config org.jboss.resteasy.jaxrs.client.proxy.host=${PROXY_HOST}
+${ASADMIN} create-system-properties --target server-config org.jboss.resteasy.jaxrs.client.proxy.port=${PROXY_PORT}
+${ASADMIN} create-system-properties --target server-config org.jboss.resteasy.jaxrs.client.proxy.scheme=${PROXY_SCHEME}
+fi
 # JDBC pool
 delete_jdbc_connection_pool "jdbc/${DOMAIN_NAME}DataPool" "${DOMAIN_NAME}DataPool"
 ${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool
