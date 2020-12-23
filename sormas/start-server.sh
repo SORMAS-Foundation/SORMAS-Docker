@@ -171,6 +171,8 @@ sed -i "s/\#rscript.executable=.*/rscript.executable=Rscript/" ${DOMAIN_DIR}/sor
 sed -i "s/\#\s\devmode=.*/devmode=${DEVMODE}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#\s\daysAfterCaseGetsArchived=.*/daysAfterCaseGetsArchived=${CASEARCHIVEDAYS}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#\s\daysAfterEventGetsArchived=.*/daysAfterEventGetsArchived=${EVENTARCHIVEDAYS}/" ${DOMAIN_DIR}/sormas.properties
+
+#------------------PIA CONFIG
 if [ ! -z "$PIA_URL" ];then
 sed -i "s/\#interface.pia.url=.*/interface.pia.url=${PIA_URL}/" ${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.symptomjournal.url = ${SJ_URL}" >>${DOMAIN_DIR}/sormas.properties
@@ -180,7 +182,6 @@ echo "interface.symptomjournal.secret = ${SJ_SECRET}" >>${DOMAIN_DIR}/sormas.pro
 echo "interface.symptomjournal.defaultuser.username = ${SJ_DEFAULT_USERNAME}" >>${DOMAIN_DIR}/sormas.properties
 echo "interface.symptomjournal.defaultuser.password = ${SJ_DEFAULT_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 fi
-
 
 #------------------CLIMEDO CONFIG
 sed -i "/^interface\.patientdiary\.url/d" "${DOMAIN_DIR}/sormas.properties"
@@ -201,7 +202,6 @@ echo -e "\ninterface.patientdiary.defaultuser.username=${PD_DEFAULT_USERNAME}" >
 echo -e "\ninterface.patientdiary.defaultuser.password=${PD_DEFAULT_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 fi
 
-
 #------------------BRANDING CONFIG
 if [ ! -z "$CUSTOMBRANDING_ENABLED" ];then
 sed -i "s/\#custombranding=false/custombranding=${CUSTOMBRANDING_ENABLED}/" ${DOMAIN_DIR}/sormas.properties
@@ -210,7 +210,6 @@ echo -e "\ncustombranding.logo.path=${CUSTOMBRANDING_LOGO_PATH}" >>${DOMAIN_DIR}
 echo -e "\ncustombranding.useloginsidebar=${CUSTOMBRANDING_USE_LOGINSIDEBAR}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ncustombranding.loginbackground.path=${CUSTOMBRANDING_LOGINBACKGROUND_PATH}" >>${DOMAIN_DIR}/sormas.properties
 fi
-
 
 #------------------SORMAS2SORMAS CONFIG
 sed -i "/^sormas2sormas\.serverAccessDataFileName/d" "${DOMAIN_DIR}/sormas.properties"
