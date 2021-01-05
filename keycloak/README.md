@@ -12,7 +12,7 @@
 
 The Keycloak container is built from `jboss/keycloak:11.0.0`.
 
-It loads a predefined `SORMAS` Realm and `sormas` theme.
+It loads a predefined `SORMAS` Realm, `sormas` theme and a custom SPI `sormas-keycloak-service-provider`.
 
 ## SORMAS Realm
 
@@ -35,13 +35,13 @@ The container comes with a custom SORMAS theme which provides custom styles for 
 * Set Password
 * Reset Password
 
-Besides custom styles there are some custom translation messages.
+Besides, custom styles there are some custom translation messages.
 
 ## Deploy
 
 ### Environment variables
 
-The deploy can be customized trough the following environment variables.
+The deployment can be customized through the following environment variables.
 ```
 KEYCLOAK_DB_HOST
 KEYCLOAK_DB_NAME
@@ -59,6 +59,8 @@ KEYCLOAK_MEM_RESERVED
 KEYCLOAK_SORMAS_UI_SECRET
 KEYCLOAK_SORMAS_REST_SECRET
 KEYCLOAK_SORMAS_BACKEND_SECRET
+
+SORMAS_SERVER_URL
 ```
 
 In case Keycloak is enabled as an Authentication provider, the following environment variables are needed for the SORMAS app:
@@ -70,7 +72,7 @@ KEYSTORE_PASS
 
 ### Manual configurations
 
-Besides the deploy variables, some manual configuration is required as well.
+Besides, the deployment variables, some manual configuration is required as well.
 
 After deploy the following configurations have to be done from the Keycloak Admin Console:
 1. Enable internationalization for `sormas-ui` and select the available locales and default locale.
