@@ -64,6 +64,7 @@ services:
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
       - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
       - ./apache2/certs:/tmp/certs
+      - ${SORMAS_PATH}/demis:/tmp/${DOMAIN_NAME}/config/demis
     cpus: ${APPSERVER_CPUS}
     mem_limit: ${APPSERVER_MEM}
     mem_reservation: ${APPSERVER_MEM_RESERVED}
