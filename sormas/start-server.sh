@@ -255,6 +255,11 @@ if [ ! -z "$SURVNET_ENABLED" ];then
 echo -e "\nsurvnet.url=${SURVNET_URL}" >>${DOMAIN_DIR}/sormas.properties
 fi
 
+#------------------DEMIS CONFIG
+if [ ! -z "$DEMIS_ENABLED" ];then
+ cp -a /tmp/${DOMAIN_NAME}/config/demis/. ${DOMAIN_DIR}/config/
+ echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
+fi
 
 # import R library
 Rscript -e 'library(epicontacts)'
