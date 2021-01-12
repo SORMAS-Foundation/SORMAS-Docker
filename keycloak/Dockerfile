@@ -32,6 +32,7 @@ RUN TEMP_PATH=$(mktemp -d) && \
     unzip sormas.zip deploy/keycloak/*  && \
     mv deploy/keycloak/themes/* $JBOSS_HOME/themes && \
     mv deploy/keycloak/SORMAS.json $JBOSS_HOME/SORMAS.json && \
+    mv deploy/keycloak/*.jar $JBOSS_HOME/standalone/deployments && \
     rm -rf ${TEMP_PATH}
 USER 1000
 

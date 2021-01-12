@@ -12,7 +12,7 @@
 
 The Keycloak container is built from `jboss/keycloak:11.0.0`.
 
-It loads a predefined `SORMAS` Realm and `sormas` theme.
+It loads a predefined `SORMAS` Realm, `sormas` theme and a custom SPI `sormas-keycloak-service-provider`.
 
 ## SORMAS Realm
 
@@ -59,6 +59,8 @@ KEYCLOAK_MEM_RESERVED
 KEYCLOAK_SORMAS_UI_SECRET
 KEYCLOAK_SORMAS_REST_SECRET
 KEYCLOAK_SORMAS_BACKEND_SECRET
+
+SORMAS_SERVER_URL
 ```
 
 In case Keycloak is enabled as an Authentication provider, the following environment variables are needed for the SORMAS app:
