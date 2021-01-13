@@ -78,3 +78,12 @@ After deploy the following configurations have to be done from the Keycloak Admi
 1. Enable internationalization for `sormas-ui` and select the available locales and default locale.
 2. Update email SMTP settings for the SORMAS realm
 
+### Keycloak Configuration Upgrade
+
+Keycloak configurations changes usually are part of the [SORMAS.json](https://github.com/hzi-braunschweig/SORMAS-Project/blob/development/sormas-base/setup/keycloak/SORMAS.json) file.
+
+The SORMAS Keycloak image automatically adds any new realm resources by running the [update-realm.sh](update-realm.sh) script at startup.
+This only imports new resources and doesn't remove/update existing resources.
+
+Any update or deletion have to be done manually using the Keycloak Admin console.
+
