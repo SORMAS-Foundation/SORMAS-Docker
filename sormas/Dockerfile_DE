@@ -8,6 +8,7 @@ RUN sed -i -e 's/# de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen && \
 
 ENV LANG de_DE.UTF-8
 ENV LC_ALL de_DE.UTF-8
+ENV DEBUGINFO_ENABLED false
 
 COPY start-server.sh /start-server.sh
 RUN chmod +x /start-server.sh

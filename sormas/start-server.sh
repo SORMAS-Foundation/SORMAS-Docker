@@ -261,7 +261,7 @@ sed -i "/^interface\.demis\.jndiName/d" "${DOMAIN_DIR}/sormas.properties"
 echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
 
 
-echo -e "debuginfo.enabled=false" >${DOMAIN_DIR}/demis-adapter.properties
+echo -e "debuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/demis-adapter.properties
 echo -e "\nfhir.basepath=${FHIR_BASEPATH}" >>${DOMAIN_DIR}/demis-adapter.properties
 echo -e "\nidp.tokenendpoint=${IDP_TOKENENDPOINT}" >>${DOMAIN_DIR}/demis-adapter.properties
 echo -e "\nidp.lab.tokenendpoint=${IDP_LAB_TOKENENDPOINT}" >>${DOMAIN_DIR}/demis-adapter.properties
