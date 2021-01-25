@@ -261,29 +261,30 @@ sed -i "/^interface\.demis\.jndiName/d" "${DOMAIN_DIR}/sormas.properties"
 echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
 
 
-echo -e "debuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/demis-adapter.properties
-echo -e "\nfhir.basepath=${FHIR_BASEPATH}" >>${DOMAIN_DIR}/demis-adapter.properties
-echo -e "\nidp.tokenendpoint=${IDP_TOKENENDPOINT}" >>${DOMAIN_DIR}/demis-adapter.properties
-echo -e "\nidp.lab.tokenendpoint=${IDP_LAB_TOKENENDPOINT}" >>${DOMAIN_DIR}/demis-adapter.properties
+echo -e "debuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nfhir.basepath=${FHIR_BASEPATH}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.tokenendpoint=${IDP_TOKENENDPOINT}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.lab.tokenendpoint=${IDP_LAB_TOKENENDPOINT}" >>${DOMAIN_DIR}/config/demis-adapter.properties
 
-echo -e "\nidp.oegd.proxy=${IDP_OEGD_PROXY}" >>${DOMAIN_DIR}/demis-adapter.properties
-echo -e "\nidp.oegd.clientid=${IDP_OEGD_CLIENTID}" >>${DOMAIN_DIR}/demis-adapter.properties
-echo -e "\nidp.oegd.secret=${IDP_OEGD_SECRET}" >>${DOMAIN_DIR}/demis-adapter.properties
-echo -e "\nidp.oegd.username=${IDP_OEGD_USERNAME}" >>${DOMAIN_DIR}/demis-adapter.properties
-echo -e "\nidp.oegd.truststore=${IDP_OEGD_TRUSTSTORE}" >>${DOMAIN_DIR}/demis-adapter.properties
-echo -e "\nidp.oegd.truststorepassword=${IDP_OEGD_TRUSTSTOREPASSWORD}" >>${DOMAIN_DIR}/demis-adapter.properties
-echo -e "\nidp.oegd.authcertkeystore=${IDP_OEGD_AUTHCERTKEYSTORE}" >>${DOMAIN_DIR}/demis-adapter.properties
-echo -e "\nidp.oegd.authcertpassword=${IDP_OEGD_AUTHCERTPASSWORD}" >>${DOMAIN_DIR}/demis-adapter.properties
-echo -e "\nidp.oegd.authcertalias=${IDP_OEGD_AUTHCERTALIAS}" >>${DOMAIN_DIR}/demis-adapter.properties
+echo -e "\nidp.oegd.proxy=${IDP_OEGD_PROXY}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.clientid=${IDP_OEGD_CLIENTID}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.secret=${IDP_OEGD_SECRET}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.username=${IDP_OEGD_USERNAME}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.truststore=${IDP_OEGD_TRUSTSTORE}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.truststorepassword=${IDP_OEGD_TRUSTSTOREPASSWORD}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.authcertkeystore=${IDP_OEGD_AUTHCERTKEYSTORE}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.authcertpassword=${IDP_OEGD_AUTHCERTPASSWORD}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.authcertalias=${IDP_OEGD_AUTHCERTALIAS}" >>${DOMAIN_DIR}/config/demis-adapter.properties
 
-echo -e "\nidp.oegd.outdated.authcertkeystore=${IDP_OEGD_OUTDATED_AUTHCERTKEYSTORE}" >>${DOMAIN_DIR}/demis-adapter.properties
-echo -e "\nidp.oegd.outdated.authcertpassword=${IDP_OEGD_OUTDATED_AUTHCERTPASSWORD}" >>${DOMAIN_DIR}/demis-adapter.properties
+echo -e "\nidp.oegd.outdated.authcertkeystore=${IDP_OEGD_OUTDATED_AUTHCERTKEYSTORE}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.outdated.authcertpassword=${IDP_OEGD_OUTDATED_AUTHCERTPASSWORD}" >>${DOMAIN_DIR}/config/demis-adapter.properties
 
-echo -e "\nconnect.timeout.ms=${CONNECT_TIMEOUT_MS}" >>${DOMAIN_DIR}/demis-adapter.properties
-echo -e "\nconnection.request.timeout.ms=${CONNECTION_REQUEST_TIMEOUT_MS}" >>${DOMAIN_DIR}/demis-adapter.properties
-echo -e "\nsocket.timeout.ms=${SOCKET_TIMEOUT_MS}" >>${DOMAIN_DIR}/demis-adapter.properties
+echo -e "\nconnect.timeout.ms=${CONNECT_TIMEOUT_MS}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nconnection.request.timeout.ms=${CONNECTION_REQUEST_TIMEOUT_MS}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nsocket.timeout.ms=${SOCKET_TIMEOUT_MS}" >>${DOMAIN_DIR}/config/demis-adapter.properties
 
-echo -e "\ntime.persistence.path=${TIME_PERSISTENCE_PATH}" >>${DOMAIN_DIR}/demis-adapter.properties
+echo -e "\ntime.persistence.path=${TIME_PERSISTENCE_PATH}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+mkdir ${TIME_PERSISTENCE_PATH}
 fi
 
 # import R library
