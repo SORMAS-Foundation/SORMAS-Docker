@@ -276,8 +276,8 @@ echo -e "\nidp.oegd.authcertkeystore=${IDP_OEGD_AUTHCERTKEYSTORE}" >>${DOMAIN_DI
 echo -e "\nidp.oegd.authcertpassword=${IDP_OEGD_AUTHCERTPASSWORD}" >>${DOMAIN_DIR}/demis-adapter.properties
 echo -e "\nidp.oegd.authcertalias=${IDP_OEGD_AUTHCERTALIAS}" >>${DOMAIN_DIR}/demis-adapter.properties
 
-echo -e "\nidp.oegd.outdated.authcertkeystore=${IDP_OEGD_AUTHCERTKEYSTORE}" >>${DOMAIN_DIR}/demis-adapter.properties
-echo -e "\nidp.oegd.outdated.authcertpassword=${IDP_OEGD_AUTHCERTPASSWORD}" >>${DOMAIN_DIR}/demis-adapter.properties
+echo -e "\nidp.oegd.outdated.authcertkeystore=${IDP_OEGD_OUTDATED_AUTHCERTKEYSTORE}" >>${DOMAIN_DIR}/demis-adapter.properties
+echo -e "\nidp.oegd.outdated.authcertpassword=${IDP_OEGD_OUTDATED_AUTHCERTPASSWORD}" >>${DOMAIN_DIR}/demis-adapter.properties
 
 echo -e "\nconnect.timeout.ms=${CONNECT_TIMEOUT_MS}" >>${DOMAIN_DIR}/demis-adapter.properties
 echo -e "\nconnection.request.timeout.ms=${CONNECTION_REQUEST_TIMEOUT_MS}" >>${DOMAIN_DIR}/demis-adapter.properties
