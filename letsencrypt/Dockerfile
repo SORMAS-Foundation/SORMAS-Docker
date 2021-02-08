@@ -92,7 +92,6 @@ RUN \
  else \
         CERTBOT="certbot==${CERTBOT_VERSION}"; \
  fi && \
- python -m pip install -U pip && \
  pip3 install -U \
 	pip && \
  pip3 install -U \
