@@ -69,8 +69,8 @@ services:
     image: hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
     environment:
       - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - DB_NAME=sormas
-      - DB_NAME_AUDIT=sormas_audit
+      - DB_NAME=${DB_NAME}
+      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
@@ -92,8 +92,8 @@ services:
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
     environment:
       - DB_HOST=${DB_HOST}
-      - DB_NAME=sormas
-      - DB_NAME_AUDIT=sormas_audit
+      - DB_NAME=${DB_NAME}
+      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
@@ -154,3 +154,20 @@ services:
       - CURL_TIMEOUT=30
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+  
+  sormas-exporter:
+    restart: unless-stopped
+    image: nicokahlert/sormas_exporter:latest
+    environment:
+      - HOST=${DB_HOST}
+      - PORT=5432
+      - USER=sormas_user
+      - PASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - RETRY=5
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    ports:
+      - "3014:3014"
+
