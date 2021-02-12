@@ -4,7 +4,7 @@ ARG SORMAS_SERVER_URL
 
 
 
-ARG SORMAS_VERSION=1.56.0
+ARG SORMAS_VERSION=1.56.1
 ENV SORMAS_VERSION=$SORMAS_VERSION
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 

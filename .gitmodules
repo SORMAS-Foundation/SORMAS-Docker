@@ -1,0 +1,3 @@
+[submodule "sormas-exporter"]
+	path = sormas-exporter
+	url = git@github.com:nk-designz/sormas-exporter.git
