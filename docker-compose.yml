@@ -154,6 +154,5 @@ services:
       - CURL_TIMEOUT=30
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-  
 
 
