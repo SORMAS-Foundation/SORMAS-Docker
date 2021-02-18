@@ -39,9 +39,9 @@ Listen 443
 
         ProxyRequests Off
         ProxyPreserveHost On
-        ProxyPass /sormas-ui http://sormas:6080/sormas-ui connectiontimeout=5 timeout=600
+        ProxyPass /sormas-ui http://sormas:6080/sormas-ui connectiontimeout=5 timeout=1800
         ProxyPassReverse /sormas-ui http://sormas:6080/sormas-ui
-        ProxyPass /sormas-rest http://sormas:6080/sormas-rest connectiontimeout=5 timeout=600
+        ProxyPass /sormas-rest http://sormas:6080/sormas-rest connectiontimeout=5 timeout=1800
         ProxyPassReverse /sormas-rest http://sormas:6080/sormas-rest
         ProxyPass /keycloak http://keycloak:8080/keycloak connectiontimeout=5 timeout=600
         ProxyPassReverse /keycloak http://keycloak:8080/keycloak

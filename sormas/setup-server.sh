@@ -79,6 +79,9 @@ cp ${DEPLOY_PATH}/deploy/stop-payara-sormas.sh ${DOMAIN_DIR}
 cp ${DEPLOY_PATH}/deploy/logback.xml ${DOMAIN_DIR}/config/
 cp ${DEPLOY_PATH}/deploy/loginsidebar.html ${CUSTOM_DIR}
 cp ${DEPLOY_PATH}/deploy/logindetails.html ${CUSTOM_DIR}
+133
+ 
+
 cp ${DEPLOY_PATH}/deploy/loginmain.html ${CUSTOM_DIR}
 
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
@@ -129,9 +132,9 @@ cp ${DEPLOY_PATH}/deploy/s2s-import-to-truststore.sh /opt/sormas/sormas2sormas
 #Der String "300" tritt ausschließlich an Stellen auf an denen die (txn-)Timeouts definiert werden. Diese werden auf "0" gesetzt um die Timeouts zu deaktivieren
 echo "Configure payara timeouts ..."
 sed -i 's/"300"/"0"/g' ${DOMAIN_DIR}/config/domain.xml
-echo "Set logging fo documents to WARNING level"
-sed -i '/^<\/configuration>/i <\/root>\n<logger name="fr.opensagres.xdocreport" level="WARN" \/>' ${DOMAIN_DIR}/config/logback.xml
 
+# echo "Set logging fo documents to WARNING level"
+# sed -i '/<root level="debug">/i\ \ \ \ <logger name="fr.opensagres.xdocreport" level="WARN" />' ${DOMAIN_DIR}/config/logback.xml
 
 ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 
