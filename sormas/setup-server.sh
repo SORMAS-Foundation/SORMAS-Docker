@@ -78,7 +78,7 @@ cp ${DEPLOY_PATH}/deploy/start-payara-sormas.sh ${DOMAIN_DIR}
 cp ${DEPLOY_PATH}/deploy/stop-payara-sormas.sh ${DOMAIN_DIR}
 cp ${DEPLOY_PATH}/deploy/logback.xml ${DOMAIN_DIR}/config/
 cp ${DEPLOY_PATH}/deploy/loginsidebar.html ${CUSTOM_DIR}
-cp ${DEPLOY_PATH}/deploy/logindetails.html ${CUSTOM_DIR}<<<<<<< integration
+cp ${DEPLOY_PATH}/deploy/logindetails.html ${CUSTOM_DIR}
 133
  
 
