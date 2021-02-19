@@ -138,14 +138,14 @@ services:
 
   autoheal:
     restart: unless-stopped
-    image: willfarrell/autoheal
+    image: willfarrell/autoheal:1.0.0
     environment:
         # watch all running containers.
       - AUTOHEAL_CONTAINER_LABEL=all
         # check every 10 seconds
       - AUTOHEAL_INTERVAL=10
         # wait 0 seconds before first health check
-      - AUTOHEAL_START_PERIOD=0
+      - AUTOHEAL_START_PERIOD=600
         # Docker waits max 10 seconds (the Docker default) for a container to stop before killing
       - AUTOHEAL_DEFAULT_STOP_TIMEOUT=10
         # Unix socket for curl requests to Docker API
