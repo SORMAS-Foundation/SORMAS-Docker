@@ -146,6 +146,7 @@ chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
 #Edit properties
 
 sed -i "s/country.locale=.*/country.locale=${LOCALE}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/country.name=.*/country.name=${COUNTRY_NAME}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/country.epidprefix=.*/country.epidprefix=${EPIDPREFIX}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/#csv.separator=.*/csv.separator=/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/csv.separator=.*/csv.separator=${SEPARATOR}/" ${DOMAIN_DIR}/sormas.properties
