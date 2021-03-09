@@ -156,6 +156,7 @@ These Options are available to customize the installation:
 
 **SORMAS_S2S_REST_PASSWORD** Password for the rest user to connect to sormas
 
+### PIA
 **PIA_URL** Connection to a PIA (Symptom Journal) instance
 
 **SJ_CLIENTID** Name of the PIA user SORMAS is supposed to login with in PIA
