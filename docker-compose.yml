@@ -22,6 +22,7 @@ services:
       - MAIL_FROM=${MAIL_FROM}
       - SORMAS_VERSION=${SORMAS_VERSION}
       - LOCALE=${LOCALE}
+      - COUNTRY_NAME=${COUNTRY_NAME}
       - EPIDPREFIX=${EPIDPREFIX}
       - SEPARATOR=${SEPARATOR}
       - EMAIL_SENDER_ADDRESS=${EMAIL_SENDER_ADDRESS}
@@ -154,5 +155,3 @@ services:
       - CURL_TIMEOUT=30
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-
-
