@@ -157,7 +157,7 @@ These Options are available to customize the installation:
 **SORMAS_S2S_REST_PASSWORD** Password for the rest user to connect to sormas
 
 ### PIA
-If you choose to use the align SORMAS with a PIA instance, use the docker-compose-sb.yml.
+If you choose to align SORMAS with a PIA instance, use the docker-compose-sb.yml.
 The following variables should be set.
 
 **PIA_URL** Connection to a PIA (Symptom Journal) instance
