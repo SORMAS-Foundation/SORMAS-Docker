@@ -156,6 +156,21 @@ These Options are available to customize the installation:
 
 **SORMAS_S2S_REST_PASSWORD** Password for the rest user to connect to sormas
 
+### PIA
+If you choose to align SORMAS with a PIA instance, use the docker-compose-sb.yml.
+The following variables should be set.
+
+**PIA_URL** Connection to a PIA (Symptom Journal) instance
+
+**SJ_CLIENTID** Name of the PIA user SORMAS is supposed to login with in PIA
+
+**SJ_SECRET** Password for the PIA user SORMAS is supposed to login with in PIA
+
+**SJ_DEFAULT_USERNAME** Name of the SORMAS user the PIA instance is supposed to login with in SORMAS. This user will automatically be generated at server startup.
+
+**SJ_DEFAULT_PASSWORD** Password for the SORMAS user the PIA instance is supposed to login with in SORMAS. The password will automatically be generated/updated at server startup.
+
+
 ### NGINX (experimental)
 If you choose to use the nginx with built in certbot, use the docker-compose_nginx.yml.<br>
 Please note this is still in experimental state und not tested in production.
