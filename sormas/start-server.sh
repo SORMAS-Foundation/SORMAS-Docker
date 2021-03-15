@@ -157,6 +157,7 @@ sed -i "s/SMTP_USER/$SMTP_USER/" ${DOMAIN_DIR}/config/logback.xml
 sed -i "s/SMTP_PASSWORD/$SMTP_PASSWORD/" ${DOMAIN_DIR}/config/logback.xml
 sed -i "s/SMTP_STARTTLS/$SMTP_STARTTLS/" ${DOMAIN_DIR}/config/logback.xml
 sed -i "s/SMTP_SSL/$SMTP_SSL/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/SMTP_ASYNC_SENDING/$SMTP_ASYNC_SENDING/" ${DOMAIN_DIR}/config/logback.xml
 sed -i "s/LOG_RECIPIENT_ADDRESS/$LOG_RECIPIENT_ADDRESS/" ${DOMAIN_DIR}/config/logback.xml
 sed -i "s/LOG_SENDER_ADDRESS/$LOG_SENDER_ADDRESS/" ${DOMAIN_DIR}/config/logback.xml
 sed -i "s/LOG_SUBJECT/$LOG_SUBJECT/" ${DOMAIN_DIR}/config/logback.xml
