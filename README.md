@@ -99,6 +99,18 @@ These Options are available to customize the installation:
 
 **MAIL_HOST** Hostname or IP of the SMTP host
 
+**SMTP_PORT** Port of the SMTP service used by log SMTPAppender
+
+**SMTP_USER** Username used by log SMTPAppender for authorization to SMTP service (email in case of Gmail as Relay)
+
+**SMTP_PASSWORD** Password used by log SMTPAppender for authorization to SMTP service (email pass in case of Gmail as Relay)
+
+**SMTP_STARTTLS** Enables switching to SSL from unencrypted mode (boolean -> true/false)
+
+**SMTP_SSL** Enables SSL only (boolean -> true/false)
+
+**SMTP_ASYNC_SENDING** Log SMTPAppender will send emails asynchronously (boolean -> true/false)
+
 **SEPARATOR** CSV separator 
 
 **EMAIL_SENDER_ADDRESS** email from which the mail is going to be send
