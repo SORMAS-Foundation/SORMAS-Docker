@@ -144,8 +144,8 @@ ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
 
 #Edit properties
-
 sed -i "s/country.locale=.*/country.locale=${LOCALE}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/country.name=.*/country.name=${COUNTRY_NAME}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/country.epidprefix=.*/country.epidprefix=${EPIDPREFIX}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/#csv.separator=.*/csv.separator=/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/csv.separator=.*/csv.separator=${SEPARATOR}/" ${DOMAIN_DIR}/sormas.properties
@@ -245,6 +245,9 @@ fi
 
 #------------------AUTHENTICATION PROVIDER CONFIG
 if [ ! -z "$AUTHENTICATION_PROVIDER" ];then
+if [ ! -z "$AUTHENTICATION_PROVIDER" -a "$AUTHENTICATION_PROVIDER" = "KEYCLOAK" ];then
+echo -e "\nauthentication.provider.userSyncAtStartup=true" >>${DOMAIN_DIR}/sormas.properties
+fi
 sed -i "/^authentication.provider=/{h;s/=.*/=${AUTHENTICATION_PROVIDER}/};\${x;/^$/{s//authentication.provider=${AUTHENTICATION_PROVIDER}/;H};x}" ${DOMAIN_DIR}/sormas.properties
 fi
 
@@ -258,7 +261,7 @@ fi
 
 if [ ! -z "$DEMIS_ENABLED" ];then
 sed -i "/^interface\.demis\.jndiName/d" "${DOMAIN_DIR}/sormas.properties"
-echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-1.1.0/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-1.2.0/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
 
 
 echo -e "debuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/config/demis-adapter.properties
