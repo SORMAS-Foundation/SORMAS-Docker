@@ -19,7 +19,6 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_NAME_AUDIT=${DB_NAME_AUDIT}
       - MAIL_HOST=${MAIL_HOST}
-      - SMTP_HOST=${SMTP_HOST}
       - SMTP_PORT=${SMTP_PORT}
       - SMTP_USER=${SMTP_USER}
       - SMTP_PASSWORD=${SMTP_PASSWORD}

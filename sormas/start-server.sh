@@ -151,7 +151,7 @@ ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
 
 #LOGBACK logger
-sed -i "s/SMTP_HOST/$SMTP_HOST/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/MAIL_HOST/$MAIL_HOST/" ${DOMAIN_DIR}/config/logback.xml
 sed -i "s/SMTP_PORT/$SMTP_PORT/" ${DOMAIN_DIR}/config/logback.xml
 sed -i "s/SMTP_USER/$SMTP_USER/" ${DOMAIN_DIR}/config/logback.xml
 sed -i "s/SMTP_PASSWORD/$SMTP_PASSWORD/" ${DOMAIN_DIR}/config/logback.xml
