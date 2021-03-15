@@ -146,6 +146,8 @@ These Options are available to customize the installation:
 
 **SORMAS2SORMAS_TRUSTSTOREPASSWORD** Password for the truststore
 
+**SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN** Set to true to retain external token for cases
+
 **SORMAS2SORMAS_DIR** Path to the sormas to sormas directory
 
 **SORMAS_ORG_ID** ID of the organisiation

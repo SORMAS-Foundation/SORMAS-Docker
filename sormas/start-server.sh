@@ -220,6 +220,7 @@ sed -i "/^sormas2sormas\.truststorePass/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^sormas2sormas\.path/d" "${DOMAIN_DIR}/sormas.properties"
 
 if [ ! -z "$SORMAS2SORMAS_ENABLED" ];then
+sed -i "s/\#sormas2sormas.retainCaseExternalToken=.*/sormas2sormas.retainCaseExternalToken=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}/" ${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.serverAccessDataFileName=${SORMAS_SERVER_URL}-server-access-data.csv" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.keystoreName=${SORMAS2SORMAS_KEYSTORENAME}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.keystorePass=${SORMAS2SORMAS_KEYPASSWORD}" >>${DOMAIN_DIR}/sormas.properties
