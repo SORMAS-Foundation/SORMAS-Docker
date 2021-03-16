@@ -22,6 +22,7 @@ services:
       - MAIL_FROM=${MAIL_FROM}
       - SORMAS_VERSION=${SORMAS_VERSION}
       - LOCALE=${LOCALE}
+      - COUNTRY_NAME=${COUNTRY_NAME}
       - EPIDPREFIX=${EPIDPREFIX}
       - SEPARATOR=${SEPARATOR}
       - EMAIL_SENDER_ADDRESS=${EMAIL_SENDER_ADDRESS}
@@ -32,6 +33,9 @@ services:
       - TZ=${TZ}
       - JVM_MAX=${APPSERVER_JVM_MAX}
       - GEO_UUID=${GEO_UUID}
+      - GEO_TEMPLATE=${GEO_TEMPLATE}
+      - GEO_LONG_TEMPLATE=${GEO_LONG_TEMPLATE}
+      - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}      
       - DEVMODE=${DEVMODE}
       - JSON_LOGGING=${JSON_LOGGING}
       - CUSTOMBRANDING_ENABLED=${CUSTOMBRANDING_ENABLED}
@@ -48,6 +52,7 @@ services:
       - SORMAS_HTTPS_PORT=443
       - SORMAS_S2S_CERT_PASS=${SORMAS_S2S_CERT_PASS}password
       - SORMAS_S2S_REST_PASSWORD=${SORMAS_S2S_REST_PASSWORD}passwordpassword
+      - SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}
       - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
       - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
     volumes:
@@ -149,14 +154,14 @@ services:
 
   autoheal:
     restart: unless-stopped
-    image: willfarrell/autoheal
+    image: willfarrell/autoheal:1.0.0
     environment:
         # watch all running containers.
       - AUTOHEAL_CONTAINER_LABEL=all
         # check every 10 seconds
       - AUTOHEAL_INTERVAL=10
         # wait 0 seconds before first health check
-      - AUTOHEAL_START_PERIOD=0
+      - AUTOHEAL_START_PERIOD=600
         # Docker waits max 10 seconds (the Docker default) for a container to stop before killing
       - AUTOHEAL_DEFAULT_STOP_TIMEOUT=10
         # Unix socket for curl requests to Docker API
