@@ -35,7 +35,7 @@ services:
       - JSON_LOGGING=${JSON_LOGGING}
       - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
       - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
-
+      - NAMESIMILARITYTHRESHOLD=${NAMESIMILARITYTHRESHOLD}
     volumes:
       - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
