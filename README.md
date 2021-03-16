@@ -105,11 +105,17 @@ These Options are available to customize the installation:
 
 **SMTP_PASSWORD** Password used by log SMTPAppender for authorization to SMTP service (email pass in case of Gmail as Relay)
 
-**SMTP_STARTTLS** Enables switching to SSL from unencrypted mode (boolean -> true/false)
+**SMTP_STARTTLS** Enables (negotiates) switching to TLS from unencrypted mode (boolean -> true/false)
 
 **SMTP_SSL** Enables SSL only (boolean -> true/false)
 
 **SMTP_ASYNC_SENDING** Log SMTPAppender will send emails asynchronously (boolean -> true/false)
+
+**LOG_SENDER_ADDRESS** Specifies email FROM property of log SMTPAppender message
+
+**LOG_RECIPIENT_ADDRESS** Specifies email TO property of log SMTPAppender message
+
+**LOG_SUBJECT** Specifies SUBJECT property of log SMTPAppender message
 
 **SEPARATOR** CSV separator 
 
