@@ -1,0 +1,27 @@
+version: '2.3'
+services:
+  postgres-sql:
+    restart: unless-stopped
+    labels:
+      - autoheal=true
+    command: -c 'config_file=/etc/postgresql/postgresql.conf'
+    image: hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
+    environment:
+      - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
+      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - TZ=${TZ}
+    volumes:
+      - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    mem_limit: ${DB_MEM}
+    mem_reservation: ${DB_MEM_RESERVED}
+    healthcheck:
+      test: ["CMD", "psql", "-U", "${SORMAS_POSTGRES_USER}", "-c", "SELECT 1;", "${DB_NAME}"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
