@@ -3,8 +3,8 @@ version: '2.3'
 services:
   sormas:
     extends:
-      file: sormas-application.yml
-      service: sormas-application
+      file: services-base.yml
+      service: base-sormas
     links:
       - postgres
     depends_on:
@@ -13,73 +13,28 @@ services:
 
   postgres:
     extends:
-      file: postgres-sql.yml
-      service: postgres-sql
+      file: services-base.yml
+      service: base-postgres
 
   pg_dump:
-    restart: unless-stopped
-    image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
-    environment:
-      - DB_HOST=${DB_HOST}
-      - DB_NAME=${DB_NAME}
-      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
-      - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
-      - TZ=${TZ}
-    volumes:
-      - /backup:/var/opt/db_dumps
-    cpus: ${DB_DUMP_CPUS}
-    mem_limit: ${DB_DUMP_MEM}
-    mem_reservation: ${DB_DUMP_MEM_RESERVED}
+    extends:
+      file: services-base.yml
+      service: base-pg_dump
     depends_on:
       postgres:
         condition: service_healthy
 
   apache2:
-    restart: unless-stopped
-    labels:
-      - autoheal=true
+    extends:
+      file: services-base.yml
+      service: base-apache2
     links:
       - sormas
-    image: hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
-    environment:
-      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
-      - TZ=${TZ}
-      - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
-    volumes:
-      - ./apache2/certs:/usr/local/apache2/certs
-      - ${SORMAS_PATH}/apache2_log:/var/log/apache2
-    ports:
-      - 443:443
-      - 80:80
-    cpus: ${WEBSERVER_CPUS}
-    mem_limit: ${WEBSERVER_MEM}
-    mem_reservation: ${WEBSERVER_MEM_RESERVED}
-    healthcheck:
-      test: ["CMD", "curl", "-f", "-I", "-k", "--resolve", "${SORMAS_SERVER_URL}:443:127.0.0.1", "https://${SORMAS_SERVER_URL}/downloads/"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 30s
     depends_on:
       sormas:
         condition: service_healthy
 
   autoheal:
-    restart: unless-stopped
-    image: willfarrell/autoheal:1.0.0
-    environment:
-        # watch all running containers.
-      - AUTOHEAL_CONTAINER_LABEL=all
-        # check every 10 seconds
-      - AUTOHEAL_INTERVAL=10
-        # wait 0 seconds before first health check
-      - AUTOHEAL_START_PERIOD=600
-        # Docker waits max 10 seconds (the Docker default) for a container to stop before killing
-      - AUTOHEAL_DEFAULT_STOP_TIMEOUT=10
-        # Unix socket for curl requests to Docker API
-      - DOCKER_SOCK=/var/run/docker.sock
-        # --max-time seconds for curl requests to Docker API
-      - CURL_TIMEOUT=30
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+    extends:
+      file: services-base.yml
+      service: base-autoheal
