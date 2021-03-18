@@ -5,6 +5,10 @@ services:
     extends:
       file: services-base.yml
       service: base-sormas    
+    labels:
+      - autoheal=true
+        # override for stop timeout seconds during restart
+      - autoheal.stop.timeout=30
     environment:
       - CUSTOMBRANDING_ENABLED=${CUSTOMBRANDING_ENABLED}
       - CUSTOMBRANDING_NAME=${CUSTOMBRANDING_NAME}

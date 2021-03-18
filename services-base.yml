@@ -3,10 +3,6 @@ version: '2.3'
 services:
   base-sormas:
     restart: unless-stopped
-    labels:
-      - autoheal=true
-        # override for stop timeout seconds during restart
-      - autoheal.stop.timeout=30
     image: hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
     environment:
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}

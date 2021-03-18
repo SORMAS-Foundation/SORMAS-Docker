@@ -5,6 +5,10 @@ services:
     extends:
       file: services-base.yml
       service: base-sormas    
+    labels:
+      - autoheal=true
+        # override for stop timeout seconds during restart
+      - autoheal.stop.timeout=30
     environment:
       - AUTHENTICATION_PROVIDER=KEYCLOAK
       - KEYCLOAK_SORMAS_UI_SECRET=${KEYCLOAK_SORMAS_UI_SECRET}
