@@ -41,6 +41,10 @@ services:
     environment:
       - DB_NAME=sormas
       - DB_NAME_AUDIT=sormas_audit
+    volumes:
+      - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     networks:
       sormas:
 

@@ -4,7 +4,7 @@ services:
   sormas:
     extends:
       file: services-base.yml
-      service: base-sormas    
+      service: base-sormas
     labels:
       - autoheal=true
         # override for stop timeout seconds during restart
@@ -47,9 +47,9 @@ services:
   keycloak:
     extends:
       file: services-base.yml
-      service: base-keycloak   
+      service: base-keycloak
     links:
-      - keycloak-postgres	  
+      - keycloak-postgres
     depends_on:
       keycloak-postgres:
         condition: service_healthy
@@ -61,12 +61,16 @@ services:
     environment:
       - DB_NAME=sormas
       - DB_NAME_AUDIT=sormas_audit
+    volumes:
+      - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     cpus: ${DB_CPUS}
 
   keycloak-postgres:
     extends:
       file: services-base.yml
-      service: base-postgres   
+      service: base-postgres
     environment:
       - POSTGRES_PASSWORD=${KEYCLOAK_DB_PASSWORD}
       - POSTGRES_USER=${KEYCLOAK_DB_USER}
@@ -88,7 +92,7 @@ services:
     extends:
       file: services-base.yml
       service: base-pg_dump
-    environment:	  
+    environment:
       - DB_NAME=sormas
       - DB_NAME_AUDIT=sormas_audit
       - MIN=15,45 # Twice the hour on 15 and 45 (use crontab notation)

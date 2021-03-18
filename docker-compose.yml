@@ -25,6 +25,10 @@ services:
     extends:
       file: services-base.yml
       service: base-postgres
+    volumes:
+      - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
   pg_dump:
     extends:
