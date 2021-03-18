@@ -104,7 +104,6 @@ services:
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
       - TZ=${TZ}
-      - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
     volumes:
       - ./apache2/certs:/usr/local/apache2/certs
       - ${SORMAS_PATH}/apache2_log:/var/log/apache2
@@ -160,3 +159,31 @@ services:
     cpus: ${WEBSERVER_CPUS}
     mem_limit: ${WEBSERVER_MEM}
     mem_reservation: ${WEBSERVER_MEM_RESERVED}
+
+  base-keycloak:
+    restart: unless-stopped
+    labels:
+      - autoheal=true
+    image: hzibraunschweig/sormas-keycloak:${SORMAS_DOCKER_VERSION}
+    environment:
+      - KEYCLOAK_USER=${KEYCLOAK_ADMIN_USER}
+      - KEYCLOAK_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      - DB_VENDOR=${KEYCLOAK_DB_VENDOR}
+      - DB_DATABASE=${KEYCLOAK_DB_NAME}
+      - DB_ADDR=${KEYCLOAK_DB_HOST}
+      - DB_USER=${KEYCLOAK_DB_USER}
+      - DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+      - PROXY_ADDRESS_FORWARDING=true
+      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+      - KEYCLOAK_SORMAS_UI_SECRET=${KEYCLOAK_SORMAS_UI_SECRET}
+      - KEYCLOAK_SORMAS_REST_SECRET=${KEYCLOAK_SORMAS_REST_SECRET}
+      - KEYCLOAK_SORMAS_BACKEND_SECRET=${KEYCLOAK_SORMAS_BACKEND_SECRET}
+    cpus: ${KEYCLOAK_CPUS}
+    mem_limit: ${KEYCLOAK_MEM}
+    mem_reservation: ${KEYCLOAK_MEM_RESERVED}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-I", "http://localhost:8080/keycloak/auth/realms/master"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 300s
