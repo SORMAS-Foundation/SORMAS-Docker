@@ -23,7 +23,7 @@ services:
       service: base-postgres
     environment:
       - DB_NAME=sormas
-      - DB_NAME_AUDIT=sormas_audit	
+      - DB_NAME_AUDIT=sormas_audit
     cpus: ${DB_CPUS}
 
   pg_dump:
@@ -44,7 +44,7 @@ services:
     extends:
       file: services-base.yml
       service: base-letsencrypt
-    links: 
+    links:
       - sormas
     depends_on:
       - sormas
