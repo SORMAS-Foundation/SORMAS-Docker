@@ -26,6 +26,11 @@ services:
       - SORMAS_S2S_REST_PASSWORD=${SORMAS_S2S_REST_PASSWORD}passwordpassword
       - SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}
       - NAMESIMILARITYTHRESHOLD=${NAMESIMILARITYTHRESHOLD}
+    volumes:
+      - ${SORMAS_PATH}/documents:/opt/sormas/documents
+      - ${SORMAS_PATH}/custom:/opt/sormas/custom
+      - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
+      - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
     cpus: ${APPSERVER_CPUS}
     healthcheck:
       timeout: 3s
@@ -66,7 +71,7 @@ services:
     extends:
       file: services-base.yml
       service: base-apache2
-    environment:		
+    environment:
       - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
     links:
       - sormas

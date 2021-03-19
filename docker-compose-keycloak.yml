@@ -33,6 +33,9 @@ services:
       - SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}
       - NAMESIMILARITYTHRESHOLD=${NAMESIMILARITYTHRESHOLD}
     volumes:
+      - ${SORMAS_PATH}/documents:/opt/sormas/documents
+      - ${SORMAS_PATH}/custom:/opt/sormas/custom
+      - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
       - ./apache2/certs:/tmp/certs
     cpus: ${APPSERVER_CPUS}
     healthcheck:

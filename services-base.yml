@@ -35,11 +35,6 @@ services:
       - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}
       - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
       - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
-    volumes:
-      - ${SORMAS_PATH}/documents:/opt/sormas/documents
-      - ${SORMAS_PATH}/custom:/opt/sormas/custom
-      - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
-      - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
     mem_limit: ${APPSERVER_MEM}
     mem_reservation: ${APPSERVER_MEM_RESERVED}
     healthcheck:
