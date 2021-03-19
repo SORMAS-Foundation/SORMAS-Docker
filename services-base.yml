@@ -72,6 +72,27 @@ services:
       retries: 3
       start_period: 30s
 
+  base-keycloak-postgres:
+    restart: unless-stopped
+    labels:
+      - autoheal=true
+    command: -c 'config_file=/etc/postgresql/postgresql.conf'
+    image: hzibraunschweig/keycloak-postgres:${SORMAS_DOCKER_VERSION}
+    environment:
+      - POSTGRES_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+      - POSTGRES_USER=${KEYCLOAK_DB_USER}
+      - POSTGRES_DB=${KEYCLOAK_DB_NAME}
+      - TZ=${TZ}
+    cpus: ${KEYCLOAK_DB_CPUS}
+    mem_limit: ${KEYCLOAK_DB_MEM}
+    mem_reservation: ${KEYCLOAK_DB_MEM_RESERVED}
+    healthcheck:
+      test: [ "CMD", "psql", "-U", "${KEYCLOAK_DB_USER}", "-c", "SELECT 1;", "${KEYCLOAK_DB_NAME}" ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+
   base-pg_dump:
     restart: unless-stopped
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
