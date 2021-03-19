@@ -58,12 +58,14 @@ services:
     extends:
       file: services-base.yml
       service: base-pg_dump
-    depends_on:
-      postgres:
-        condition: service_healthy
     environment:
       - DB_NAME=sormas
       - DB_NAME_AUDIT=sormas_audit
+    volumes:
+      - /backup:/var/opt/db_dumps
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       sormas:
 

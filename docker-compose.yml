@@ -40,6 +40,8 @@ services:
     extends:
       file: services-base.yml
       service: base-pg_dump
+    volumes:
+      - /backup:/var/opt/db_dumps
     depends_on:
       postgres:
         condition: service_healthy

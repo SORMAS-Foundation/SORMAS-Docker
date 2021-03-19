@@ -60,9 +60,8 @@ services:
     environment:
       - DB_NAME=sormas
       - DB_NAME_AUDIT=sormas_audit
-      - MIN=15,45 # Twice the hour on 15 and 45 (use crontab notation)
-      - HOUR= # Keep empty for every hour. Use crontab notation otherwise
-      - KEEP=1 # keep db dumps for one day in backup folder
+    volumes:
+      - /backup:/var/opt/db_dumps
     depends_on:
       postgres:
         condition: service_healthy
