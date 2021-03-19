@@ -74,23 +74,13 @@ services:
   keycloak-postgres:
     extends:
       file: services-base.yml
-      service: base-postgres
-    environment:
-      - POSTGRES_PASSWORD=${KEYCLOAK_DB_PASSWORD}
-      - POSTGRES_USER=${KEYCLOAK_DB_USER}
-      - POSTGRES_DB=${KEYCLOAK_DB_NAME}
-      - TZ=${TZ}
+      service: base-keycloak-postgres
     volumes:
       - ${SORMAS_PATH}/keycloak/psqldata:/var/lib/postgresql/data
     ports:
       - 5433:5432
     expose:
       - 5432
-    cpus: ${KEYCLOAK_DB_CPUS}
-    mem_limit: ${KEYCLOAK_DB_MEM}
-    mem_reservation: ${KEYCLOAK_DB_MEM_RESERVED}
-    healthcheck:
-      test: ["CMD", "psql", "-U", "${KEYCLOAK_DB_USER}", "-c", "SELECT 1;", "${KEYCLOAK_DB_NAME}"]
 
   pg_dump:
     extends:
