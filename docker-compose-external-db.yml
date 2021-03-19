@@ -5,6 +5,8 @@ services:
     extends:
       file: services-base.yml
       service: base-sormas
+    environment:
+      - NAMESIMILARITYTHRESHOLD=${NAMESIMILARITYTHRESHOLD}
     cpus: ${APPSERVER_CPUS}
 
   apache2:
