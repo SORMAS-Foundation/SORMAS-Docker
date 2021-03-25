@@ -77,7 +77,7 @@ services:
       - POSTGRES_USER=${KEYCLOAK_DB_USER}
       - POSTGRES_DB=${KEYCLOAK_DB_NAME}
       - TZ=${TZ}
-    cpus: ${KEYCLOAK_DB_CPUS}
+    cpus: 1.0
     mem_limit: ${KEYCLOAK_DB_MEM}
     mem_reservation: ${KEYCLOAK_DB_MEM_RESERVED}
     healthcheck:
