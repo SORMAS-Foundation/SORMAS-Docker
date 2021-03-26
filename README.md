@@ -124,6 +124,8 @@ These Options are available to customize the installation:
 
 **EVENTARCHIVEDAYS** The number of days without any changes after which events are automatically archived (i.e. they will no longer be displayed in the normal directories, but still count towards statistics or counts on the dashboard and can still be viewed by users with the respective user right). If set to 0, automatic archiving is disabled.
 
+**NAMESIMILARITYTHRESHOLD** Use a value between 0 and 1 (the higher the value, the more restrictive the similarity search)
+
 **CUSTOMBRANDING_ENABLED** Enables the custombranding feature
 
 **CUSTOMBRANDING_NAME** Name of the custombranding
@@ -146,6 +148,8 @@ These Options are available to customize the installation:
 
 **SORMAS2SORMAS_TRUSTSTOREPASSWORD** Password for the truststore
 
+**SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN** Set to true to retain external token for cases
+
 **SORMAS2SORMAS_DIR** Path to the sormas to sormas directory
 
 **SORMAS_ORG_ID** ID of the organisiation
@@ -155,6 +159,21 @@ These Options are available to customize the installation:
 **SORMAS_S2S_CERT_PASS** Password for the certificate
 
 **SORMAS_S2S_REST_PASSWORD** Password for the rest user to connect to sormas
+
+### PIA
+If you choose to align SORMAS with a PIA instance, use the docker-compose-sb.yml.
+The following variables should be set.
+
+**PIA_URL** Connection to a PIA (Symptom Journal) instance
+
+**SJ_CLIENTID** Name of the PIA user SORMAS is supposed to login with in PIA
+
+**SJ_SECRET** Password for the PIA user SORMAS is supposed to login with in PIA
+
+**SJ_DEFAULT_USERNAME** Name of the SORMAS user the PIA instance is supposed to login with in SORMAS. This user will automatically be generated at server startup.
+
+**SJ_DEFAULT_PASSWORD** Password for the SORMAS user the PIA instance is supposed to login with in SORMAS. The password will automatically be generated/updated at server startup.
+
 
 ### NGINX (experimental)
 If you choose to use the nginx with built in certbot, use the docker-compose_nginx.yml.<br>
