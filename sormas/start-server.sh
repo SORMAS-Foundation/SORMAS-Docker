@@ -262,7 +262,7 @@ fi
 
 if [ ! -z "$DEMIS_ENABLED" ];then
 sed -i "/^interface\.demis\.jndiName/d" "${DOMAIN_DIR}/sormas.properties"
-echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-1.2.0/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-1.3.0/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
 
 
 echo -e "debuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/config/demis-adapter.properties
