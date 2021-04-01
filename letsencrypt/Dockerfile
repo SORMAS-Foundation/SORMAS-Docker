@@ -5,7 +5,13 @@ FROM lsiobase/nginx:3.11
 ARG CERTBOT_VERSION=1.3.0
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 
+<<<<<<< HEAD
 ARG SORMAS_VERSION=1.58.2
+=======
+
+ARG SORMAS_VERSION=1.58.1
+>>>>>>> b873d694648a6c3eff1ca897f77a2854bf4f5e55
+
 
 ENV SORMAS_VERSION=$SORMAS_VERSION
 LABEL maintainer="aptalca"
