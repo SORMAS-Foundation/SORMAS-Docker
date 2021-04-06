@@ -79,9 +79,6 @@ cp ${DEPLOY_PATH}/deploy/stop-payara-sormas.sh ${DOMAIN_DIR}
 cp ${DEPLOY_PATH}/deploy/logback.xml ${DOMAIN_DIR}/config/
 cp ${DEPLOY_PATH}/deploy/loginsidebar.html ${CUSTOM_DIR}
 cp ${DEPLOY_PATH}/deploy/logindetails.html ${CUSTOM_DIR}
-133
- 
-
 cp ${DEPLOY_PATH}/deploy/loginmain.html ${CUSTOM_DIR}
 
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}

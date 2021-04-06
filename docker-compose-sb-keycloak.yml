@@ -1,4 +1,9 @@
 version: '2.3'
+
+networks:
+  sormas:
+    name: sormas
+
 services:
   sormas:
     restart: unless-stopped
@@ -33,46 +38,87 @@ services:
       - TZ=${TZ}
       - JVM_MAX=${APPSERVER_JVM_MAX}
       - GEO_UUID=${GEO_UUID}
-      - GEO_TEMPLATE=${GEO_TEMPLATE}
-      - GEO_LONG_TEMPLATE=${GEO_LONG_TEMPLATE}
-      - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}      
       - DEVMODE=${DEVMODE}
       - JSON_LOGGING=${JSON_LOGGING}
+      - AUTHENTICATION_PROVIDER=KEYCLOAK
+      - KEYCLOAK_SORMAS_UI_SECRET=${KEYCLOAK_SORMAS_UI_SECRET}
+      - KEYCLOAK_SORMAS_REST_SECRET=${KEYCLOAK_SORMAS_REST_SECRET}
+      - KEYCLOAK_SORMAS_BACKEND_SECRET=${KEYCLOAK_SORMAS_BACKEND_SECRET}
+      - CACERTS_PASS=${CACERTS_PASS}
+      - KEYSTORE_PASS=${KEYSTORE_PASS}
       - CUSTOMBRANDING_ENABLED=${CUSTOMBRANDING_ENABLED}
       - CUSTOMBRANDING_NAME=${CUSTOMBRANDING_NAME}
       - CUSTOMBRANDING_LOGO_PATH=${CUSTOMBRANDING_LOGO_PATH}
       - CUSTOMBRANDING_USE_LOGINSIDEBAR=${CUSTOMBRANDING_USE_LOGINSIDEBAR}
       - CUSTOMBRANDING_LOGINBACKGROUND_PATH=${CUSTOMBRANDING_LOGINBACKGROUND_PATH}
-      - SORMAS2SORMAS_ENABLED=${SORMAS2SORMAS_ENABLED}
-      - S2S_NON_INTERACTIVE=true
-      - SORMAS2SORMAS_DIR=${SORMAS2SORMAS_DIR}
-      - SORMAS_ORG_ID=${SORMAS_ORG_ID}1.03.1.01.
-      - SORMAS_ORG_NAME=${SORMAS_ORG_NAME}"Stadt Braunschweig"
-      - SORMAS_HOST_NAME=${SORMAS_SERVER_URL}
-      - SORMAS_HTTPS_PORT=443
-      - SORMAS_S2S_CERT_PASS=${SORMAS_S2S_CERT_PASS}password
-      - SORMAS_S2S_REST_PASSWORD=${SORMAS_S2S_REST_PASSWORD}passwordpassword
-      - SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}
+      - GEO_TEMPLATE=${GEO_TEMPLATE}
+      - GEO_LONG_TEMPLATE=${GEO_LONG_TEMPLATE}
+      - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}
       - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
       - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
-      - NAMESIMILARITYTHRESHOLD=${NAMESIMILARITYTHRESHOLD}
+      - PIA_URL=${PIA_URL}
+      - SJ_URL=https://${PIA_URL}/user/connectSormas
+      - SJ_AUTH=https://${PIA_URL}/user/requestToken
+      - SJ_CLIENTID=${SJ_CLIENTID}
+      - SJ_SECRET=${SJ_SECRET}
+      - SJ_DEFAULT_USERNAME=${SJ_DEFAULT_USERNAME}
+      - SJ_DEFAULT_PASSWORD=${SJ_DEFAULT_PASSWORD}
     volumes:
       - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
       - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
       - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
-    cpus: ${APPSERVER_CPUS}
+      - ./apache2/certs:/tmp/certs
     mem_limit: ${APPSERVER_MEM}
     mem_reservation: ${APPSERVER_MEM_RESERVED}
     healthcheck:
-      test: ["CMD", "curl", "-f", "-I", "http://localhost:6080/sormas-ui/login"]
+      test: ["CMD", "curl", "-f", "-I", "http://localhost:6048"]
       interval: 30s
-      timeout: 3s
+      timeout: 7s
       retries: 3
       start_period: 300s
     depends_on:
       postgres:
         condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    networks:
+      sormas:
+
+  keycloak:
+    restart: unless-stopped
+    labels:
+      - autoheal=true
+    links:
+      - keycloak-postgres
+    image: hzibraunschweig/sormas-keycloak:${SORMAS_DOCKER_VERSION}
+    environment:
+      - KEYCLOAK_USER=${KEYCLOAK_ADMIN_USER}
+      - KEYCLOAK_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      - DB_VENDOR=${KEYCLOAK_DB_VENDOR}
+      - DB_DATABASE=${KEYCLOAK_DB_NAME}
+      - DB_ADDR=${KEYCLOAK_DB_HOST}
+      - DB_USER=${KEYCLOAK_DB_USER}
+      - DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+      - PROXY_ADDRESS_FORWARDING=true
+      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
+      - KEYCLOAK_SORMAS_UI_SECRET=${KEYCLOAK_SORMAS_UI_SECRET}
+      - KEYCLOAK_SORMAS_REST_SECRET=${KEYCLOAK_SORMAS_REST_SECRET}
+      - KEYCLOAK_SORMAS_BACKEND_SECRET=${KEYCLOAK_SORMAS_BACKEND_SECRET}
+    cpus: ${KEYCLOAK_CPUS}
+    mem_limit: ${KEYCLOAK_MEM}
+    mem_reservation: ${KEYCLOAK_MEM_RESERVED}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "-I", "http://localhost:8080/keycloak/auth/realms/master" ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 300s
+    depends_on:
+      keycloak-postgres:
+        condition: service_healthy
+    networks:
+      sormas:
 
   postgres:
     restart: unless-stopped
@@ -91,7 +137,6 @@ services:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    cpus: ${DB_CPUS}
     mem_limit: ${DB_MEM}
     mem_reservation: ${DB_MEM_RESERVED}
     healthcheck:
@@ -100,6 +145,37 @@ services:
       timeout: 3s
       retries: 3
       start_period: 30s
+    networks:
+      sormas:
+
+  keycloak-postgres:
+    restart: unless-stopped
+    labels:
+      - autoheal=true
+    command: -c 'config_file=/etc/postgresql/postgresql.conf'
+    image: hzibraunschweig/keycloak-postgres:${SORMAS_DOCKER_VERSION}
+    environment:
+      - POSTGRES_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+      - POSTGRES_USER=${KEYCLOAK_DB_USER}
+      - POSTGRES_DB=${KEYCLOAK_DB_NAME}
+      - TZ=${TZ}
+    volumes:
+      - ${SORMAS_PATH}/keycloak/psqldata:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    expose:
+      - 5432
+    cpus: ${KEYCLOAK_DB_CPUS}
+    mem_limit: ${KEYCLOAK_DB_MEM}
+    mem_reservation: ${KEYCLOAK_DB_MEM_RESERVED}
+    healthcheck:
+      test: [ "CMD", "psql", "-U", "${KEYCLOAK_DB_USER}", "-c", "SELECT 1;", "${KEYCLOAK_DB_NAME}" ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    networks:
+      sormas:
 
   pg_dump:
     restart: unless-stopped
@@ -111,9 +187,6 @@ services:
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
-      - MIN=15,45 # Twice the hour on 15 and 45 (use crontab notation)
-      - HOUR= # Keep empty for every hour. Use crontab notation otherwise
-      - KEEP=1 # keep db dumps for one day in backup folder
     volumes:
       - /backup:/var/opt/db_dumps
     cpus: ${DB_DUMP_CPUS}
@@ -122,36 +195,31 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-
-  apache2:
-    restart: unless-stopped
-    labels:
-      - autoheal=true
-    links:
-      - sormas
-    image: hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
-    environment:
-      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
-      - TZ=${TZ}
-      - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
-    volumes:
-      - ./apache2/certs:/usr/local/apache2/certs
-      - ${SORMAS_PATH}/apache2_log:/var/log/apache2
-    ports:
-      - 443:443
-      - 80:80
-    cpus: ${WEBSERVER_CPUS}
-    mem_limit: ${WEBSERVER_MEM}
-    mem_reservation: ${WEBSERVER_MEM_RESERVED}
-    healthcheck:
-      test: ["CMD", "curl", "-f", "-I", "-k", "--resolve", "${SORMAS_SERVER_URL}:443:127.0.0.1", "https://${SORMAS_SERVER_URL}/downloads/"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 30s
-    depends_on:
+    networks:
       sormas:
+
+  pg_dump_keycloak:
+    restart: unless-stopped
+    image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+    environment:
+      - DB_HOST=${KEYCLOAK_DB_HOST}
+      - DB_NAME=${KEYCLOAK_DB_NAME}
+      - PGPASSWORD=${KEYCLOAK_DB_PASSWORD}
+      - SORMAS_POSTGRES_USER=${KEYCLOAK_DB_USER}
+      - TZ=${TZ}
+      - MIN=0 # At 0 Minutes
+      - HOUR=*/4 # Every 4 hours
+      - KEEP=1 # keep db dumps for one day in backup folder
+    volumes:
+      - /backup-keycloak:/var/opt/db_dumps
+    cpus: ${DB_DUMP_CPUS}
+    mem_limit: ${DB_DUMP_MEM}
+    mem_reservation: ${DB_DUMP_MEM_RESERVED}
+    depends_on:
+      postgres:
         condition: service_healthy
+    networks:
+      sormas:
 
   autoheal:
     restart: unless-stopped
@@ -170,4 +238,4 @@ services:
         # --max-time seconds for curl requests to Docker API
       - CURL_TIMEOUT=30
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock 
