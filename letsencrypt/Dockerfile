@@ -7,7 +7,6 @@ ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/downl
 
 ARG SORMAS_VERSION=1.58.2
 
-
 ENV SORMAS_VERSION=$SORMAS_VERSION
 LABEL maintainer="aptalca"
 
