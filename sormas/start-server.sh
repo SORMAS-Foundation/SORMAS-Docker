@@ -162,7 +162,7 @@ sed -i "s/\#namesimilaritythreshold=.*/namesimilaritythreshold=${NAMESIMILARITYT
 sed -i "/^geocodingServiceUrlTemplate/d " ${DOMAIN_DIR}/sormas.properties
 sed -i "/^geocodingLongitudeJsonPath/d " ${DOMAIN_DIR}/sormas.properties
 sed -i "/^geocodingLatitudeJsonPath/d " ${DOMAIN_DIR}/sormas.properties
-echo -e "geocodingServiceUrlTemplate=${GEO_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ngeocodingServiceUrlTemplate=${GEO_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "geocodingLongitudeJsonPath=${GEO_LONG_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "geocodingLatitudeJsonPath=${GEO_LAT_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
 sed -i "s/\${GEO_UUID}/${GEO_UUID}/" ${DOMAIN_DIR}/sormas.properties
