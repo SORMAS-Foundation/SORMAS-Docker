@@ -27,6 +27,7 @@ services:
       - MAIL_FROM=${MAIL_FROM}
       - SORMAS_VERSION=${SORMAS_VERSION}
       - LOCALE=${LOCALE}
+      - COUNTRY_NAME=${COUNTRY_NAME}      
       - EPIDPREFIX=${EPIDPREFIX}
       - SEPARATOR=${SEPARATOR}
       - EMAIL_SENDER_ADDRESS=${EMAIL_SENDER_ADDRESS}
@@ -49,11 +50,14 @@ services:
       - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}
       - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
       - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
+      - NAMESIMILARITYTHRESHOLD=${NAMESIMILARITYTHRESHOLD}
       - PIA_URL=${PIA_URL}
       - SJ_URL=https://${PIA_URL}/user/connectSormas
       - SJ_AUTH=https://${PIA_URL}/user/requestToken
       - SJ_CLIENTID=${SJ_CLIENTID}
       - SJ_SECRET=${SJ_SECRET}
+      - SJ_DEFAULT_USERNAME=${SJ_DEFAULT_USERNAME}
+      - SJ_DEFAULT_PASSWORD=${SJ_DEFAULT_PASSWORD}
     volumes:
       - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
@@ -124,14 +128,14 @@ services:
 
   autoheal:
     restart: unless-stopped
-    image: willfarrell/autoheal
+    image: willfarrell/autoheal:1.0.0
     environment:
         # watch all running containers.
       - AUTOHEAL_CONTAINER_LABEL=all
         # check every 10 seconds
       - AUTOHEAL_INTERVAL=10
         # wait 0 seconds before first health check
-      - AUTOHEAL_START_PERIOD=0
+      - AUTOHEAL_START_PERIOD=600
         # Docker waits max 10 seconds (the Docker default) for a container to stop before killing
       - AUTOHEAL_DEFAULT_STOP_TIMEOUT=10
         # Unix socket for curl requests to Docker API

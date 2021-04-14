@@ -144,8 +144,8 @@ ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
 
 #Edit properties
-
 sed -i "s/country.locale=.*/country.locale=${LOCALE}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/country.name=.*/country.name=${COUNTRY_NAME}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/country.epidprefix=.*/country.epidprefix=${EPIDPREFIX}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/#csv.separator=.*/csv.separator=/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/csv.separator=.*/csv.separator=${SEPARATOR}/" ${DOMAIN_DIR}/sormas.properties
@@ -157,12 +157,12 @@ sed -i "s/country.center.latitude=.*/country.center.latitude=${LATITUDE}/" ${DOM
 sed -i "s/country.center.longitude=.*/country.center.longitude=${LONGITUDE}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/map.zoom=.*/map.zoom=${MAP_ZOOM}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s;app.url=.*;app.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk;" ${DOMAIN_DIR}/sormas.properties
-
+sed -i "s/\#namesimilaritythreshold=.*/namesimilaritythreshold=${NAMESIMILARITYTHRESHOLD}/" ${DOMAIN_DIR}/sormas.properties
 #------------------GEOCODING
 sed -i "/^geocodingServiceUrlTemplate/d " ${DOMAIN_DIR}/sormas.properties
 sed -i "/^geocodingLongitudeJsonPath/d " ${DOMAIN_DIR}/sormas.properties
 sed -i "/^geocodingLatitudeJsonPath/d " ${DOMAIN_DIR}/sormas.properties
-echo -e "geocodingServiceUrlTemplate=${GEO_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ngeocodingServiceUrlTemplate=${GEO_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "geocodingLongitudeJsonPath=${GEO_LONG_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "geocodingLatitudeJsonPath=${GEO_LAT_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
 sed -i "s/\${GEO_UUID}/${GEO_UUID}/" ${DOMAIN_DIR}/sormas.properties
@@ -220,6 +220,7 @@ sed -i "/^sormas2sormas\.truststorePass/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^sormas2sormas\.path/d" "${DOMAIN_DIR}/sormas.properties"
 
 if [ ! -z "$SORMAS2SORMAS_ENABLED" ];then
+sed -i "s/\#sormas2sormas.retainCaseExternalToken=.*/sormas2sormas.retainCaseExternalToken=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}/" ${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.serverAccessDataFileName=${SORMAS_SERVER_URL}-server-access-data.csv" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.keystoreName=${SORMAS2SORMAS_KEYSTORENAME}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nsormas2sormas.keystorePass=${SORMAS2SORMAS_KEYPASSWORD}" >>${DOMAIN_DIR}/sormas.properties
@@ -245,6 +246,9 @@ fi
 
 #------------------AUTHENTICATION PROVIDER CONFIG
 if [ ! -z "$AUTHENTICATION_PROVIDER" ];then
+if [ ! -z "$AUTHENTICATION_PROVIDER" -a "$AUTHENTICATION_PROVIDER" = "KEYCLOAK" ];then
+echo -e "\nauthentication.provider.userSyncAtStartup=true" >>${DOMAIN_DIR}/sormas.properties
+fi
 sed -i "/^authentication.provider=/{h;s/=.*/=${AUTHENTICATION_PROVIDER}/};\${x;/^$/{s//authentication.provider=${AUTHENTICATION_PROVIDER}/;H};x}" ${DOMAIN_DIR}/sormas.properties
 fi
 
@@ -259,6 +263,37 @@ fi
 if [ ! -z "$DEMIS_ENABLED" ];then
  cp -a /tmp/${DOMAIN_NAME}/config/demis/. ${DOMAIN_DIR}/config/
  echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
+fi
+
+if [ ! -z "$DEMIS_ENABLED" ];then
+sed -i "/^interface\.demis\.jndiName/d" "${DOMAIN_DIR}/sormas.properties"
+echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-1.3.0/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
+
+
+echo -e "debuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nfhir.basepath=${FHIR_BASEPATH}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.tokenendpoint=${IDP_TOKENENDPOINT}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.lab.tokenendpoint=${IDP_LAB_TOKENENDPOINT}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+
+echo -e "\nidp.oegd.proxy=${IDP_OEGD_PROXY}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.clientid=${IDP_OEGD_CLIENTID}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.secret=${IDP_OEGD_SECRET}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.username=${IDP_OEGD_USERNAME}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.truststore=${IDP_OEGD_TRUSTSTORE}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.truststorepassword=${IDP_OEGD_TRUSTSTOREPASSWORD}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.authcertkeystore=${IDP_OEGD_AUTHCERTKEYSTORE}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.authcertpassword=${IDP_OEGD_AUTHCERTPASSWORD}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.authcertalias=${IDP_OEGD_AUTHCERTALIAS}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+
+echo -e "\nidp.oegd.outdated.authcertkeystore=${IDP_OEGD_OUTDATED_AUTHCERTKEYSTORE}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nidp.oegd.outdated.authcertpassword=${IDP_OEGD_OUTDATED_AUTHCERTPASSWORD}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+
+echo -e "\nconnect.timeout.ms=${CONNECT_TIMEOUT_MS}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nconnection.request.timeout.ms=${CONNECTION_REQUEST_TIMEOUT_MS}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+echo -e "\nsocket.timeout.ms=${SOCKET_TIMEOUT_MS}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+
+echo -e "\ntime.persistence.path=${TIME_PERSISTENCE_PATH}" >>${DOMAIN_DIR}/config/demis-adapter.properties
+mkdir ${TIME_PERSISTENCE_PATH}
 fi
 
 # import R library
