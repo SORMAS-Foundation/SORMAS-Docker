@@ -144,7 +144,7 @@ ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
 
 #Edit properties
-sed -i "s/\#\s\createDefaultEntities=.*/devmode=${CREATE_DEFAULT_ENTITIES}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s/\#\s\createDefaultEntities=.*/createDefaultEntities=${CREATE_DEFAULT_ENTITIES}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/country.locale=.*/country.locale=${LOCALE}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/country.name=.*/country.name=${COUNTRY_NAME}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/country.epidprefix=.*/country.epidprefix=${EPIDPREFIX}/" ${DOMAIN_DIR}/sormas.properties
