@@ -262,14 +262,8 @@ fi
 
 #------------------DEMIS CONFIG
 if [ ! -z "$DEMIS_ENABLED" ];then
- cp -a /tmp/${DOMAIN_NAME}/config/demis/. ${DOMAIN_DIR}/config/
- echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
-fi
-
-if [ ! -z "$DEMIS_ENABLED" ];then
-sed -i "/^interface\.demis\.jndiName/d" "${DOMAIN_DIR}/sormas.properties"
-echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-1.3.0/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
-
+cp -a /tmp/${DOMAIN_NAME}/config/demis/. ${DOMAIN_DIR}/config/
+echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
 
 echo -e "debuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/config/demis-adapter.properties
 echo -e "\nfhir.basepath=${FHIR_BASEPATH}" >>${DOMAIN_DIR}/config/demis-adapter.properties
