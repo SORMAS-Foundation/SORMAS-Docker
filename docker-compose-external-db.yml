@@ -36,6 +36,7 @@ services:
       - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
       - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
       - NAMESIMILARITYTHRESHOLD=${NAMESIMILARITYTHRESHOLD}
+      - CREATE_DEFAULT_ENTITIES=${CREATE_DEFAULT_ENTITIES}      
     volumes:
       - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
