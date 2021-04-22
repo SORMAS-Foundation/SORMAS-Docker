@@ -69,7 +69,6 @@ services:
       - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
       - ./apache2/certs:/tmp/certs
       - ${SORMAS_PATH}/demis:/tmp/${DOMAIN_NAME}/config/demis
-    cpus: ${APPSERVER_CPUS}
     mem_limit: ${APPSERVER_MEM}
     mem_reservation: ${APPSERVER_MEM_RESERVED}
     healthcheck:
@@ -134,7 +133,6 @@ services:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    cpus: ${DB_CPUS}
     mem_limit: ${DB_MEM}
     mem_reservation: ${DB_MEM_RESERVED}
     healthcheck:
@@ -225,6 +223,7 @@ services:
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
       - TZ=${TZ}
+      - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
     volumes:
       - ./apache2/certs:/usr/local/apache2/certs
       - ${SORMAS_PATH}/apache2_log:/var/log/apache2

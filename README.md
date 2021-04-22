@@ -120,6 +120,8 @@ These Options are available to customize the installation:
 
 **PROMETHEUS_SERVERS** One or more ip-addresses of prometheus monitoring servers (to scrape metrics from payara) seperated by spaces. If you don't have one, just leave it at 127.0.0.1
 
+**CREATE_DEFAULT_ENTITIES** Control the creation of the default entities
+
 **CASEARCHIVEDAYS** The number of days without any changes after which cases are automatically archived (i.e. they will no longer be displayed in the normal directories, but still count towards statistics or counts on the dashboard and can still be viewed by users with the respective user right). If set to 0, automatic archiving is disabled.
 
 **EVENTARCHIVEDAYS** The number of days without any changes after which events are automatically archived (i.e. they will no longer be displayed in the normal directories, but still count towards statistics or counts on the dashboard and can still be viewed by users with the respective user right). If set to 0, automatic archiving is disabled.
