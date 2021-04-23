@@ -56,6 +56,7 @@ services:
       - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}
       - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
       - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
+      - CREATE_DEFAULT_ENTITIES=${CREATE_DEFAULT_ENTITIES}        
       - PIA_URL=${PIA_URL}
       - SJ_URL=https://${PIA_URL}/user/connectSormas
       - SJ_AUTH=https://${PIA_URL}/user/requestToken
