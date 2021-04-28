@@ -78,6 +78,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
+      - ./postgres/alter_system.py:/usr/local/bin/alter_system.py
     ports:
       - "5432:5432"
     mem_limit: ${DB_MEM}
