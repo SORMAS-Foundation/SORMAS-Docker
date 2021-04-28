@@ -8,6 +8,8 @@ import os
 import re
 import psutil
 import optparse
+import multiprocessing
+
 
 kB = 1024
 MB = 1048576
@@ -97,8 +99,8 @@ def read_config_file(filename):
   return config
 
 def get_tuning_values(config, filename):
-  mem = get_mem()
-  cpu = get_cpu()
+  mem = psutil.virtual_memory()
+  cpu = multiprocessing.cpu_count()
   values = {}
   for i, line in enumerate(open(filename)):
       line = line.rstrip('\n')
