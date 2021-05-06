@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 
 # if parameter 1 is set use it as extension to the create file names"
 if [ -n "$1" ]; then
