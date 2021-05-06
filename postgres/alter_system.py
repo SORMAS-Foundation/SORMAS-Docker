@@ -8,7 +8,6 @@ import os
 import re
 import psutil
 import optparse
-import os.path
 
 kB = 1024
 MB = 1048576
@@ -59,55 +58,44 @@ def human_to_int(value):
     return kB * int(value.strip("kB"))
   return int(value)
 
-# Read from /sys file system
-def get_cgroup_resources(file):
-  with open(file, 'r') as proc_fil:
-      # Read cmdline value.
-      data = proc_fil.read()
-      # Make it printable.
-      ret_val = data.rstrip('\n')
-  return ret_val
-
 # Get memory limit
+# returns amount of memory in bytes as int
 def get_mem():
   # get memory numbers from host
-  sysmem = psutil.virtual_memory()
-  # first try cgroup v2 file
-  file = "/sys/fs/cgroup/memory.max"
-  if os.path.isfile(file):
-      mem = get_cgroup_resources(file)
-      if mem == 'max':
-        return sysmem.total
-      return int(mem)
-  # then try cgroup v1 file
-  file = "/sys/fs/cgroup/memory/memory.limit_in_bytes"
-  if os.path.isfile(file):
-      mem = int(get_cgroup_resources(file))
-      if mem > sysmem.total:
-        return sysmem.total
-      return mem
-  # default return max memory
-  return sysmem.total
+  sysmem = psutil.virtual_memory().total
+  # cgroup v2
+  try:
+      mem = open("/sys/fs/cgroup/memory.max").read().rstrip()
+  except IOError:
+      # cgroup v1
+      try:
+          mem = open("/sys/fs/cgroup/memory/memory.limit_in_bytes").read().rstrip()
+      # no cgroup memory limits configured, assuming max
+      except IOError:
+          mem = "max"
+
+  # max in cgroup v2, -1 in v1
+  # if max or cgroup limit mem bigger than sysmem, use sysmem, else use cgroup mem limit
+  return sysmem if mem in ("max", "-1") or int(mem) > sysmem else int(mem)
 
 # Get CPU limit
+# returns amount of CPUs as int
 def get_cpu():
-    # first try cgroup v2 file
-    file = "/sys/fs/cgroup/cpu.max"
-    if os.path.isfile(file):
-        cpu_quota, cpu_period = get_cgroup_resources(file).split()
-        if cpu_quota == 'max':
-            return psutil.cpu_count()
-        return cpu_quota // cpu_period + 1
-    # then try cgroup v1 file
-    file = "/sys/fs/cgroup/cpu,cpuacct/cpu.cfs_quota_us"
-    if os.path.isfile(file):
-        cpu_quota = int(get_cgroup_resources(file))
-        if cpu_quota == -1:
-            return psutil.cpu_count()
-        cpu_period = int(get_cgroup_resources("/sys/fs/cgroup/cpu,cpuacct/cpu.cfs_period_us"))
-        return cpu_quota // cpu_period + 1
-    # default return max cpu
-    return psutil.cpu_count()
+    # cgroup v2
+    try:
+        cpu_quota, cpu_period = open("/sys/fs/cgroup/cpu.max").read().rstrip().split()
+    except IOError:
+        # cgroup v1
+        try:
+            cpu_quota = open("/sys/fs/cgroup/cpu,cpuacct/cpu.cfs_quota_us").read().rstrip()
+            cpu_period = open("/sys/fs/cgroup/cpu,cpuacct/cpu.cfs_period_us").read().rstrip()
+        # no cgroup memory limits configured, assuming max
+        except IOError:
+            cpu_quota = "max"
+
+    # max in cgroup v2, -1 in v1
+    # if max, use system cpu count, else calculate cpu limits
+    return psutil.cpu_count() if cpu_quota in ("max", "-1") else int(cpu_quota) // int(cpu_period) + 1
 
 def read_config_file(filename):
   config = {}
