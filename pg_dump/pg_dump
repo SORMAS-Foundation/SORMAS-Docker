@@ -29,7 +29,6 @@ for d in ${DBS};do
     continue
   fi
   pg_dump -h ${DB_HOST} -U ${POSTGRES_USER} ${d} > ${BAK}
-  grep -q "PostgreSQL database dump complete" ${BAK}
   if [ $? -eq 0 ];then
     pigz ${BAK}
     if [ $? -eq 0 ];then
