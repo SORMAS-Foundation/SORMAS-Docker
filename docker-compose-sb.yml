@@ -93,7 +93,7 @@ services:
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "0.0.0.0:5432:5432"
     mem_limit: ${DB_MEM}
     mem_reservation: ${DB_MEM_RESERVED}
     healthcheck:

@@ -59,7 +59,7 @@ services:
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "0.0.0.0:5432:5432"
     cpus: ${DB_CPUS}
     mem_limit: ${DB_MEM}
     mem_reservation: ${DB_MEM_RESERVED}
@@ -100,8 +100,8 @@ services:
       - /var/lib/docker/letsencrypt-config:/config
       - ./letsencrypt/certs:/config/etc/letsencrypt/live
     ports:
-      - 443:443
-      - 80:80
+      - 0.0.0.0:443:443
+      - 0.0.0.0:80:80
     cpus: ${WEBSERVER_CPUS}
     mem_limit: ${WEBSERVER_MEM}
     mem_reservation: ${WEBSERVER_MEM_RESERVED}
