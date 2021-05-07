@@ -40,4 +40,6 @@ for d in ${DBS};do
   ## in case of error delete last backup
   rm ${BAK}
   echo "Backup of ${d} to ${BAK} failed!!" >> ${LOG}
+  exit 1;
 done
+exit 0;
