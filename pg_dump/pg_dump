@@ -1,16 +1,17 @@
 #!/bin/sh
 
-# if parameter 1 is set use it as extension to the create file names"
+# if parameter 1 is set use it as common name to the created file names"
 if [ -n "$1" ]; then
-  EXT=$1
+  COMMON=$1
   DELETE=f
 else
-  EXT=$( date +%F-%T )
+  COMMON=$( date +%F-%T )
   DELETE=t
 fi
 
 DUMP_PATH=/var/opt/db_dumps
 LOG=${DUMP_PATH}/pg_dump.log
+BAK_EXT=.zst
 
 # Get a list of all databases and skip postgres and template databases
 DBS=$(psql -h ${DB_HOST} -U ${POSTGRES_USER} -l -t --field-separator=': ' -A -x | grep Name | awk '{ print $2 }' | grep -v -E 'postgres|template')
@@ -19,27 +20,27 @@ for d in ${DBS};do
   if [ "${DELETE}" == "t" ];then
     echo "Deleting old dumps for ${d}" >> ${LOG}
     # keep 1 day => delete all but the last 9 dumps
-    echo "$(ls -rt ${DUMP_PATH}/${d}.*.gz | head -n -9)" >> ${LOG}
-    ls -rt ${DUMP_PATH}/${d}.*.gz | head -n -9 | xargs -r rm
+    echo "$(ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} | head -n -9)" >> ${LOG}
+    ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} | head -n -9 | xargs -r rm
   fi
 
-  BAK="${DUMP_PATH}/$d.${EXT}.sql"
-  if [ -f "${BAK}.gz" ];then
-    echo "Backup of ${d} skipped. File ${BAK}.gz already exists!!" >> ${LOG}
+  BAK="${DUMP_PATH}/$d.${COMMON}.sql"
+  if [ -f "${BAK}${BAK_EXT}" ];then
+    echo "Backup of ${d} skipped. File ${BAK}${BAK_EXT} already exists!!" >> ${LOG}
     continue
   fi
   pg_dump -h ${DB_HOST} -U ${POSTGRES_USER} ${d} > ${BAK}
   if [ $? -eq 0 ];then
-    pigz ${BAK}
+    zstd -9 --rm -T0 ${BAK}
     if [ $? -eq 0 ];then
       # keep 9 + 1 = 10 backups - eventually
-      echo "Backup of ${d} to ${BAK}.gz completed." >> ${LOG}
+      echo "Backup of ${d} to ${BAK}${BAK_EXT} completed." >> ${LOG}
       continue
     fi
   fi
-  ## in case of error delete last backup
+  ## in case of error delete last plain text SQL backup
   rm ${BAK}
-  echo "Backup of ${d} to ${BAK} failed!!" >> ${LOG}
+  echo "Backup of ${d} to ${BAK}${BAK_EXT} failed!!" >> ${LOG}
   exit 1;
 done
 exit 0;
