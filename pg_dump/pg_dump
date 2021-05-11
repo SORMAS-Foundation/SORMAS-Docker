@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 
 # if parameter 1 is set use it as extension to the create file names"
 if [ -n "$1" ]; then
@@ -18,9 +18,9 @@ DBS=$(psql -h ${DB_HOST} -U ${POSTGRES_USER} -l -t --field-separator=': ' -A -x 
 for d in ${DBS};do
   if [ "${DELETE}" == "t" ];then
     echo "Deleting old dumps for ${d}" >> ${LOG}
-    # keep 1 day => delete all but the last 10 dumps
-    echo "$(ls -rt ${DUMP_PATH}/${d}.*.gz | head -n -10)" >> ${LOG}
-    ls -rt ${DUMP_PATH}/${d}.*.gz | head -n -10 | xargs -r rm
+    # keep 1 day => delete all but the last 9 dumps
+    echo "$(ls -rt ${DUMP_PATH}/${d}.*.gz | head -n -9)" >> ${LOG}
+    ls -rt ${DUMP_PATH}/${d}.*.gz | head -n -9 | xargs -r rm
   fi
 
   BAK="${DUMP_PATH}/$d.${EXT}.sql"
@@ -29,10 +29,10 @@ for d in ${DBS};do
     continue
   fi
   pg_dump -h ${DB_HOST} -U ${POSTGRES_USER} ${d} > ${BAK}
-  grep -q "PostgreSQL database dump complete" ${BAK}
   if [ $? -eq 0 ];then
     pigz ${BAK}
     if [ $? -eq 0 ];then
+      # keep 9 + 1 = 10 backups - eventually
       echo "Backup of ${d} to ${BAK}.gz completed." >> ${LOG}
       continue
     fi
@@ -40,4 +40,6 @@ for d in ${DBS};do
   ## in case of error delete last backup
   rm ${BAK}
   echo "Backup of ${d} to ${BAK} failed!!" >> ${LOG}
+  exit 1;
 done
+exit 0;
