@@ -1,26 +1,45 @@
 #!/bin/sh
 
-DATE=$( date +%F-%T )
+# if parameter 1 is set use it as extension to the create file names"
+if [ -n "$1" ]; then
+  EXT=$1
+  DELETE=f
+else
+  EXT=$( date +%F-%T )
+  DELETE=t
+fi
+
 DUMP_PATH=/var/opt/db_dumps
 LOG=${DUMP_PATH}/pg_dump.log
-KEEP=${KEEP:-300}
 
-DBS="${DB_NAME} ${DB_NAME_AUDIT}"
+# Get a list of all databases and skip postgres and template databases
+DBS=$(psql -h ${DB_HOST} -U ${POSTGRES_USER} -l -t --field-separator=': ' -A -x | grep Name | awk '{ print $2 }' | grep -v -E 'postgres|template')
 
 for d in ${DBS};do
-  BAK="${DUMP_PATH}/$d.${DATE}.sql"
-  pg_dump -h ${DB_HOST} -U ${SORMAS_POSTGRES_USER} ${d} > ${BAK}
-  grep -q "PostgreSQL database dump complete" ${BAK}
-  if [ $? -eq 0 ];then
-    gzip ${BAK}
-    echo "Backup of ${d} to ${BAK}.gz completed." >> ${LOG}
-  else
-    rm ${BAK}
-    echo "Backup of ${d} to ${BAK} failed!!" >> ${LOG}
+  if [ "${DELETE}" == "t" ];then
+    echo "Deleting old dumps for ${d}" >> ${LOG}
+    # keep 1 day => delete all but the last 9 dumps
+    echo "$(ls -rt ${DUMP_PATH}/${d}.*.gz | head -n -9)" >> ${LOG}
+    ls -rt ${DUMP_PATH}/${d}.*.gz | head -n -9 | xargs -r rm
   fi
-done
 
-echo "Deleting old dumps" >> ${LOG}
-# keep 1 day => delete all but the last 10 dumps
-ls -rt ${DUMP_PATH}/sormas.20*.gz | head -n -10 | xargs -r rm
-ls -rt ${DUMP_PATH}/sormas_audit.20*.gz | head -n -10 | xargs -r rm
+  BAK="${DUMP_PATH}/$d.${EXT}.sql"
+  if [ -f "${BAK}.gz" ];then
+    echo "Backup of ${d} skipped. File ${BAK}.gz already exists!!" >> ${LOG}
+    continue
+  fi
+  pg_dump -h ${DB_HOST} -U ${POSTGRES_USER} ${d} > ${BAK}
+  if [ $? -eq 0 ];then
+    pigz ${BAK}
+    if [ $? -eq 0 ];then
+      # keep 9 + 1 = 10 backups - eventually
+      echo "Backup of ${d} to ${BAK}.gz completed." >> ${LOG}
+      continue
+    fi
+  fi
+  ## in case of error delete last backup
+  rm ${BAK}
+  echo "Backup of ${d} to ${BAK} failed!!" >> ${LOG}
+  exit 1;
+done
+exit 0;

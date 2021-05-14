@@ -56,6 +56,7 @@ services:
       - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}
       - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
       - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
+      - CREATE_DEFAULT_ENTITIES=${CREATE_DEFAULT_ENTITIES}        
       - PIA_URL=${PIA_URL}
       - SJ_URL=https://${PIA_URL}/user/connectSormas
       - SJ_AUTH=https://${PIA_URL}/user/requestToken
@@ -182,10 +183,8 @@ services:
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
     environment:
       - DB_HOST=${DB_HOST}
-      - DB_NAME=sormas
-      - DB_NAME_AUDIT=sormas_audit
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
     volumes:
       - /backup:/var/opt/db_dumps
@@ -203,9 +202,8 @@ services:
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
     environment:
       - DB_HOST=${KEYCLOAK_DB_HOST}
-      - DB_NAME=${KEYCLOAK_DB_NAME}
       - PGPASSWORD=${KEYCLOAK_DB_PASSWORD}
-      - SORMAS_POSTGRES_USER=${KEYCLOAK_DB_USER}
+      - POSTGRES_USER=${KEYCLOAK_DB_USER}
       - TZ=${TZ}
       - MIN=0 # At 0 Minutes
       - HOUR=*/4 # Every 4 hours

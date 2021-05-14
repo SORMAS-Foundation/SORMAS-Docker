@@ -56,6 +56,7 @@ services:
       - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
       - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
       - NAMESIMILARITYTHRESHOLD=${NAMESIMILARITYTHRESHOLD}
+      - CREATE_DEFAULT_ENTITIES=${CREATE_DEFAULT_ENTITIES}        
     volumes:
       - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
@@ -106,10 +107,8 @@ services:
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
     environment:
       - DB_HOST=${DB_HOST}
-      - DB_NAME=sormas
-      - DB_NAME_AUDIT=sormas_audit
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
       - MIN=15,45 # Twice the hour on 15 and 45 (use crontab notation)
       - HOUR= # Keep empty for every hour. Use crontab notation otherwise

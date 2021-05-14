@@ -51,13 +51,14 @@ services:
       - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
       - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
       - NAMESIMILARITYTHRESHOLD=${NAMESIMILARITYTHRESHOLD}
+      - CREATE_DEFAULT_ENTITIES=${CREATE_DEFAULT_ENTITIES}        
       - PIA_URL=${PIA_URL}
       - SJ_URL=https://${PIA_URL}/user/connectSormas
       - SJ_AUTH=https://${PIA_URL}/user/requestToken
       - SJ_CLIENTID=${SJ_CLIENTID}
       - SJ_SECRET=${SJ_SECRET}
       - SJ_DEFAULT_USERNAME=${SJ_DEFAULT_USERNAME}
-      - SJ_DEFAULT_PASSWORD=${SJ_DEFAULT_PASSWORD}
+      - SJ_DEFAULT_PASSWORD=${SJ_DEFAULT_PASSWORD}    
     volumes:
       - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
@@ -110,10 +111,8 @@ services:
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
     environment:
       - DB_HOST=${DB_HOST}
-      - DB_NAME=sormas
-      - DB_NAME_AUDIT=sormas_audit
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
     volumes:
       - /backup:/var/opt/db_dumps

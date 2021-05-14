@@ -62,12 +62,14 @@ services:
       - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
       - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
       - NAMESIMILARITYTHRESHOLD=${NAMESIMILARITYTHRESHOLD}
+      - DEMIS_ENABLED=${DEMIS_ENABLED}
+      - CREATE_DEFAULT_ENTITIES=${CREATE_DEFAULT_ENTITIES}
     volumes:
       - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
       - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
       - ./apache2/certs:/tmp/certs
-    cpus: ${APPSERVER_CPUS}
+      - ${SORMAS_PATH}/demis:/tmp/${DOMAIN_NAME}/config/demis
     mem_limit: ${APPSERVER_MEM}
     mem_reservation: ${APPSERVER_MEM_RESERVED}
     healthcheck:
@@ -132,7 +134,6 @@ services:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    cpus: ${DB_CPUS}
     mem_limit: ${DB_MEM}
     mem_reservation: ${DB_MEM_RESERVED}
     healthcheck:
@@ -174,10 +175,8 @@ services:
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
     environment:
       - DB_HOST=${DB_HOST}
-      - DB_NAME=sormas
-      - DB_NAME_AUDIT=sormas_audit
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
       - MIN=15,45 # Twice the hour on 15 and 45 (use crontab notation)
       - HOUR= # Keep empty for every hour. Use crontab notation otherwise
@@ -196,9 +195,8 @@ services:
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
     environment:
       - DB_HOST=${KEYCLOAK_DB_HOST}
-      - DB_NAME=${KEYCLOAK_DB_NAME}
       - PGPASSWORD=${KEYCLOAK_DB_PASSWORD}
-      - SORMAS_POSTGRES_USER=${KEYCLOAK_DB_USER}
+      - POSTGRES_USER=${KEYCLOAK_DB_USER}
       - TZ=${TZ}
       - MIN=0 # At 0 Minutes
       - HOUR=*/4 # Every 4 hours
@@ -223,6 +221,7 @@ services:
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
       - TZ=${TZ}
+      - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
     volumes:
       - ./apache2/certs:/usr/local/apache2/certs
       - ${SORMAS_PATH}/apache2_log:/var/log/apache2

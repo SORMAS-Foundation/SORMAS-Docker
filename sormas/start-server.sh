@@ -144,6 +144,8 @@ ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
 
 #Edit properties
+sed -i "/^createDefaultEntities/d " ${DOMAIN_DIR}/sormas.properties
+echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
 sed -i "s/country.locale=.*/country.locale=${LOCALE}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/country.name=.*/country.name=${COUNTRY_NAME}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/country.epidprefix=.*/country.epidprefix=${EPIDPREFIX}/" ${DOMAIN_DIR}/sormas.properties
@@ -259,11 +261,10 @@ if [ ! -z "$SURVNET_ENABLED" ];then
 echo -e "\nsurvnet.url=${SURVNET_URL}" >>${DOMAIN_DIR}/sormas.properties
 fi
 
-
+#------------------DEMIS CONFIG
 if [ ! -z "$DEMIS_ENABLED" ];then
-sed -i "/^interface\.demis\.jndiName/d" "${DOMAIN_DIR}/sormas.properties"
-echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-1.3.0/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
-
+cp -a /tmp/${DOMAIN_NAME}/config/demis/. ${DOMAIN_DIR}/config/
+echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-1.4.1/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
 
 echo -e "debuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/config/demis-adapter.properties
 echo -e "\nfhir.basepath=${FHIR_BASEPATH}" >>${DOMAIN_DIR}/config/demis-adapter.properties
