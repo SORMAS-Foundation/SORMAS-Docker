@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 ALTER SYSTEM writes the given parameter setting to the postgresql.auto.conf file,
 which is read in addition to postgresql.conf
@@ -58,30 +58,44 @@ def human_to_int(value):
     return kB * int(value.strip("kB"))
   return int(value)
 
-def get_cgroup_resources(file):
-  with open(file, 'r') as proc_fil:
-      # Read cmdline value.
-      data = proc_fil.read()
-      # Make it printable.
-      ret_val = data.rstrip('\n')
-  return ret_val
-
+# Get memory limit
+# returns amount of memory in bytes as int
 def get_mem():
-  sysmem = psutil.virtual_memory()
-  mem = int(get_cgroup_resources("/sys/fs/cgroup/memory/memory.limit_in_bytes"))
-  if mem > sysmem.total:
-    return sysmem.total
-  return mem
+  # get memory numbers from host
+  sysmem = psutil.virtual_memory().total
+  # cgroup v2
+  try:
+      mem = open("/sys/fs/cgroup/memory.max").read().rstrip()
+  except IOError:
+      # cgroup v1
+      try:
+          mem = open("/sys/fs/cgroup/memory/memory.limit_in_bytes").read().rstrip()
+      # no cgroup memory limits configured, assuming max
+      except IOError:
+          mem = "max"
 
+  # max in cgroup v2, -1 in v1
+  # if max or cgroup limit mem bigger than sysmem, use sysmem, else use cgroup mem limit
+  return sysmem if mem in ("max", "-1") or int(mem) > sysmem else int(mem)
+
+# Get CPU limit
+# returns amount of CPUs as int
 def get_cpu():
-    cpu_quota = int(get_cgroup_resources("/sys/fs/cgroup/cpu,cpuacct/cpu.cfs_quota_us"))
-    cpu_period = int(get_cgroup_resources("/sys/fs/cgroup/cpu,cpuacct/cpu.cfs_period_us"))
-    if cpu_quota == -1:
-      cpus = get_cgroup_resources("/sys/fs/cgroup/cpuset/cpuset.cpus")
-      cpu = int(cpus.replace("0-","")) + 1
-    else:
-      cpu = int(cpu_quota / cpu_period)
-    return cpu
+    # cgroup v2
+    try:
+        cpu_quota, cpu_period = open("/sys/fs/cgroup/cpu.max").read().rstrip().split()
+    except IOError:
+        # cgroup v1
+        try:
+            cpu_quota = open("/sys/fs/cgroup/cpu,cpuacct/cpu.cfs_quota_us").read().rstrip()
+            cpu_period = open("/sys/fs/cgroup/cpu,cpuacct/cpu.cfs_period_us").read().rstrip()
+        # no cgroup memory limits configured, assuming max
+        except IOError:
+            cpu_quota = "max"
+
+    # max in cgroup v2, -1 in v1
+    # if max, use system cpu count, else calculate cpu limits
+    return psutil.cpu_count() if cpu_quota in ("max", "-1") else int(cpu_quota) // int(cpu_period) + 1
 
 def read_config_file(filename):
   config = {}
@@ -108,7 +122,7 @@ def get_tuning_values(config, filename):
         name, value = line.split('=', 1)
         name = name.strip()
         value = re.sub(r'#.*$', '', value).strip()
-        # are there any uses variables in the formula referring to config variables from
+        # are there any used variables in the formula referring to config variables from
         # the config file? e.g.: max_connections 
         # loop over all elements of formula
         for v in value.split():
