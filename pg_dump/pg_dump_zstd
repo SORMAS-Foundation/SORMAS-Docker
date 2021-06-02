@@ -18,7 +18,7 @@ BAK_EXT=.zst
 # Get a list of all databases and skip postgres and template databases
 DBS=$(psql -h ${DB_HOST} -U ${POSTGRES_USER} -l -t --field-separator=': ' -A -x | grep Name | awk '{ print $2 }' | grep -v -E 'postgres|template')
 if [ $? -ne 0 ];then
-  echo "Backup process failed during DBS listing step!!!" >> ${LOG}
+  echo "Backup process step during DBS listing failed!!" >> ${LOG}
   exit 100;
 fi
 
