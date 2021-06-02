@@ -38,8 +38,12 @@ for d in ${DBS};do
       ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} | head -n -10 | xargs -r rm
     fi
     continue
+  else
+    if [[ -f ${BAK}${BAK_EXT} ]]; then
+      rm -rf ${BAK}${BAK_EXT}
+    fi
+    echo "Backup of ${BAK}${BAK_EXT} failed!!" >> ${LOG}
+    exit 1;
   fi
-  echo "Backup of ${BAK}${BAK_EXT} failed!!" >> ${LOG}
-  exit 1;
 done
 exit 0;
