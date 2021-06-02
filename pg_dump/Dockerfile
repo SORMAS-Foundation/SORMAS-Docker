@@ -2,9 +2,10 @@ FROM alpine:3.8
 
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --no-cache --upgrade postgresql-client dcron tzdata pigz
+    apk add --no-cache --upgrade postgresql-client dcron tzdata pigz zstd
 
 COPY pg_dump /root
+COPY pg_dump_zstd /root
 COPY entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh" ]

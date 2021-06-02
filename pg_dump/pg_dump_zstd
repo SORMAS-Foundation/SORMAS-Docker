@@ -1,0 +1,45 @@
+#!/bin/sh
+
+# if parameter 1 is set use it as common name to the created file names"
+if [ -n "$1" ]; then
+  COMMON=$1
+  DELETE=f
+else
+  COMMON=$( date +%F-%T )
+  DELETE=t
+fi
+
+# default compression is set to 3
+COMPRESSION_LEVEL=${2:-3}
+DUMP_PATH=/var/opt/db_dumps
+LOG=${DUMP_PATH}/pg_dump.log
+BAK_EXT=.zst
+
+# Get a list of all databases and skip postgres and template databases
+DBS=$(psql -h ${DB_HOST} -U ${POSTGRES_USER} -l -t --field-separator=': ' -A -x | grep Name | awk '{ print $2 }' | grep -v -E 'postgres|template')
+if [ $? -ne 0 ];then
+  echo "Backup process failed during DBS listing step!!!" >> ${LOG}
+  exit 100;
+fi
+
+for d in ${DBS};do
+  BAK="${DUMP_PATH}/$d.${COMMON}.sql"
+  if [ -f "${BAK}${BAK_EXT}" ];then
+    echo "Backup of ${d} skipped. File ${BAK}${BAK_EXT} already exists!!" >> ${LOG}
+    continue
+  fi
+  pg_dump -h ${DB_HOST} -U ${POSTGRES_USER} ${d} | zstd -$COMPRESSION_LEVEL --rm -T0 >${BAK}${BAK_EXT}
+  if [ $? -eq 0 ];then
+    echo "Backup using compression_level ($COMPRESSION_LEVEL) of ${BAK}${BAK_EXT} completed." >> ${LOG}
+    if [ "${DELETE}" == "t" ];then
+      echo "Deleting old dumps for ${d}" >> ${LOG}
+      # keep 1 day => delete all but the last 10 dumps
+      echo "$(ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} | head -n -10)" >> ${LOG}
+      ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} | head -n -10 | xargs -r rm
+    fi
+    continue
+  fi
+  echo "Backup of ${BAK}${BAK_EXT} failed!!" >> ${LOG}
+  exit 1;
+done
+exit 0;
