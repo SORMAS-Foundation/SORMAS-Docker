@@ -56,6 +56,9 @@ while [ $(check_db) -ne 1 ];do
 done
 unset PGPASSWORD
 
+echo "AS_ADMIN_NEWPASSWORD=${AS_ADMIN_NEWPASSWORD}" > ./newpwfile.txt
+echo -e "AS_ADMIN_PASSWORD=\nAS_ADMIN_NEWPASSWORD=${AS_ADMIN_NEWPASSWORD}" > ./oldpwfile.txt
+
 ROOT_PREFIX=
 # make sure to update payara-sormas script when changing the user name
 USER_NAME=payara
@@ -121,6 +124,10 @@ ${ASADMIN} create-javamail-resource --mailhost ${MAIL_HOST} --mailuser "sormas" 
 ${ASADMIN} set configs.config.server-config.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size=500
 # set FQDN for sormas domain
 ${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.hosts=${SORMAS_SERVER_URL}
+
+# Set admin password before start
+${ASADMIN} --user admin --passwordfile ./oldpwfile.txt change-admin-password --domaindir ${DOMAINS_HOME} --domain_name ${DOMAIN_NAME}
+${ASADMIN} --user admin --passwordfile ./newpwfile.txt enable-secure-admin
 
 # switch to json log formatting if JSON_LOGGIN is set to true
 if [ "$JSON_LOGGING" == true ]; then
