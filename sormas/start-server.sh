@@ -348,6 +348,9 @@ echo "Starting server ${DOMAIN_NAME}."
 
 start_sormas
 
+echo "Changing rw-permissions of groups and others"
+chmod 600 /opt/domains/sormas/sormas.properties /opt/domains/sormas/config/domain.xml /opt/domains/sormas/config/domain.xml.bak /opt/domains/sormas/logs/server.log
+
 #sleep 60
 #echo >> ${LOG_FILE_PATH}/server.log
 
