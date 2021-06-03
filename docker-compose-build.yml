@@ -3,8 +3,6 @@ services:
   payara:
     build:
       context: payara
-      args:
-        - AS_ADMIN_NEWPASSWORD=${AS_ADMIN_NEWPASSWORD}
     image: hzibraunschweig/sormas-payara:5.192
 
   rscript:
