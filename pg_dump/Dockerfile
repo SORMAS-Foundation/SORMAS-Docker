@@ -5,7 +5,6 @@ RUN apk update --no-cache && \
     apk add --no-cache --upgrade postgresql-client dcron tzdata pigz zstd
 
 COPY pg_dump /root
-COPY pg_dump_zstd /root
 COPY entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh" ]
