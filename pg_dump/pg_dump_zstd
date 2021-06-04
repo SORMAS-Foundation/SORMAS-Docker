@@ -36,7 +36,7 @@ for d in ${DBS};do
       # keep 1 day => delete all but the last 10 dumps
       echo "$(ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} | head -n -10)" >> ${LOG}
       ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} | head -n -10 | xargs -r rm
-      # gradually remove obsolete gzip backup files
+      # gradually remove obsolete gzip backup files older than 5 hours (if any)
       find ${DUMP_PATH} -maxdepth 1 -name '*.sql.gz' -mmin +300 -delete >> ${LOG}
     fi
     continue
