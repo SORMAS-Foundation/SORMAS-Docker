@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# if parameter 1 is set use it as common name to the created file names"
+# if parameter 1 is set use it as common alias to created file names - no backup removal/rotation in that case
 if [ -n "$1" ]; then
   COMMON=$1
   DELETE=f
@@ -36,6 +36,8 @@ for d in ${DBS};do
       # keep 1 day => delete all but the last 10 dumps
       echo "$(ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} | head -n -10)" >> ${LOG}
       ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} | head -n -10 | xargs -r rm
+      # gradually remove obsolete gzip backup files
+      find ${DUMP_PATH} -maxdepth 1 -name '*.sql.gz' -mmin +300 -delete >> ${LOG}
     fi
     continue
   else
