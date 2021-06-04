@@ -45,6 +45,8 @@ Listen 443
         ProxyPassReverse /sormas-rest http://sormas:6080/sormas-rest
         ProxyPass /keycloak http://keycloak:8080/keycloak connectiontimeout=5 timeout=600
         ProxyPassReverse /keycloak http://keycloak:8080/keycloak
+	ProxyPass /sormas-angular http://sormas-angular:80/ connectiontimeout=5 timeout=600
+        ProxyPassReverse /sormas-angular/ http://sormas-angular:80/
         <Location /metrics>
             ProxyPass  http://sormas:6080/metrics connectiontimeout=5 timeout=600
             ProxyPassReverse http://sormas:6080/metrics

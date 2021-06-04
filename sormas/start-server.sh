@@ -56,6 +56,9 @@ while [ $(check_db) -ne 1 ];do
 done
 unset PGPASSWORD
 
+echo "AS_ADMIN_NEWPASSWORD=${AS_ADMIN_NEWPASSWORD}" > ./newpwfile.txt
+echo -e "AS_ADMIN_PASSWORD=\nAS_ADMIN_NEWPASSWORD=${AS_ADMIN_NEWPASSWORD}" > ./oldpwfile.txt
+
 ROOT_PREFIX=
 # make sure to update payara-sormas script when changing the user name
 USER_NAME=payara
@@ -122,6 +125,10 @@ ${ASADMIN} set configs.config.server-config.thread-pools.thread-pool.http-thread
 # set FQDN for sormas domain
 ${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.hosts=${SORMAS_SERVER_URL}
 
+# Set admin password before start
+${ASADMIN} --user admin --passwordfile ./oldpwfile.txt change-admin-password --domaindir ${DOMAINS_HOME} --domain_name ${DOMAIN_NAME}
+${ASADMIN} --user admin --passwordfile ./newpwfile.txt enable-secure-admin
+
 # switch to json log formatting if JSON_LOGGIN is set to true
 if [ "$JSON_LOGGING" == true ]; then
 echo "Enabling logging in JSON format"
@@ -145,25 +152,38 @@ chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
 
 #Edit properties
 sed -i "/^createDefaultEntities/d " ${DOMAIN_DIR}/sormas.properties
+sed -i "/^country.locale/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^country.name/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^country.epidprefix/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^csv.separator/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^email.sender.address/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^email.sender.name/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^country.center.latitude/" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^country.center.longitude/" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^map.zoom/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^app.url/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^namesimilaritythreshold/" ${DOMAIN_DIR}/sormas.properties
+
+
 echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
-sed -i "s/country.locale=.*/country.locale=${LOCALE}/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/country.name=.*/country.name=${COUNTRY_NAME}/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/country.epidprefix=.*/country.epidprefix=${EPIDPREFIX}/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/#csv.separator=.*/csv.separator=/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/csv.separator=.*/csv.separator=${SEPARATOR}/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/#email.sender.address=.*/email.sender.address=/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/email.sender.address=.*/email.sender.address=${EMAIL_SENDER_ADDRESS}/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/#email.sender.name=.*/email.sender.name=/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/email.sender.name=.*/email.sender.name=${EMAIL_SENDER_NAME}/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/country.center.latitude=.*/country.center.latitude=${LATITUDE}/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/country.center.longitude=.*/country.center.longitude=${LONGITUDE}/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/map.zoom=.*/map.zoom=${MAP_ZOOM}/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s;app.url=.*;app.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk;" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/\#namesimilaritythreshold=.*/namesimilaritythreshold=${NAMESIMILARITYTHRESHOLD}/" ${DOMAIN_DIR}/sormas.properties
+echo -e "\ncountry.locale=${LOCALE}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ncountry.name=${COUNTRY_NAME}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ncountry.epidprefix=${EPIDPREFIX}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ncsv.separator=${SEPARATOR}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nemail.sender.address=${EMAIL_SENDER_ADDRESS}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nemail.sender.name=${EMAIL_SENDER_NAME}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ncountry.center.latitude=${LATITUDE}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ncountry.center.longitude=${LONGITUDE}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nmap.zoom=${MAP_ZOOM}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\napp.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk;" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nnamesimilaritythreshold=${NAMESIMILARITYTHRESHOLD}" >>${DOMAIN_DIR}/sormas.properties
+
+
 #------------------GEOCODING
 sed -i "/^geocodingServiceUrlTemplate/d " ${DOMAIN_DIR}/sormas.properties
 sed -i "/^geocodingLongitudeJsonPath/d " ${DOMAIN_DIR}/sormas.properties
 sed -i "/^geocodingLatitudeJsonPath/d " ${DOMAIN_DIR}/sormas.properties
+
 echo -e "\ngeocodingServiceUrlTemplate=${GEO_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "geocodingLongitudeJsonPath=${GEO_LONG_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "geocodingLatitudeJsonPath=${GEO_LAT_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
@@ -334,6 +354,9 @@ echo
 echo "Starting server ${DOMAIN_NAME}."
 
 start_sormas
+
+echo "Changing rw-permissions of groups and others"
+chmod 600 /opt/domains/sormas/sormas.properties /opt/domains/sormas/config/domain.xml /opt/domains/sormas/config/domain.xml.bak /opt/domains/sormas/logs/server.log
 
 #sleep 60
 #echo >> ${LOG_FILE_PATH}/server.log
