@@ -14,7 +14,7 @@ COMPRESSION_LEVEL=${2:-7}
 DUMP_PATH=/var/opt/db_dumps
 LOG=${DUMP_PATH}/pg_dump.log
 BAK_EXT=.zst
-
+GZ_EXT=.gz
 # Get a list of all databases and skip postgres and template databases
 DBS=$(psql -h ${DB_HOST} -U ${POSTGRES_USER} -l -t --field-separator=': ' -A -x | grep Name | awk '{ print $2 }' | grep -v -E 'postgres|template')
 if [ $? -ne 0 ];then
@@ -34,8 +34,8 @@ for d in ${DBS};do
     if [ "${DELETE}" == "t" ];then
       echo "Deleting old dumps for ${d}" >> ${LOG}
       # keep 1 day => delete all but the last 10 dumps - with .gz or .zst extention
-      echo "$(ls -rt ${DUMP_PATH}/${d}.*.{zst,gz} | head -n -10)" >> ${LOG}
-      ls -rt ${DUMP_PATH}/${d}.*.{zst,gz} | head -n -10 | xargs -r rm
+      echo "$(ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} ${DUMP_PATH}/${d}.*${GZ_EXT} | head -n -10)" >> ${LOG}
+      ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} ${DUMP_PATH}/${d}.*${GZ_EXT} | head -n -10 | xargs -r rm
     fi
     continue
   else
