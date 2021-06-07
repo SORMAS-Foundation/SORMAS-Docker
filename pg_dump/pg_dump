@@ -33,11 +33,9 @@ for d in ${DBS};do
     echo "Backup using compression_level ($COMPRESSION_LEVEL) of ${BAK}${BAK_EXT} completed." >> ${LOG}
     if [ "${DELETE}" == "t" ];then
       echo "Deleting old dumps for ${d}" >> ${LOG}
-      # keep 1 day => delete all but the last 10 dumps
-      echo "$(ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} | head -n -10)" >> ${LOG}
-      ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} | head -n -10 | xargs -r rm
-      # gradually remove obsolete gzip backup files older than 5 hours (if any)
-      find ${DUMP_PATH} -maxdepth 1 -name '*.sql.gz' -mmin +300 -delete >> ${LOG}
+      # keep 1 day => delete all but the last 10 dumps - with .gz or .zst extention
+      echo "$(ls -rt ${DUMP_PATH}/${d}.*.{zst,gz} | head -n -10)" >> ${LOG}
+      ls -rt ${DUMP_PATH}/${d}.*.{zst,gz} | head -n -10 | xargs -r rm
     fi
     continue
   else
