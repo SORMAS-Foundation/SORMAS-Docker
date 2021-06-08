@@ -9,8 +9,8 @@ else
   DELETE=t
 fi
 
-# default compression is set to 7
-COMPRESSION_LEVEL=${2:-7}
+# default compression is set to 3
+COMPRESSION_LEVEL=${2:-3}
 DUMP_PATH=/var/opt/db_dumps
 LOG=${DUMP_PATH}/pg_dump.log
 BAK_EXT=.zst
