@@ -1,45 +1,49 @@
 #!/bin/sh
 
-# if parameter 1 is set use it as extension to the create file names"
+# if parameter 1 is set use it as common alias to created file names - no backup removal/rotation in that case
 if [ -n "$1" ]; then
-  EXT=$1
+  COMMON=$1
   DELETE=f
 else
-  EXT=$( date +%F-%T )
+  COMMON=$( date +%F-%T )
   DELETE=t
 fi
 
+# default compression is set to 3
+COMPRESSION_LEVEL=${2:-3}
 DUMP_PATH=/var/opt/db_dumps
 LOG=${DUMP_PATH}/pg_dump.log
-
+BAK_EXT=.zst
+GZ_EXT=.gz
 # Get a list of all databases and skip postgres and template databases
 DBS=$(psql -h ${DB_HOST} -U ${POSTGRES_USER} -l -t --field-separator=': ' -A -x | grep Name | awk '{ print $2 }' | grep -v -E 'postgres|template')
+if [ $? -ne 0 ];then
+  echo "Backup process step during DBS listing failed!!" >> ${LOG}
+  exit 100;
+fi
 
 for d in ${DBS};do
-  if [ "${DELETE}" == "t" ];then
-    echo "Deleting old dumps for ${d}" >> ${LOG}
-    # keep 1 day => delete all but the last 9 dumps
-    echo "$(ls -rt ${DUMP_PATH}/${d}.*.gz | head -n -9)" >> ${LOG}
-    ls -rt ${DUMP_PATH}/${d}.*.gz | head -n -9 | xargs -r rm
-  fi
-
-  BAK="${DUMP_PATH}/$d.${EXT}.sql"
-  if [ -f "${BAK}.gz" ];then
-    echo "Backup of ${d} skipped. File ${BAK}.gz already exists!!" >> ${LOG}
+  BAK="${DUMP_PATH}/$d.${COMMON}.sql"
+  if [ -f "${BAK}${BAK_EXT}" ];then
+    echo "Backup of ${d} skipped. File ${BAK}${BAK_EXT} already exists!!" >> ${LOG}
     continue
   fi
-  pg_dump -h ${DB_HOST} -U ${POSTGRES_USER} ${d} > ${BAK}
+  pg_dump -h ${DB_HOST} -U ${POSTGRES_USER} ${d} | zstd -$COMPRESSION_LEVEL -T0 >${BAK}${BAK_EXT}
   if [ $? -eq 0 ];then
-    pigz ${BAK}
-    if [ $? -eq 0 ];then
-      # keep 9 + 1 = 10 backups - eventually
-      echo "Backup of ${d} to ${BAK}.gz completed." >> ${LOG}
-      continue
+    echo "Backup using compression_level ($COMPRESSION_LEVEL) of ${BAK}${BAK_EXT} completed." >> ${LOG}
+    if [ "${DELETE}" == "t" ];then
+      echo "Deleting old dumps for ${d}" >> ${LOG}
+      # keep 1 day => delete all but the last 10 dumps - with .gz or .zst extention
+      echo "$(ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} ${DUMP_PATH}/${d}.*${GZ_EXT} | head -n -10)" >> ${LOG}
+      ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} ${DUMP_PATH}/${d}.*${GZ_EXT} | head -n -10 | xargs -r rm
     fi
+    continue
+  else
+    if [[ -f ${BAK}${BAK_EXT} ]]; then
+      rm -rf ${BAK}${BAK_EXT}
+    fi
+    echo "Backup of ${BAK}${BAK_EXT} failed!!" >> ${LOG}
+    exit 1;
   fi
-  ## in case of error delete last backup
-  rm ${BAK}
-  echo "Backup of ${d} to ${BAK} failed!!" >> ${LOG}
-  exit 1;
 done
 exit 0;
