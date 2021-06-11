@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 ROOT_PREFIX=
 # make sure to update payara-sormas script when changing the user name

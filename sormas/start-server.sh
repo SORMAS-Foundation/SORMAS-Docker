@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 function stop_payara() {
   echo "Stopping server ${DOMAIN_NAME}." >> ${LOG_FILE_PATH}/server.log
