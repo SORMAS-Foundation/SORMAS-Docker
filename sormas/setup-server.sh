@@ -134,6 +134,12 @@ sed -i 's/"300"/"0"/g' ${DOMAIN_DIR}/config/domain.xml
 # echo "Set logging fo documents to WARNING level"
 # sed -i '/<root level="debug">/i\ \ \ \ <logger name="fr.opensagres.xdocreport" level="WARN" />' ${DOMAIN_DIR}/config/logback.xml
 
+# Patching logback.xml - there is an assumption that searched phrase exists - if not - should exit
+echo "Patching logback.xml configuration"
+set -x
+grep "^[[:blank:]]*<smtpHost>localhost</smtpHost>[[:blank:]]*$" ${DOMAIN_DIR}/config/logback.xml
+set +x
+
 ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 
 rm -rf ${DOMAIN_DIR}/osgi-cache/*
