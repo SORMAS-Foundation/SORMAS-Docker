@@ -113,7 +113,7 @@ These Options are available to customize the installation:
 
 **LOG_SENDER_ADDRESS** Specifies email FROM property of log SMTPAppender message
 
-**LOG_RECIPIENT_ADDRESS** Specifies email TO property of log SMTPAppender message
+**LOG_RECIPIENT_ADDRESS** Specifies email TO property of log SMTPAppender message (if it is empty - error-log mail shipment is DISABLED)
 
 **LOG_SUBJECT** Specifies SUBJECT property of log SMTPAppender message
 
