@@ -1,4 +1,6 @@
 #!/bin/bash
+# entering exit immediately mode
+set -e
 
 function stop_payara() {
   echo "Stopping server ${DOMAIN_NAME}." >> ${LOG_FILE_PATH}/server.log
@@ -149,6 +151,22 @@ fi
 
 ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
+
+# LOGBACK logger
+#  enable email sending when recipient is not empty
+if [[ ! -z "${LOG_RECIPIENT_ADDRESS}" ]]; then
+    sed -i 's|<!-- <appender-ref ref="EMAIL_ERROR" /> -->|<appender-ref ref="EMAIL_ERROR" />|' ${DOMAIN_DIR}/config/logback.xml
+fi
+sed -i "s/MAIL_HOST/$MAIL_HOST/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/SMTP_PORT/$SMTP_PORT/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/SMTP_USER/$SMTP_USER/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/SMTP_PASSWORD/$SMTP_PASSWORD/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/SMTP_STARTTLS/$SMTP_STARTTLS/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/SMTP_SSL/$SMTP_SSL/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/SMTP_ASYNC_SENDING/$SMTP_ASYNC_SENDING/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/LOG_RECIPIENT_ADDRESS/$LOG_RECIPIENT_ADDRESS/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/LOG_SENDER_ADDRESS/$LOG_SENDER_ADDRESS/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/LOG_SUBJECT/$SORMAS_SERVER_URL $LOG_SUBJECT/" ${DOMAIN_DIR}/config/logback.xml
 
 #Edit properties
 sed -i "/^createDefaultEntities/d " ${DOMAIN_DIR}/sormas.properties

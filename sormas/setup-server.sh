@@ -1,4 +1,6 @@
 #!/bin/bash
+# entering exit immediately mode
+set -e
 
 ROOT_PREFIX=
 # make sure to update payara-sormas script when changing the user name
@@ -132,6 +134,18 @@ sed -i 's/"300"/"0"/g' ${DOMAIN_DIR}/config/domain.xml
 
 # echo "Set logging fo documents to WARNING level"
 # sed -i '/<root level="debug">/i\ \ \ \ <logger name="fr.opensagres.xdocreport" level="WARN" />' ${DOMAIN_DIR}/config/logback.xml
+
+# Patching logback.xml - there is an assumption that searched phrases exist - if not - should exit
+echo "Patching logback.xml configuration"
+# entering debug mode to get know of failing line in case of error-exit
+set -x
+grep '^[[:blank:]]*<smtpHost>localhost</smtpHost>[[:blank:]]*$' ${DOMAIN_DIR}/config/logback.xml
+grep '<!-- <appender-ref ref="EMAIL_ERROR" /> -->' ${DOMAIN_DIR}/config/logback.xml
+grep '<subject>SORMAS: %logger{20} - %m</subject>' ${DOMAIN_DIR}/config/logback.xml
+sed -i 's|<subject>SORMAS: %logger{20} - %m</subject>|<!-- <subject>SORMAS: %logger{20} - %m</subject> -->|' ${DOMAIN_DIR}/config/logback.xml
+sed -i 's|<smtpHost>localhost</smtpHost>|\t<smtpHost>MAIL_HOST</smtpHost>\n\t\t<smtpPort>SMTP_PORT</smtpPort>\n\t\t<username>SMTP_USER</username>\n\t\t<password>SMTP_PASSWORD</password>\n\t\t<STARTTLS>SMTP_STARTTLS</STARTTLS>\n\t\t<SSL>SMTP_SSL</SSL>\n\t\t<asynchronousSending>SMTP_ASYNC_SENDING</asynchronousSending>\n\t\t<to>LOG_RECIPIENT_ADDRESS</to>\n\t\t<from>LOG_SENDER_ADDRESS</from>\n\t\t<subject>LOG_SUBJECT</subject>|' ${DOMAIN_DIR}/config/logback.xml
+set +x
+# switch off debug mode
 
 ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 
