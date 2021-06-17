@@ -1,4 +1,5 @@
 #!/bin/bash
+# entering exit immediately mode
 set -e
 
 function stop_payara() {
