@@ -176,11 +176,11 @@ sed -i "/^country.epidprefix/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^csv.separator/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^email.sender.address/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^email.sender.name/d" ${DOMAIN_DIR}/sormas.properties
-sed -i "/^country.center.latitude/" ${DOMAIN_DIR}/sormas.properties
-sed -i "/^country.center.longitude/" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^country.center.latitude/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^country.center.longitude/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^map.zoom/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^app.url/d" ${DOMAIN_DIR}/sormas.properties
-sed -i "/^namesimilaritythreshold/" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^namesimilaritythreshold/d" ${DOMAIN_DIR}/sormas.properties
 
 
 echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
