@@ -326,8 +326,6 @@ echo -e "\nconnect.timeout.ms=${CONNECT_TIMEOUT_MS}" >>${DOMAIN_DIR}/config/demi
 echo -e "\nconnection.request.timeout.ms=${CONNECTION_REQUEST_TIMEOUT_MS}" >>${DOMAIN_DIR}/config/demis-adapter.properties
 echo -e "\nsocket.timeout.ms=${SOCKET_TIMEOUT_MS}" >>${DOMAIN_DIR}/config/demis-adapter.properties
 
-echo -e "\ntime.persistence.path=${TIME_PERSISTENCE_PATH}" >>${DOMAIN_DIR}/config/demis-adapter.properties
-mkdir ${TIME_PERSISTENCE_PATH}
 fi
 
 # import R library
