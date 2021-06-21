@@ -99,9 +99,10 @@ start_sormas
 echo "Configuring domain and database connection..."
 
 # JVM settings
+set +e
 ${ASADMIN} delete-jvm-options -Xmx4096m
 ${ASADMIN} create-jvm-options -Xmx${JVM_MAX}
-
+set -e
 # Proxy settings
 if [ ! -z "$PROXY_HOST" ];then
   echo "Updating Proxy Settings"
@@ -128,9 +129,10 @@ ${ASADMIN} set configs.config.server-config.thread-pools.thread-pool.http-thread
 ${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.hosts=${SORMAS_SERVER_URL}
 
 # Set admin password before start
+set +e
 ${ASADMIN} --user admin --passwordfile ./oldpwfile.txt change-admin-password --domaindir ${DOMAINS_HOME} --domain_name ${DOMAIN_NAME}
 ${ASADMIN} --user admin --passwordfile ./newpwfile.txt enable-secure-admin
-
+set -e
 # switch to json log formatting if JSON_LOGGIN is set to true
 if [ "$JSON_LOGGING" == true ]; then
 echo "Enabling logging in JSON format"
