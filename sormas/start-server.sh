@@ -1,4 +1,6 @@
 #!/bin/bash
+# entering exit immediately mode
+set -e
 
 function stop_payara() {
   echo "Stopping server ${DOMAIN_NAME}." >> ${LOG_FILE_PATH}/server.log
@@ -97,9 +99,10 @@ start_sormas
 echo "Configuring domain and database connection..."
 
 # JVM settings
+set +e
 ${ASADMIN} delete-jvm-options -Xmx4096m
 ${ASADMIN} create-jvm-options -Xmx${JVM_MAX}
-
+set -e
 # Proxy settings
 if [ ! -z "$PROXY_HOST" ];then
   echo "Updating Proxy Settings"
@@ -126,9 +129,10 @@ ${ASADMIN} set configs.config.server-config.thread-pools.thread-pool.http-thread
 ${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.hosts=${SORMAS_SERVER_URL}
 
 # Set admin password before start
+set +e
 ${ASADMIN} --user admin --passwordfile ./oldpwfile.txt change-admin-password --domaindir ${DOMAINS_HOME} --domain_name ${DOMAIN_NAME}
 ${ASADMIN} --user admin --passwordfile ./newpwfile.txt enable-secure-admin
-
+set -e
 # switch to json log formatting if JSON_LOGGIN is set to true
 if [ "$JSON_LOGGING" == true ]; then
 echo "Enabling logging in JSON format"
@@ -150,6 +154,22 @@ fi
 ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}
 
+# LOGBACK logger
+#  enable email sending when recipient is not empty
+if [[ ! -z "${LOG_RECIPIENT_ADDRESS}" ]]; then
+    sed -i 's|<!-- <appender-ref ref="EMAIL_ERROR" /> -->|<appender-ref ref="EMAIL_ERROR" />|' ${DOMAIN_DIR}/config/logback.xml
+fi
+sed -i "s/MAIL_HOST/$MAIL_HOST/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/SMTP_PORT/$SMTP_PORT/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/SMTP_USER/$SMTP_USER/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/SMTP_PASSWORD/$SMTP_PASSWORD/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/SMTP_STARTTLS/$SMTP_STARTTLS/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/SMTP_SSL/$SMTP_SSL/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/SMTP_ASYNC_SENDING/$SMTP_ASYNC_SENDING/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/LOG_RECIPIENT_ADDRESS/$LOG_RECIPIENT_ADDRESS/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/LOG_SENDER_ADDRESS/$LOG_SENDER_ADDRESS/" ${DOMAIN_DIR}/config/logback.xml
+sed -i "s/LOG_SUBJECT/$SORMAS_SERVER_URL $LOG_SUBJECT/" ${DOMAIN_DIR}/config/logback.xml
+
 #Edit properties
 sed -i "/^createDefaultEntities/d " ${DOMAIN_DIR}/sormas.properties
 sed -i "/^country.locale/d" ${DOMAIN_DIR}/sormas.properties
@@ -158,11 +178,11 @@ sed -i "/^country.epidprefix/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^csv.separator/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^email.sender.address/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^email.sender.name/d" ${DOMAIN_DIR}/sormas.properties
-sed -i "/^country.center.latitude/" ${DOMAIN_DIR}/sormas.properties
-sed -i "/^country.center.longitude/" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^country.center.latitude/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^country.center.longitude/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^map.zoom/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^app.url/d" ${DOMAIN_DIR}/sormas.properties
-sed -i "/^namesimilaritythreshold/" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^namesimilaritythreshold/d" ${DOMAIN_DIR}/sormas.properties
 
 
 echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
@@ -308,8 +328,6 @@ echo -e "\nconnect.timeout.ms=${CONNECT_TIMEOUT_MS}" >>${DOMAIN_DIR}/config/demi
 echo -e "\nconnection.request.timeout.ms=${CONNECTION_REQUEST_TIMEOUT_MS}" >>${DOMAIN_DIR}/config/demis-adapter.properties
 echo -e "\nsocket.timeout.ms=${SOCKET_TIMEOUT_MS}" >>${DOMAIN_DIR}/config/demis-adapter.properties
 
-echo -e "\ntime.persistence.path=${TIME_PERSISTENCE_PATH}" >>${DOMAIN_DIR}/config/demis-adapter.properties
-mkdir ${TIME_PERSISTENCE_PATH}
 fi
 
 # import R library
