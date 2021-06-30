@@ -305,7 +305,9 @@ fi
 
 #------------------DEMIS CONFIG
 if [ ! -z "$DEMIS_ENABLED" ];then
+set +e
 cp -a /tmp/${DOMAIN_NAME}/config/demis/. ${DOMAIN_DIR}/config/
+set -e
 echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
 
 echo -e "debuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/config/demis-adapter.properties
