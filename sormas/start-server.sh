@@ -197,7 +197,7 @@ echo -e "\ncountry.center.longitude=${LONGITUDE}" >>${DOMAIN_DIR}/sormas.propert
 echo -e "\nmap.zoom=${MAP_ZOOM}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\napp.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk;" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nnamesimilaritythreshold=${NAMESIMILARITYTHRESHOLD}" >>${DOMAIN_DIR}/sormas.properties
-
+echo -e "\nduplicatechecks.excludepersonsonlylinkedtoarchivedentries=${DCEXCLUDEARCHIVEDPERSONENTRIES}" >>${DOMAIN_DIR}/sormas.properties
 
 #------------------GEOCODING
 sed -i "/^geocodingServiceUrlTemplate/d " ${DOMAIN_DIR}/sormas.properties

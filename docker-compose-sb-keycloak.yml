@@ -74,6 +74,7 @@ services:
       - SJ_DEFAULT_USERNAME=${SJ_DEFAULT_USERNAME}
       - SJ_DEFAULT_PASSWORD=${SJ_DEFAULT_PASSWORD}
       - AS_ADMIN_NEWPASSWORD=${AS_ADMIN_NEWPASSWORD}
+      - DCEXCLUDEARCHIVEDPERSONENTRIES=${DCEXCLUDEARCHIVEDPERSONENTRIES}
     volumes:
       - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
