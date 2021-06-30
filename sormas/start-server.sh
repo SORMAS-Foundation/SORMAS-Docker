@@ -200,7 +200,7 @@ echo -e "\napp.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMA
 echo -e "\nnamesimilaritythreshold=${NAMESIMILARITYTHRESHOLD}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nduplicatechecks.excludepersonsonlylinkedtoarchivedentries=${DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nmap.usecountrycenter=${MAP_USECOUNTRYCENTER}" >>${DOMAIN_DIR}/sormas.properties
-map.usecountrycenter
+
 #------------------GEOCODING
 sed -i "/^geocodingServiceUrlTemplate/d " ${DOMAIN_DIR}/sormas.properties
 sed -i "/^geocodingLongitudeJsonPath/d " ${DOMAIN_DIR}/sormas.properties
