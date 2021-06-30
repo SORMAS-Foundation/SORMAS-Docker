@@ -62,13 +62,15 @@ services:
       - NAMESIMILARITYTHRESHOLD=${NAMESIMILARITYTHRESHOLD}
       - CREATE_DEFAULT_ENTITIES=${CREATE_DEFAULT_ENTITIES}        
       - PIA_URL=${PIA_URL}
-      - SJ_URL=https://${PIA_URL}/user/connectSormas
-      - SJ_AUTH=https://${PIA_URL}/user/requestToken
+      - SJ_URL=https://${PIA_URL}/api/v1/user/connectSormas
+      - SJ_AUTH=https://${PIA_URL}/api/v1/user/requestToken
       - SJ_CLIENTID=${SJ_CLIENTID}
       - SJ_SECRET=${SJ_SECRET}
       - SJ_DEFAULT_USERNAME=${SJ_DEFAULT_USERNAME}
       - SJ_DEFAULT_PASSWORD=${SJ_DEFAULT_PASSWORD}   
-      - AS_ADMIN_NEWPASSWORD=${AS_ADMIN_NEWPASSWORD} 
+      - AS_ADMIN_NEWPASSWORD=${AS_ADMIN_NEWPASSWORD}
+      - DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES=${DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES}
+      - MAP_USECOUNTRYCENTER=${MAP_USECOUNTRYCENTER}
     volumes:
       - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
