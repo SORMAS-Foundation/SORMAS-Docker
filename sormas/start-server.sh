@@ -183,7 +183,7 @@ sed -i "/^country.center.longitude/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^map.zoom/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^app.url/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^namesimilaritythreshold/d" ${DOMAIN_DIR}/sormas.properties
-
+sed -i "/^duplicatechecks.excludepersonsonlylinkedtoarchivedentries/d" ${DOMAIN_DIR}/sormas.properties
 
 echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ncountry.locale=${LOCALE}" >>${DOMAIN_DIR}/sormas.properties
