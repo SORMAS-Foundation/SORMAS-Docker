@@ -1,8 +1,9 @@
-FROM postgres:10.16-alpine
+FROM postgres:10-alpine
 
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --no-cache openssl curl tzdata py-pip postgresql-dev postgresql-contrib make gcc musl-dev py3-psutil && \
+    apk add --no-cache --repository  http://dl-cdn.alpinelinux.org/alpine/v3.13/main/ 'musl<1.2.2-r3' 'musl-dev<1.2.2-r3' && \
+    apk add --no-cache openssl curl tzdata py-pip postgresql-dev postgresql-contrib make gcc py3-psutil && \
     pip install pgxnclient && \
     pgxnclient install temporal_tables
     
