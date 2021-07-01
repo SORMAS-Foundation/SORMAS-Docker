@@ -49,12 +49,6 @@ done
 
 # Start Filebackup
 if [ -n "${BACKUP_FILES}" ]; then
-  if [ "${DELETE}" == "t" ];then
-    echo "Deleting old file backups" >> ${LOG}
-    # keep 1 day => delete all but the last 10 files - with .zst extention
-    echo "$(ls -rt ${DUMP_PATH}/files.*${BAK_EXT} | head -n -10)" >> ${LOG}
-    ls -rt ${DUMP_PATH}/files.*${BAK_EXT} | head -n -10 | xargs -r rm
-  fi
   FILE_BACKUP_TARGET=${DUMP_PATH}/files.${COMMON}${BAK_EXT}
   echo "Backup of ${BACKUP_FILES} in ${BACKUP_PATH}" >> ${LOG}
   cd ${BACKUP_PATH} && \
@@ -63,6 +57,12 @@ if [ -n "${BACKUP_FILES}" ]; then
     echo "Backup of ${BACKUP_FILES} in ${BACKUP_PATH} failed" >> ${LOG}
     rm ${FILE_BACKUP_TARGET}
     exit 42;
+  fi
+  if [ "${DELETE}" == "t" ];then
+    echo "Deleting old file backups" >> ${LOG}
+    # keep 1 day => delete all but the last 10 files - with .zst extention
+    echo "$(ls -rt ${DUMP_PATH}/files.*${BAK_EXT} | head -n -10)" >> ${LOG}
+    ls -rt ${DUMP_PATH}/files.*${BAK_EXT} | head -n -10 | xargs -r rm
   fi
 fi
 
