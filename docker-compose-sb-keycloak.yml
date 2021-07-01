@@ -198,8 +198,11 @@ services:
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
+      - BACKUP_FILES=${BACKUP_FILES}
+      - BACKUP_PATH=${SORMAS_PATH}
     volumes:
       - /backup:/var/opt/db_dumps
+      - ${SORMAS_PATH}:${SORMAS_PATH}
     cpus: ${DB_DUMP_CPUS}
     mem_limit: ${DB_DUMP_MEM}
     mem_reservation: ${DB_DUMP_MEM_RESERVED}

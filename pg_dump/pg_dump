@@ -52,7 +52,7 @@ if [ -n "${BACKUP_FILES}" ]; then
   FILE_BACKUP_TARGET=${DUMP_PATH}/files.${COMMON}${BAK_EXT}
   echo "Backup of ${BACKUP_FILES} in ${BACKUP_PATH}" >> ${LOG}
   cd ${BACKUP_PATH} && \
-  tar cf ${FILE_BACKUP_TARGET} -I 'zstd -${COMPRESSION_LEVEL}' ${BACKUP_FILES}
+  tar cf ${FILE_BACKUP_TARGET} -I 'zstd -T0 -${COMPRESSION_LEVEL}' ${BACKUP_FILES}
   if [ $? -ge 1 ]; then
     echo "Backup of ${BACKUP_FILES} in ${BACKUP_PATH} failed" >> ${LOG}
     rm ${FILE_BACKUP_TARGET}
