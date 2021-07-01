@@ -62,7 +62,7 @@ if [ -n "${BACKUP_FILES}" ]; then
   if [ $? -ge 1 ]; then
     echo "Backup of ${BACKUP_FILES} in ${BACKUP_PATH} failed" >> ${LOG}
     rm ${FILE_BACKUP_TARGET}
-    exit 1;
+    exit 42;
   fi
 fi
 
