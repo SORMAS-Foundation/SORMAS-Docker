@@ -67,8 +67,8 @@ services:
       - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
       - CREATE_DEFAULT_ENTITIES=${CREATE_DEFAULT_ENTITIES}        
       - PIA_URL=${PIA_URL}
-      - SJ_URL=https://${PIA_URL}/api/v1/user/connectSormas
-      - SJ_AUTH=https://${PIA_URL}/api/v1/user/requestToken
+      - SJ_URL=https://${PIA_URL}/user/connectSormas
+      - SJ_AUTH=https://${PIA_URL}/user/requestToken
       - SJ_CLIENTID=${SJ_CLIENTID}
       - SJ_SECRET=${SJ_SECRET}
       - SJ_DEFAULT_USERNAME=${SJ_DEFAULT_USERNAME}
