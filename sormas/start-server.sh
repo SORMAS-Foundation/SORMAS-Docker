@@ -121,7 +121,7 @@ ${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --dataso
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}AuditlogPool jdbc/AuditlogPool
 
 ${ASADMIN} delete-javamail-resource mail/MailSession
-${ASADMIN} create-javamail-resource --mailhost ${MAIL_HOST} --mailuser "sormas" --fromaddress ${MAIL_FROM} mail/MailSession
+${ASADMIN} create-javamail-resource --mailhost ${MAIL_HOST} --mailuser ${EMAIL_SENDER_NAME} --fromaddress ${EMAIL_SENDER_ADDRESS} --auth ${SMTP_AUTH_ENABLED} --enabled ${EMAIL_NOTIFICATION_ENABLED} --property  "mail.smtp.port=${SMTP_PORT}:mail.smtp.auth=${SMTP_AUTH_ENABLED}" mail/MailSession
 
 # Fix for https://github.com/hzi-braunschweig/SORMAS-Project/issues/1759
 ${ASADMIN} set configs.config.server-config.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size=500

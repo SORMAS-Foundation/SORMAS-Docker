@@ -30,6 +30,8 @@ services:
       - SMTP_STARTTLS=${SMTP_STARTTLS}
       - SMTP_SSL=${SMTP_SSL}
       - SMTP_ASYNC_SENDING=${SMTP_ASYNC_SENDING}
+      - SMTP_AUTH_ENABLED=${SMTP_AUTH_ENABLED}
+      - EMAIL_NOTIFICATION_ENABLED=${EMAIL_NOTIFICATION_ENABLED}
       - LOG_SENDER_ADDRESS=${LOG_SENDER_ADDRESS}
       - LOG_RECIPIENT_ADDRESS=${LOG_RECIPIENT_ADDRESS}
       - LOG_SUBJECT=${LOG_SUBJECT}
@@ -62,8 +64,8 @@ services:
       - NAMESIMILARITYTHRESHOLD=${NAMESIMILARITYTHRESHOLD}
       - CREATE_DEFAULT_ENTITIES=${CREATE_DEFAULT_ENTITIES}        
       - PIA_URL=${PIA_URL}
-      - SJ_URL=https://${PIA_URL}/api/v1/user/connectSormas
-      - SJ_AUTH=https://${PIA_URL}/api/v1/user/requestToken
+      - SJ_URL=https://${PIA_URL}/user/connectSormas
+      - SJ_AUTH=https://${PIA_URL}/user/requestToken
       - SJ_CLIENTID=${SJ_CLIENTID}
       - SJ_SECRET=${SJ_SECRET}
       - SJ_DEFAULT_USERNAME=${SJ_DEFAULT_USERNAME}
@@ -126,8 +128,11 @@ services:
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
+      - BACKUP_FILES=${BACKUP_FILES}
+      - BACKUP_PATH=${SORMAS_PATH}
     volumes:
       - /backup:/var/opt/db_dumps
+      - ${SORMAS_PATH}:${SORMAS_PATH}
     cpus: ${DB_DUMP_CPUS}
     mem_limit: ${DB_DUMP_MEM}
     mem_reservation: ${DB_DUMP_MEM_RESERVED}
