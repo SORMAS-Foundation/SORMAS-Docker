@@ -99,7 +99,7 @@ These Options are available to customize the installation:
 
 **MAIL_HOST** Hostname or IP of the SMTP host
 
-**SMTP_PORT** Port of the SMTP service used by log SMTPAppender
+**SMTP_PORT** Port of the SMTP service used by log SMTPAppender and Payara notification emailing
 
 **SMTP_USER** Username used by log SMTPAppender for authorization to SMTP service (email in case of Gmail as Relay)
 
@@ -111,6 +111,10 @@ These Options are available to customize the installation:
 
 **SMTP_ASYNC_SENDING** Log SMTPAppender will send emails asynchronously (boolean -> true/false)
 
+**SMTP_AUTH_ENABLED** Describes SMTP host user/password authentication for javamail resource Payara notifications (boolean -> true/false), mind that currently only false is supported
+
+**EMAIL_NOTIFICATION_ENABLED** Enables javamail resource Payara notifications - general toggle (boolean -> true/false), have in mind that each of featureconfiguration notification has to be enabled in sormas db
+
 **LOG_SENDER_ADDRESS** Specifies email FROM property of log SMTPAppender message
 
 **LOG_RECIPIENT_ADDRESS** Specifies email TO property of log SMTPAppender message (if it is empty - error-log mail shipment is DISABLED)
@@ -119,9 +123,9 @@ These Options are available to customize the installation:
 
 **SEPARATOR** CSV separator 
 
-**EMAIL_SENDER_ADDRESS** email from which the mail is going to be send
+**EMAIL_SENDER_ADDRESS** Javamail resource Payara notification email address from which the mail is going to be send
 
-**EMAIL_SENDER_NAME** Name of the sender of the email
+**EMAIL_SENDER_NAME** Javamail resource Payara notification email's sender name
 
 **LATITUDE** Latitude of the map center
 
