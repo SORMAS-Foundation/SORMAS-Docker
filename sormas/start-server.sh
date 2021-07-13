@@ -120,7 +120,10 @@ delete_jdbc_connection_pool "jdbc/AuditlogPool" "${DOMAIN_NAME}AuditlogPool"
 ${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME_AUDIT}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}AuditlogPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}AuditlogPool jdbc/AuditlogPool
 
+set -e
 ${ASADMIN} delete-javamail-resource mail/MailSession
+set +e
+
 ${ASADMIN} create-javamail-resource --mailhost ${MAIL_HOST} --mailuser ${EMAIL_SENDER_NAME} --fromaddress ${EMAIL_SENDER_ADDRESS} --auth ${SMTP_AUTH_ENABLED} --enabled ${EMAIL_NOTIFICATION_ENABLED} --property  "mail.smtp.port=${SMTP_PORT}:mail.smtp.auth=${SMTP_AUTH_ENABLED}" mail/MailSession
 
 # Fix for https://github.com/hzi-braunschweig/SORMAS-Project/issues/1759
