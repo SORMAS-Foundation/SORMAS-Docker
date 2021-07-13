@@ -106,14 +106,11 @@ services:
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
     environment:
       - DB_HOST=${DB_HOST}
-      - DB_NAME=${DB_NAME}
-      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
-      - MIN=15,45 # Twice the hour on 15 and 45 (use crontab notation)
-      - HOUR= # Keep empty for every hour. Use crontab notation otherwise
-      - KEEP=1 # keep db dumps for one day in backup folder
+      - BACKUP_FILES=${BACKUP_FILES}
+      - BACKUP_PATH=${SORMAS_PATH}
     cpus: ${DB_DUMP_CPUS}
     mem_limit: ${DB_DUMP_MEM}
     mem_reservation: ${DB_DUMP_MEM_RESERVED}
@@ -126,12 +123,6 @@ services:
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
       - TZ=${TZ}
-    volumes:
-      - ./apache2/certs:/usr/local/apache2/certs
-      - ${SORMAS_PATH}/apache2_log:/var/log/apache2
-    ports:
-      - 443:443
-      - 80:80
     cpus: ${WEBSERVER_CPUS}
     mem_limit: ${WEBSERVER_MEM}
     mem_reservation: ${WEBSERVER_MEM_RESERVED}
@@ -158,8 +149,6 @@ services:
       - DOCKER_SOCK=/var/run/docker.sock
         # --max-time seconds for curl requests to Docker API
       - CURL_TIMEOUT=30
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
 
   base-letsencrypt:
     restart: unless-stopped
