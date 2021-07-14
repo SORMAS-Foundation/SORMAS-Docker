@@ -7,9 +7,7 @@ services:
     env_file:
       - .env_keycloak
     volumes:
-      - ./keycloak/import/:/tmp/import/
-    command:
-      - "-Dkeycloak.import=/tmp/import/realm-s2s.json -Dkeycloak.profile.feature.upload_scripts=enabled"
+      - ./keycloak/data:/opt/jboss/keycloak/standalone/data/
     ports:
       - 8080:8080
 
