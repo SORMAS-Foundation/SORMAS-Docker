@@ -41,6 +41,12 @@ services:
     extends:
       file: services-base.yml
       service: base-pg_dump
+    environment:
+      - DB_HOST=${DB_HOST}
+      - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
+      - POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - BACKUP_FILES=${BACKUP_FILES}
+      - BACKUP_PATH=${SORMAS_PATH}
     volumes:
       - /backup:/var/opt/db_dumps
       - ${SORMAS_PATH}:${SORMAS_PATH}
@@ -70,6 +76,9 @@ services:
     extends:
       file: services-base.yml
       service: base-autoheal
+    environment:
+        # wait 600 seconds before first health check
+      - AUTOHEAL_START_PERIOD=600
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
