@@ -16,6 +16,7 @@ CUSTOM_DIR=${ROOT_PREFIX}/opt/${DOMAIN_NAME}/custom
 DEPLOY_PATH=/tmp/${DOMAIN_NAME}
 DOWNLOADS_PATH=/var/www/${DOMAIN_NAME}/downloads
 SORMAS2SORMAS_DIR=${ROOT_PREFIX}/opt/sormas/sormas2sormas
+CENTRAL_DIR=${ROOT_PREFIX}/opt/sormas/central
 
 PORT_BASE=6000
 PORT_ADMIN=6048
@@ -32,6 +33,7 @@ mkdir -p ${CUSTOM_DIR}
 mkdir -p ${DEPLOY_PATH}
 mkdir -p ${DOWNLOADS_PATH}
 mkdir -p ${SORMAS2SORMAS_DIR}
+mkdir -p ${CENTRAL_DIR}
 
   pushd ${DEPLOY_PATH}
   wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O ${DOMAIN_NAME}.zip
@@ -64,10 +66,12 @@ ${ASADMIN} set configs.config.server-config.admin-service.das-config.dynamic-rel
 ${ASADMIN} set server.network-config.protocols.protocol.http-listener-1.http.scheme-mapping=X-Forwarded-Proto
 
 # JDBC pool
+echo "Configuring JDBC pool"
 ${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}DataPool jdbc/${DOMAIN_NAME}DataPool
 
 # Pool for audit log
+echo "Configuring audit log"
 ${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME_AUDIT}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}AuditlogPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}AuditlogPool jdbc/AuditlogPool
 
@@ -75,6 +79,7 @@ ${ASADMIN} create-javamail-resource --mailhost localhost --mailuser user --froma
 
 ${ASADMIN} create-custom-resource --restype java.util.Properties --factoryclass org.glassfish.resources.custom.factory.PropertiesFactory --property "org.glassfish.resources.custom.factory.PropertiesFactory.fileName=\${com.sun.aas.instanceRoot}/sormas.properties" sormas/Properties
 
+echo "Deploy artifacts"
 cp ${DEPLOY_PATH}/deploy/sormas.properties ${DOMAIN_DIR}
 cp ${DEPLOY_PATH}/deploy/start-payara-sormas.sh ${DOMAIN_DIR}
 cp ${DEPLOY_PATH}/deploy/stop-payara-sormas.sh ${DOMAIN_DIR}

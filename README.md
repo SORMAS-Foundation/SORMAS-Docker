@@ -181,10 +181,6 @@ These Options are available to customize the installation:
 
 **SORMAS_ORG_NAME** Name of the organisation
 
-**SORMAS_S2S_CERT_PASS** Password for the certificate
-
-**SORMAS_S2S_REST_PASSWORD** Password for the rest user to connect to sormas
-
 ### PIA
 If you choose to align SORMAS with a PIA instance, use the docker-compose-sb.yml.
 The following variables should be set.
