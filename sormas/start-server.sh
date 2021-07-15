@@ -371,9 +371,11 @@ done
 
 if [ ! -z "$AUTHENTICATION_PROVIDER" -a "$AUTHENTICATION_PROVDER" != "SORMAS" ];then
   echo "Updating payara keystores"
+  set +e
   keytool -storepass ${CACERTS_PASS} -importcert -trustcacerts -destkeystore ${DOMAIN_DIR}/config/cacerts.jks -file /tmp/certs/sormas-docker-test.com.crt -alias sormas-docker-test.com -noprompt
   openssl pkcs12 -export -in /tmp/certs/sormas-docker-test.com.crt -inkey /tmp/certs/sormas-docker-test.com.key -out sormas-docker-test.com.p12 -name sormas-docker-test.com -password pass:${KEYSTORE_PASS}
   keytool -storepass ${KEYSTORE_PASS} -importkeystore -destkeystore ${DOMAIN_DIR}/config/keystore.jks -srckeystore sormas-docker-test.com.p12 -srcstoretype PKCS12 -srcstorepass changeit -alias sormas-docker-test.com -noprompt
+  set -e
 fi
 
 echo "Server setup completed."
