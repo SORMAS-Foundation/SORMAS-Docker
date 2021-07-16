@@ -116,7 +116,7 @@ services:
     volumes:
       - /backup-keycloak:/var/opt/db_dumps
     depends_on:
-      postgres:
+      keycloak-postgres:
         condition: service_healthy
 
   apache2:
