@@ -1,5 +1,9 @@
 version: '2.3'
 
+networks:
+  sormas:
+    name: sormas
+
 services:
   sormas:
     extends:
