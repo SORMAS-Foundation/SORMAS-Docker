@@ -78,6 +78,7 @@ DOWNLOADS_PATH=/var/www/${DOMAIN_NAME}/downloads
 PORT_BASE=6000
 PORT_ADMIN=6048
 DOMAIN_DIR=${DOMAINS_HOME}/${DOMAIN_NAME}
+PROPERTIES_FILE=${DOMAIN_DIR}/sormas.properties
 LOG_FILE_PATH=${DOMAIN_DIR}/logs
 LOG_FILE_NAME=configure_`date +"%Y-%m-%d_%H-%M-%S"`.log
 
@@ -111,11 +112,13 @@ ${ASADMIN} create-system-properties --target server-config org.jboss.resteasy.ja
 ${ASADMIN} create-system-properties --target server-config org.jboss.resteasy.jaxrs.client.proxy.scheme=${PROXY_SCHEME}
 fi
 # JDBC pool
+echo "Configuring JDBC pool"
 delete_jdbc_connection_pool "jdbc/${DOMAIN_NAME}DataPool" "${DOMAIN_NAME}DataPool"
 ${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}DataPool jdbc/${DOMAIN_NAME}DataPool
 
 # Pool for audit log
+echo "Configuring audit log"
 delete_jdbc_connection_pool "jdbc/AuditlogPool" "${DOMAIN_NAME}AuditlogPool"
 ${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME_AUDIT}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}AuditlogPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}AuditlogPool jdbc/AuditlogPool
@@ -132,6 +135,7 @@ ${ASADMIN} set configs.config.server-config.thread-pools.thread-pool.http-thread
 ${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.hosts=${SORMAS_SERVER_URL}
 
 # Set admin password before start
+echo "Configuring admin password"
 set +e
 ${ASADMIN} --user admin --passwordfile ./oldpwfile.txt change-admin-password --domaindir ${DOMAINS_HOME} --domain_name ${DOMAIN_NAME}
 ${ASADMIN} --user admin --passwordfile ./newpwfile.txt enable-secure-admin
@@ -258,36 +262,34 @@ echo -e "\ncustombranding.useloginsidebar=${CUSTOMBRANDING_USE_LOGINSIDEBAR}" >>
 echo -e "\ncustombranding.loginbackground.path=${CUSTOMBRANDING_LOGINBACKGROUND_PATH}" >>${DOMAIN_DIR}/sormas.properties
 fi
 
-#------------------SORMAS2SORMAS CONFIG
-sed -i "/^sormas2sormas\.serverAccessDataFileName/d" "${DOMAIN_DIR}/sormas.properties"
-sed -i "/^sormas2sormas\.keystoreName/d" "${DOMAIN_DIR}/sormas.properties"
-sed -i "/^sormas2sormas\.keystorePass/d" "${DOMAIN_DIR}/sormas.properties"
-sed -i "/^sormas2sormas\.truststoreName/d" "${DOMAIN_DIR}/sormas.properties"
-sed -i "/^sormas2sormas\.truststorePass/d" "${DOMAIN_DIR}/sormas.properties"
-sed -i "/^sormas2sormas\.path/d" "${DOMAIN_DIR}/sormas.properties"
+### SORMAS CENTRAL ###
+echo "Sormas Central"
+if [ ! -z  "$SORMAS_CENTRAL_ENABLED" ]; then
+  echo "Sormas Central enabled"
+  sed -i -E "s/#?central.oidc.url=.*/central.oidc.url=${CENTRAL_OIDC_URL}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?central.redis.host=.*/central.redis.host=${CENTRAL_REDIS_HOST}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?central.redis.keystorePath=.*/central.redis.keystorePath=${CENTRAL_REDIS_KEYSTOREPATH}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?central.redis.keystorePassword=.*/central.redis.keystorePassword=${CENTRAL_REDIS_KEYSTOREPASSWORD}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?central.redis.truststorePath=.*/central.redis.truststorePath=\/tmp\/s2s\/redis\/redis.truststore.p12/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?central.redis.truststorePassword=.*/central.redis.truststorePassword=password/" "${PROPERTIES_FILE}"
+fi
 
-if [ ! -z "$SORMAS2SORMAS_ENABLED" ];then
-sed -i "s/\#sormas2sormas.retainCaseExternalToken=.*/sormas2sormas.retainCaseExternalToken=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}/" ${DOMAIN_DIR}/sormas.properties
-echo -e "\nsormas2sormas.serverAccessDataFileName=${SORMAS_SERVER_URL}-server-access-data.csv" >>${DOMAIN_DIR}/sormas.properties
-echo -e "\nsormas2sormas.keystoreName=${SORMAS2SORMAS_KEYSTORENAME}" >>${DOMAIN_DIR}/sormas.properties
-echo -e "\nsormas2sormas.keystorePass=${SORMAS2SORMAS_KEYPASSWORD}" >>${DOMAIN_DIR}/sormas.properties
-echo -e "\nsormas2sormas.truststoreName=${SORMAS2SORMAS_TRUSTSTORENAME}" >>${DOMAIN_DIR}/sormas.properties
-echo -e "\nsormas2sormas.truststorePass=${SORMAS2SORMAS_TRUSTSTOREPASSWORD}" >>${DOMAIN_DIR}/sormas.properties
-echo -e "\nsormas2sormas.path=${SORMAS2SORMAS_DIR}" >>${DOMAIN_DIR}/sormas.properties
-
-export SORMAS2SORMAS_DIR=/opt/sormas/sormas2sormas
-export SORMAS_ORG_ID=${SORMAS_ORG_ID}
-export SORMAS_ORG_NAME=${SORMAS_ORG_NAME}
-export SORMAS_HOST_NAME=${SORMAS_SERVER_URL}
-export SORMAS_HTTPS_PORT=443
-export SORMAS_S2S_CERT_PASS=${SORMAS_S2S_CERT_PASS}
-export SORMAS_S2S_REST_PASSWORD=${SORMAS_S2S_REST_PASSWORD}
-export S2S_NON_INTERACTIVE
-
-  if [ ! -f /opt/sormas/sormas2sormas/${SORMAS_SERVER_URL}.sormas2sormas.keystore.p12 ];then
-    bash /opt/sormas/s2s-generate-cert.sh
-  fi
-
+#### SORMAS2SORMAS ###
+echo "SORMAS2SORMAS"
+if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
+  echo "SORMAS2SORMAS enabled"
+  sed -i -E "s/#?sormas2sormas.id=.*/sormas2sormas.id=${SORMAS2SORMAS_ID}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.keystoreName=.*/sormas2sormas.keystoreName=${SORMAS2SORMAS_KEYSTORENAME}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.keystorePass=.*/sormas2sormas.keystorePass=${SORMAS2SORMAS_KEYPASSWORD}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.rootCaAlias=.*/sormas2sormas.rootCaAlias=${SORMAS2SORMAS_ROOTCAALIAS}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.truststoreName=.*/sormas2sormas.truststoreName=${SORMAS2SORMAS_TRUSTSTORENAME}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.truststorePass=.*/sormas2sormas.truststorePass=${SORMAS2SORMAS_TRUSTSTOREPASSWORD}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.oidc.realm=.*/sormas2sormas.oidc.realm=${SORMAS2SORMAS_OIDC_REALM}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.oidc.clientId=.*/sormas2sormas.oidc.clientId=${SORMAS2SORMAS_OIDC_CLIENTID}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.oidc.clientSecret=.*/sormas2sormas.oidc.clientSecret=${SORMAS2SORMAS_OIDC_CLIENTSECRET}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.redis.clientName=.*/sormas2sormas.redis.clientName=${SORMAS2SORMAS_REDIS_CLIENTNAME}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.redis.clientPassword=.*/sormas2sormas.redis.clientPassword=${SORMAS2SORMAS_REDIS_CLIENTPASSWORD}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.retainCaseExternalToken=.*/sormas2sormas.retainCaseExternalToken=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}/" "${PROPERTIES_FILE}"
 fi
 
 
