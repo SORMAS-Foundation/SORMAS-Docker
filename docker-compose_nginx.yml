@@ -1,90 +1,41 @@
-version: '2.2'
+version: '2.3'
+
 services:
   sormas:
-    restart: unless-stopped
+    extends:
+      file: services-base.yml
+      service: base-sormas
     links:
       - postgres
-    image: hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
     environment:
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
-      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
-      - DB_HOST=${DB_HOST}
-      - DOMAIN_NAME=${DOMAIN_NAME}
       - DB_JDBC_MAXPOOLSIZE=${DB_JDBC_MAXPOOLSIZE}
-      - DB_NAME=${DB_NAME}
-      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
-      - MAIL_HOST=${MAIL_HOST}
-      - SMTP_PORT=${SMTP_PORT}
-      - SMTP_USER=${SMTP_USER}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
-      - SMTP_STARTTLS=${SMTP_STARTTLS}
-      - SMTP_SSL=${SMTP_SSL}
-      - SMTP_ASYNC_SENDING=${SMTP_ASYNC_SENDING}
-      - SMTP_AUTH_ENABLED=${SMTP_AUTH_ENABLED}
-      - EMAIL_NOTIFICATION_ENABLED=${EMAIL_NOTIFICATION_ENABLED}
-      - LOG_SENDER_ADDRESS=${LOG_SENDER_ADDRESS}
-      - LOG_RECIPIENT_ADDRESS=${LOG_RECIPIENT_ADDRESS}
-      - LOG_SUBJECT=${LOG_SUBJECT}
-      - MAIL_FROM=${MAIL_FROM}
-      - SORMAS_VERSION=${SORMAS_VERSION}
-      - LOCALE=${LOCALE}
-      - COUNTRY_NAME=${COUNTRY_NAME}      
-      - EPIDPREFIX=${EPIDPREFIX}
-      - SEPARATOR=${SEPARATOR}
-      - EMAIL_SENDER_ADDRESS=${EMAIL_SENDER_ADDRESS}
-      - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
-      - LATITUDE=${LATITUDE}
-      - LONGITUDE=${LONGITUDE}
-      - MAP_ZOOM=${MAP_ZOOM}
-      - TZ=${TZ}
-      - JVM_MAX=${APPSERVER_JVM_MAX}
-      - GEO_UUID=${GEO_UUID}
-      - GEO_TEMPLATE=${GEO_TEMPLATE}
-      - GEO_LONG_TEMPLATE=${GEO_LONG_TEMPLATE}
-      - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}      
-      - DEVMODE=${DEVMODE}
-      - JSON_LOGGING=${JSON_LOGGING}
-      - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
-      - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
       - NAMESIMILARITYTHRESHOLD=${NAMESIMILARITYTHRESHOLD}
-      - CREATE_DEFAULT_ENTITIES=${CREATE_DEFAULT_ENTITIES}
-      - AS_ADMIN_NEWPASSWORD=${AS_ADMIN_NEWPASSWORD}
-      - DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES=${DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES}
-      - MAP_USECOUNTRYCENTER=${MAP_USECOUNTRYCENTER}
     volumes:
       - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
-      - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
       - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
-    mem_limit: ${APPSERVER_MEM}
-    mem_reservation: ${APPSERVER_MEM_RESERVED}
+      - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   postgres:
-    restart: unless-stopped
-    command: -c 'config_file=/etc/postgresql/postgresql.conf'
-    image: hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
-    environment:
-      - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - DB_NAME=sormas
-      - DB_NAME_AUDIT=sormas_audit
-      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
-      - TZ=${TZ}
+    extends:
+      file: services-base.yml
+      service: base-postgres
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    cpus: ${DB_CPUS}
-    mem_limit: ${DB_MEM}
-    mem_reservation: ${DB_MEM_RESERVED}
+
   pg_dump:
-    restart: unless-stopped
-    image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+    extends:
+      file: services-base.yml
+      service: base-pg_dump
     environment:
       - DB_HOST=${DB_HOST}
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - POSTGRES_USER=${SORMAS_POSTGRES_USER}
-      - TZ=${TZ}
       - MIN=15,45 # Twice the hour on 15 and 45 (use crontab notation)
       - HOUR= # Keep empty for every hour. Use crontab notation otherwise
       - KEEP=1 # keep db dumps for one day in backup folder
@@ -93,30 +44,15 @@ services:
     volumes:
       - /backup:/var/opt/db_dumps
       - ${SORMAS_PATH}:${SORMAS_PATH}
-    cpus: ${DB_DUMP_CPUS}
-    mem_limit: ${DB_DUMP_MEM}
-    mem_reservation: ${DB_DUMP_MEM_RESERVED}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   letsencrypt:
-    restart: unless-stopped
+    extends:
+      file: services-base.yml
+      service: base-letsencrypt
     links:
       - sormas
     depends_on:
       - sormas
-    image: hzibraunschweig/sormas-letsencrypt:${SORMAS_DOCKER_VERSION}
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=${TZ}
-      - URL=${SORMAS_SERVER_URL}
-      - EMAIL=${LETSENCRYPT_MAIL}
-      - DISABLE_CERTBOT=${DISABLE_CERTBOT}
-      - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
-    volumes:
-      - /var/lib/docker/letsencrypt-config:/config
-      - ./letsencrypt/certs:/config/etc/letsencrypt/live
-    ports:
-      - 443:443
-      - 80:80
-    cpus: ${WEBSERVER_CPUS}
-    mem_limit: ${WEBSERVER_MEM}
-    mem_reservation: ${WEBSERVER_MEM_RESERVED}
