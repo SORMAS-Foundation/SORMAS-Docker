@@ -51,12 +51,6 @@ services:
       - MAP_USECOUNTRYCENTER=${MAP_USECOUNTRYCENTER}
     mem_limit: ${APPSERVER_MEM}
     mem_reservation: ${APPSERVER_MEM_RESERVED}
-    healthcheck:
-      test: ["CMD", "curl", "-f", "-I", "http://localhost:6080/sormas-ui/login"]
-      interval: 30s
-      timeout: 7s
-      retries: 3
-      start_period: 300s
 
   base-postgres:
     restart: unless-stopped
