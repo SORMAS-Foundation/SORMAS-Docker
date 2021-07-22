@@ -6,51 +6,17 @@ networks:
 
 services:
   sormas:
-    restart: unless-stopped
+    extends:
+      file: services-base.yml
+      service: base-sormas
     labels:
       - autoheal=true
         # override for stop timeout seconds during restart
       - autoheal.stop.timeout=30
     links:
       - postgres
-    image: hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
     environment:
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
-      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
-      - DB_HOST=${DB_HOST}
-      - DOMAIN_NAME=${DOMAIN_NAME}
       - DB_JDBC_MAXPOOLSIZE=${DB_JDBC_MAXPOOLSIZE}
-      - DB_NAME=${DB_NAME}
-      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
-      - MAIL_HOST=${MAIL_HOST}
-      - SMTP_PORT=${SMTP_PORT}
-      - SMTP_USER=${SMTP_USER}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
-      - SMTP_STARTTLS=${SMTP_STARTTLS}
-      - SMTP_SSL=${SMTP_SSL}
-      - SMTP_ASYNC_SENDING=${SMTP_ASYNC_SENDING}
-      - SMTP_AUTH_ENABLED=${SMTP_AUTH_ENABLED}
-      - EMAIL_NOTIFICATION_ENABLED=${EMAIL_NOTIFICATION_ENABLED}
-      - LOG_SENDER_ADDRESS=${LOG_SENDER_ADDRESS}
-      - LOG_RECIPIENT_ADDRESS=${LOG_RECIPIENT_ADDRESS}
-      - LOG_SUBJECT=${LOG_SUBJECT}
-      - MAIL_FROM=${MAIL_FROM}
-      - SORMAS_VERSION=${SORMAS_VERSION}
-      - LOCALE=${LOCALE}
-      - COUNTRY_NAME=${COUNTRY_NAME}
-      - EPIDPREFIX=${EPIDPREFIX}
-      - SEPARATOR=${SEPARATOR}
-      - EMAIL_SENDER_ADDRESS=${EMAIL_SENDER_ADDRESS}
-      - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
-      - LATITUDE=${LATITUDE}
-      - LONGITUDE=${LONGITUDE}
-      - MAP_ZOOM=${MAP_ZOOM}
-      - TZ=${TZ}
-      - JVM_MAX=${APPSERVER_JVM_MAX}
-      - GEO_UUID=${GEO_UUID}
-      - DEVMODE=${DEVMODE}
-      - JSON_LOGGING=${JSON_LOGGING}
       - AUTHENTICATION_PROVIDER=KEYCLOAK
       - KEYCLOAK_SORMAS_UI_SECRET=${KEYCLOAK_SORMAS_UI_SECRET}
       - KEYCLOAK_SORMAS_REST_SECRET=${KEYCLOAK_SORMAS_REST_SECRET}
@@ -62,12 +28,6 @@ services:
       - CUSTOMBRANDING_LOGO_PATH=${CUSTOMBRANDING_LOGO_PATH}
       - CUSTOMBRANDING_USE_LOGINSIDEBAR=${CUSTOMBRANDING_USE_LOGINSIDEBAR}
       - CUSTOMBRANDING_LOGINBACKGROUND_PATH=${CUSTOMBRANDING_LOGINBACKGROUND_PATH}
-      - GEO_TEMPLATE=${GEO_TEMPLATE}
-      - GEO_LONG_TEMPLATE=${GEO_LONG_TEMPLATE}
-      - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}
-      - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
-      - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
-      - CREATE_DEFAULT_ENTITIES=${CREATE_DEFAULT_ENTITIES}        
       - PIA_URL=${PIA_URL}
       - SJ_URL=https://${PIA_URL}/user/connectSormas
       - SJ_AUTH=https://${PIA_URL}/user/requestToken
@@ -75,17 +35,12 @@ services:
       - SJ_SECRET=${SJ_SECRET}
       - SJ_DEFAULT_USERNAME=${SJ_DEFAULT_USERNAME}
       - SJ_DEFAULT_PASSWORD=${SJ_DEFAULT_PASSWORD}
-      - AS_ADMIN_NEWPASSWORD=${AS_ADMIN_NEWPASSWORD}
-      - DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES=${DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES}
-      - MAP_USECOUNTRYCENTER=${MAP_USECOUNTRYCENTER}
     volumes:
       - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
-      - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
       - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
+      - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
       - ./apache2/certs:/tmp/certs
-    mem_limit: ${APPSERVER_MEM}
-    mem_reservation: ${APPSERVER_MEM_RESERVED}
     healthcheck:
       test: ["CMD", "curl", "-f", "-I", "http://localhost:6048"]
       interval: 30s
@@ -101,34 +56,11 @@ services:
       sormas:
 
   keycloak:
-    restart: unless-stopped
-    labels:
-      - autoheal=true
     links:
       - keycloak-postgres
-    image: hzibraunschweig/sormas-keycloak:${SORMAS_DOCKER_VERSION}
-    environment:
-      - KEYCLOAK_USER=${KEYCLOAK_ADMIN_USER}
-      - KEYCLOAK_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
-      - DB_VENDOR=${KEYCLOAK_DB_VENDOR}
-      - DB_DATABASE=${KEYCLOAK_DB_NAME}
-      - DB_ADDR=${KEYCLOAK_DB_HOST}
-      - DB_USER=${KEYCLOAK_DB_USER}
-      - DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
-      - PROXY_ADDRESS_FORWARDING=true
-      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
-      - KEYCLOAK_SORMAS_UI_SECRET=${KEYCLOAK_SORMAS_UI_SECRET}
-      - KEYCLOAK_SORMAS_REST_SECRET=${KEYCLOAK_SORMAS_REST_SECRET}
-      - KEYCLOAK_SORMAS_BACKEND_SECRET=${KEYCLOAK_SORMAS_BACKEND_SECRET}
-    cpus: ${KEYCLOAK_CPUS}
-    mem_limit: ${KEYCLOAK_MEM}
-    mem_reservation: ${KEYCLOAK_MEM_RESERVED}
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "-I", "http://localhost:8080/keycloak/auth/realms/master" ]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 300s
+    extends:
+      file: services-base.yml
+      service: base-keycloak
     depends_on:
       keycloak-postgres:
         condition: service_healthy
@@ -136,78 +68,42 @@ services:
       sormas:
 
   postgres:
-    restart: unless-stopped
-    labels:
-      - autoheal=true
-    command: -c 'config_file=/etc/postgresql/postgresql.conf'
-    image: hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
-    environment:
-      - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - DB_NAME=sormas
-      - DB_NAME_AUDIT=sormas_audit
-      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
-      - TZ=${TZ}
+    extends:
+      file: services-base.yml
+      service: base-postgres
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    mem_limit: ${DB_MEM}
-    mem_reservation: ${DB_MEM_RESERVED}
-    healthcheck:
-      test: ["CMD", "psql", "-U", "${SORMAS_POSTGRES_USER}", "-c", "SELECT 1;", "${DB_NAME}"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 30s
     networks:
       sormas:
 
   keycloak-postgres:
-    restart: unless-stopped
-    labels:
-      - autoheal=true
-    command: -c 'config_file=/etc/postgresql/postgresql.conf'
-    image: hzibraunschweig/keycloak-postgres:${SORMAS_DOCKER_VERSION}
-    environment:
-      - POSTGRES_PASSWORD=${KEYCLOAK_DB_PASSWORD}
-      - POSTGRES_USER=${KEYCLOAK_DB_USER}
-      - POSTGRES_DB=${KEYCLOAK_DB_NAME}
-      - TZ=${TZ}
+    extends:
+      file: services-base.yml
+      service: base-keycloak-postgres
     volumes:
       - ${SORMAS_PATH}/keycloak/psqldata:/var/lib/postgresql/data
     ports:
       - 5433:5432
     expose:
       - 5432
-    cpus: ${KEYCLOAK_DB_CPUS}
-    mem_limit: ${KEYCLOAK_DB_MEM}
-    mem_reservation: ${KEYCLOAK_DB_MEM_RESERVED}
-    healthcheck:
-      test: [ "CMD", "psql", "-U", "${KEYCLOAK_DB_USER}", "-c", "SELECT 1;", "${KEYCLOAK_DB_NAME}" ]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 30s
     networks:
       sormas:
 
   pg_dump:
-    restart: unless-stopped
-    image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+    extends:
+      file: services-base.yml
+      service: base-pg_dump
     environment:
       - DB_HOST=${DB_HOST}
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - POSTGRES_USER=${SORMAS_POSTGRES_USER}
-      - TZ=${TZ}
       - BACKUP_FILES=${BACKUP_FILES}
       - BACKUP_PATH=${SORMAS_PATH}
     volumes:
       - /backup:/var/opt/db_dumps
       - ${SORMAS_PATH}:${SORMAS_PATH}
-    cpus: ${DB_DUMP_CPUS}
-    mem_limit: ${DB_DUMP_MEM}
-    mem_reservation: ${DB_DUMP_MEM_RESERVED}
     depends_on:
       postgres:
         condition: service_healthy
@@ -215,42 +111,29 @@ services:
       sormas:
 
   pg_dump_keycloak:
-    restart: unless-stopped
-    image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+    extends:
+      file: services-base.yml
+      service: base-pg_dump
     environment:
       - DB_HOST=${KEYCLOAK_DB_HOST}
       - PGPASSWORD=${KEYCLOAK_DB_PASSWORD}
       - POSTGRES_USER=${KEYCLOAK_DB_USER}
-      - TZ=${TZ}
-      - MIN=0 # At 0 Minutes
-      - HOUR=*/4 # Every 4 hours
-      - KEEP=1 # keep db dumps for one day in backup folder
+      - BACKUP_FILES=
     volumes:
       - /backup-keycloak:/var/opt/db_dumps
-    cpus: ${DB_DUMP_CPUS}
-    mem_limit: ${DB_DUMP_MEM}
-    mem_reservation: ${DB_DUMP_MEM_RESERVED}
     depends_on:
-      postgres:
+      keycloak-postgres:
         condition: service_healthy
     networks:
       sormas:
 
   autoheal:
-    restart: unless-stopped
-    image: willfarrell/autoheal:1.0.0
+    extends:
+      file: services-base.yml
+      service: base-autoheal
     environment:
-        # watch all running containers.
-      - AUTOHEAL_CONTAINER_LABEL=all
-        # check every 10 seconds
-      - AUTOHEAL_INTERVAL=10
         # wait 0 seconds before first health check
       - AUTOHEAL_START_PERIOD=600
-        # Docker waits max 10 seconds (the Docker default) for a container to stop before killing
-      - AUTOHEAL_DEFAULT_STOP_TIMEOUT=10
-        # Unix socket for curl requests to Docker API
-      - DOCKER_SOCK=/var/run/docker.sock
-        # --max-time seconds for curl requests to Docker API
-      - CURL_TIMEOUT=30
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock 
+      - /var/run/docker.sock:/var/run/docker.sock
+
