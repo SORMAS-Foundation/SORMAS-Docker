@@ -23,12 +23,15 @@ RUN yum -y update \
  && yum -y install wget \
  && yum clean all
 
+RUN echo "${CROWDCODE_NEXUS_USER}" && echo "${CROWDCODE_NEXUS_PASSWORD}"
 
 RUN BACKENDPATH=`echo ${LDBS_JAR_FILE_VERSION} | sed "s#-.*#-SNAPSHOT#"` \
  && wget -v -O service-application.jar \
  --user="${CROWDCODE_NEXUS_USER}" \
  --password="${CROWDCODE_NEXUS_PASSWORD}" \
  "https://repo.crowdcode.io/repository/hzi-maven-group/org/hzi/sormas/lbds/lbds-backend/${BACKENDPATH}/lbds-backend-${LDBS_JAR_FILE_VERSION}.jar"
+
+https://repo.crowdcode.io/repository/hzi-maven-group/org/hzi/sormas/lbds/lbds-backend/1.15.0/lbds-backend-1.15.0.jar
 
 ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
     JAVA_OPTS="-Xmx512M"
