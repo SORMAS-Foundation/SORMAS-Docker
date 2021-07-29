@@ -278,7 +278,7 @@ fi
 echo "SORMAS2SORMAS"
 if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
   echo "SORMAS2SORMAS enabled"
-  sed -i -E "s/#?sormas2sormas.path=.*/sormas2sormas.path=${SORMAS2SORMAS_PATH}/" "${PROPERTIES_FILE}"
+  sed -i -E "s~#?sormas2sormas.path=.*~sormas2sormas.path=${SORMAS2SORMAS_PATH}~" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.id=.*/sormas2sormas.id=${SORMAS2SORMAS_ID}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.keystoreName=.*/sormas2sormas.keystoreName=${SORMAS2SORMAS_KEYSTORENAME}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.keystorePass=.*/sormas2sormas.keystorePass=${SORMAS2SORMAS_KEYPASSWORD}/" "${PROPERTIES_FILE}"
