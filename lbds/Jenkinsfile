@@ -21,7 +21,7 @@ node {
         withCredentials([ usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERUSER', passwordVariable: 'DOCKERPASS' )]) {
         	sh """
             #sudo buildah login -u '${DOCKERUSER}' -p '${DOCKERPASS}' docker.io
-            #sudo buildah push -f v2s2 sormas-stats hzibraunschweig/sormas-stats:${TAG}
+            #sudo buildah push -f v2s2 sormas-stats hzibraunschweig/sormas-stats:${LDBS_JAR_FILE_VERSION}
             echo 'Finished'
             """                                                                                                                 
         }
