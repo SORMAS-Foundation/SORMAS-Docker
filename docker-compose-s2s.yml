@@ -1,138 +1,95 @@
 version: '2.3'
+
 services:
   sormas:
-    restart: unless-stopped
+    extends:
+      file: services-base.yml
+      service: base-sormas
     labels:
       - autoheal=true
         # override for stop timeout seconds during restart
       - autoheal.stop.timeout=30
     links:
       - postgres
-    image: hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
     environment:
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
-      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
-      - DB_HOST=${DB_HOST}
-      - DOMAIN_NAME=${DOMAIN_NAME}
       - DB_JDBC_MAXPOOLSIZE=${DB_JDBC_MAXPOOLSIZE}
-      - DB_NAME=${DB_NAME}
-      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
-      - MAIL_HOST=${MAIL_HOST}
-      - MAIL_FROM=${MAIL_FROM}
-      - SORMAS_VERSION=${SORMAS_VERSION}
-      - LOCALE=${LOCALE}
-      - COUNTRY_NAME=${COUNTRY_NAME}
-      - EPIDPREFIX=${EPIDPREFIX}
-      - SEPARATOR=${SEPARATOR}
-      - EMAIL_SENDER_ADDRESS=${EMAIL_SENDER_ADDRESS}
-      - EMAIL_SENDER_NAME=${EMAIL_SENDER_NAME}
-      - LATITUDE=${LATITUDE}
-      - LONGITUDE=${LONGITUDE}
-      - MAP_ZOOM=${MAP_ZOOM}
-      - TZ=${TZ}
-      - JVM_MAX=${APPSERVER_JVM_MAX}
-      - GEO_UUID=${GEO_UUID}
-      - GEO_TEMPLATE=${GEO_TEMPLATE}
-      - GEO_LONG_TEMPLATE=${GEO_LONG_TEMPLATE}
-      - GEO_LAT_TEMPLATE=${GEO_LAT_TEMPLATE}      
-      - DEVMODE=${DEVMODE}
-      - JSON_LOGGING=${JSON_LOGGING}
       - CUSTOMBRANDING_ENABLED=${CUSTOMBRANDING_ENABLED}
       - CUSTOMBRANDING_NAME=${CUSTOMBRANDING_NAME}
       - CUSTOMBRANDING_LOGO_PATH=${CUSTOMBRANDING_LOGO_PATH}
       - CUSTOMBRANDING_USE_LOGINSIDEBAR=${CUSTOMBRANDING_USE_LOGINSIDEBAR}
       - CUSTOMBRANDING_LOGINBACKGROUND_PATH=${CUSTOMBRANDING_LOGINBACKGROUND_PATH}
+      - SORMAS_CENTRAL_ENABLED=${SORMAS_CENTRAL_ENABLED}
+      - CENTRAL_OIDC_URL=${CENTRAL_OIDC_URL}
+      - CENTRAL_REDIS_HOST=${CENTRAL_REDIS_HOST}
+      - CENTRAL_REDIS_KEYSTOREPATH=${CENTRAL_REDIS_KEYSTOREPATH}
+      - CENTRAL_REDIS_KEYSTOREPASSWORD=${CENTRAL_REDIS_KEYSTOREPASSWORD}
+      - CENTRAL_REDIS_TRUSTSTOREPATH=${CENTRAL_REDIS_TRUSTSTOREPATH}
+      - CENTRAL_REDIS_TRUSTSTOREPASSWORD=${CENTRAL_REDIS_TRUSTSTOREPASSWORD}
       - SORMAS2SORMAS_ENABLED=${SORMAS2SORMAS_ENABLED}
-      - S2S_NON_INTERACTIVE=true
-      - SORMAS2SORMAS_DIR=${SORMAS2SORMAS_DIR}
+      - SORMAS2SORMAS_PATH=${SORMAS2SORMAS_PATH}
+      - SORMAS2SORMAS_ID=${SORMAS2SORMAS_ID}
+      - SORMAS2SORMAS_KEYSTORENAME=${SORMAS2SORMAS_KEYSTORENAME}
+      - SORMAS2SORMAS_KEYPASSWORD=${SORMAS2SORMAS_KEYPASSWORD}
+      - SORMAS2SORMAS_ROOTCAALIAS=${SORMAS2SORMAS_ROOTCAALIAS}
+      - SORMAS2SORMAS_TRUSTSTORENAME=${SORMAS2SORMAS_TRUSTSTORENAME}
+      - SORMAS2SORMAS_TRUSTSTOREPASSWORD=${SORMAS2SORMAS_TRUSTSTOREPASSWORD}
+      - SORMAS2SORMAS_OIDC_REALM=${SORMAS2SORMAS_OIDC_REALM}
+      - SORMAS2SORMAS_OIDC_CLIENTID=${SORMAS2SORMAS_OIDC_CLIENTID}
+      - SORMAS2SORMAS_OIDC_CLIENTSECRET=${SORMAS2SORMAS_OIDC_CLIENTSECRET}
+      - SORMAS2SORMAS_REDIS_CLIENTNAME=${SORMAS2SORMAS_REDIS_CLIENTNAME}
+      - SORMAS2SORMAS_REDIS_CLIENTPASSWORD=${SORMAS2SORMAS_REDIS_CLIENTPASSWORD}
+      - SORMAS2SORMAS_REDIS_KEYPREFIX=${SORMAS2SORMAS_REDIS_KEYPREFIX}
+      - SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}
       - SORMAS_ORG_ID=${SORMAS_ORG_ID}1.03.1.01.
       - SORMAS_ORG_NAME=${SORMAS_ORG_NAME}"Stadt Braunschweig"
       - SORMAS_HOST_NAME=${SORMAS_SERVER_URL}
       - SORMAS_HTTPS_PORT=443
-      - SORMAS_S2S_CERT_PASS=${SORMAS_S2S_CERT_PASS}password
-      - SORMAS_S2S_REST_PASSWORD=${SORMAS_S2S_REST_PASSWORD}passwordpassword
-      - SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}
-      - CASEARCHIVEDAYS=${CASEARCHIVEDAYS}
-      - EVENTARCHIVEDAYS=${EVENTARCHIVEDAYS}
       - NAMESIMILARITYTHRESHOLD=${NAMESIMILARITYTHRESHOLD}
     volumes:
       - ${SORMAS_PATH}/documents:/opt/sormas/documents
       - ${SORMAS_PATH}/custom:/opt/sormas/custom
-      - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
       - ${SORMAS_PATH}/sormas-logs:/opt/domains/sormas/logs
-    cpus: ${APPSERVER_CPUS}
-    mem_limit: ${APPSERVER_MEM}
-    mem_reservation: ${APPSERVER_MEM_RESERVED}
-    healthcheck:
-      test: ["CMD", "curl", "-f", "-I", "http://localhost:6080/sormas-ui/login"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 300s
+      - ${SORMAS_PATH}/sormas2sormas:/opt/sormas/sormas2sormas
     depends_on:
       postgres:
         condition: service_healthy
 
   postgres:
-    restart: unless-stopped
-    labels:
-      - autoheal=true
-    command: -c 'config_file=/etc/postgresql/postgresql.conf'
-    image: hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
-    environment:
-      - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - DB_NAME=sormas
-      - DB_NAME_AUDIT=sormas_audit
-      - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
-      - TZ=${TZ}
+    extends:
+      file: services-base.yml
+      service: base-postgres
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    cpus: ${DB_CPUS}
-    mem_limit: ${DB_MEM}
-    mem_reservation: ${DB_MEM_RESERVED}
-    healthcheck:
-      test: ["CMD", "psql", "-U", "${SORMAS_POSTGRES_USER}", "-c", "SELECT 1;", "${DB_NAME}"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 30s
 
   pg_dump:
-    restart: unless-stopped
-    image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+    extends:
+      file: services-base.yml
+      service: base-pg_dump
     environment:
       - DB_HOST=${DB_HOST}
-      - DB_NAME=sormas
-      - DB_NAME_AUDIT=sormas_audit
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
-      - TZ=${TZ}
+      - POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - MIN=15,45 # Twice the hour on 15 and 45 (use crontab notation)
       - HOUR= # Keep empty for every hour. Use crontab notation otherwise
       - KEEP=1 # keep db dumps for one day in backup folder
+      - BACKUP_FILES=${BACKUP_FILES}
+      - BACKUP_PATH=${SORMAS_PATH}
     volumes:
       - /backup:/var/opt/db_dumps
-    cpus: ${DB_DUMP_CPUS}
-    mem_limit: ${DB_DUMP_MEM}
-    mem_reservation: ${DB_DUMP_MEM_RESERVED}
+      - ${SORMAS_PATH}:${SORMAS_PATH}
     depends_on:
       postgres:
         condition: service_healthy
 
   apache2:
-    restart: unless-stopped
-    labels:
-      - autoheal=true
+    extends:
+      file: services-base.yml
+      service: base-apache2
     links:
       - sormas
-    image: hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
     environment:
-      - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
-      - TZ=${TZ}
       - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
     volumes:
       - ./apache2/certs:/usr/local/apache2/certs
@@ -140,34 +97,17 @@ services:
     ports:
       - 443:443
       - 80:80
-    cpus: ${WEBSERVER_CPUS}
-    mem_limit: ${WEBSERVER_MEM}
-    mem_reservation: ${WEBSERVER_MEM_RESERVED}
-    healthcheck:
-      test: ["CMD", "curl", "-f", "-I", "-k", "--resolve", "${SORMAS_SERVER_URL}:443:127.0.0.1", "https://${SORMAS_SERVER_URL}/downloads/"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 30s
     depends_on:
       sormas:
         condition: service_healthy
 
   autoheal:
-    restart: unless-stopped
-    image: willfarrell/autoheal:1.0.0
+    extends:
+      file: services-base.yml
+      service: base-autoheal
     environment:
-        # watch all running containers.
-      - AUTOHEAL_CONTAINER_LABEL=all
-        # check every 10 seconds
-      - AUTOHEAL_INTERVAL=10
-        # wait 0 seconds before first health check
+        # wait 600 seconds before first health check
       - AUTOHEAL_START_PERIOD=600
-        # Docker waits max 10 seconds (the Docker default) for a container to stop before killing
-      - AUTOHEAL_DEFAULT_STOP_TIMEOUT=10
-        # Unix socket for curl requests to Docker API
-      - DOCKER_SOCK=/var/run/docker.sock
-        # --max-time seconds for curl requests to Docker API
-      - CURL_TIMEOUT=30
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+

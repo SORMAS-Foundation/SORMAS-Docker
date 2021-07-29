@@ -1,26 +1,71 @@
 #!/bin/sh
 
-DATE=$( date +%F-%T )
+# if parameter 1 is set use it as common alias to created file names - no backup removal/rotation in that case
+if [ -n "$1" ]; then
+  COMMON=$1
+  DELETE=f
+else
+  COMMON=$( date +%F-%T )
+  DELETE=t
+fi
+
+# default compression is set to 3
+COMPRESSION_LEVEL=${2:-3}
 DUMP_PATH=/var/opt/db_dumps
 LOG=${DUMP_PATH}/pg_dump.log
-KEEP=${KEEP:-300}
-
-DBS="${DB_NAME} ${DB_NAME_AUDIT}"
+BAK_EXT=.zst
+GZ_EXT=.gz
+# Get a list of all databases and skip postgres and template databases
+DBS=$(psql -h ${DB_HOST} -U ${POSTGRES_USER} -l -t --field-separator=': ' -A -x | grep Name | awk '{ print $2 }' | grep -v -E 'postgres|template')
+if [ $? -ne 0 ];then
+  echo "Backup process step during DBS listing failed!!" >> ${LOG}
+  exit 100;
+fi
 
 for d in ${DBS};do
-  BAK="${DUMP_PATH}/$d.${DATE}.sql"
-  pg_dump -h ${DB_HOST} -U ${SORMAS_POSTGRES_USER} ${d} > ${BAK}
-  grep -q "PostgreSQL database dump complete" ${BAK}
+  BAK="${DUMP_PATH}/$d.${COMMON}.sql"
+  if [ -f "${BAK}${BAK_EXT}" ];then
+    echo "Backup of ${d} skipped. File ${BAK}${BAK_EXT} already exists!!" >> ${LOG}
+    continue
+  fi
+  pg_dump -h ${DB_HOST} -U ${POSTGRES_USER} ${d} | zstd -$COMPRESSION_LEVEL -T0 >${BAK}${BAK_EXT}
   if [ $? -eq 0 ];then
-    gzip ${BAK}
-    echo "Backup of ${d} to ${BAK}.gz completed." >> ${LOG}
+    echo "Backup using compression_level ($COMPRESSION_LEVEL) of ${BAK}${BAK_EXT} completed." >> ${LOG}
+    if [ "${DELETE}" == "t" ];then
+      echo "Deleting old dumps for ${d}" >> ${LOG}
+      # keep 1 day => delete all but the last 10 dumps - with .gz or .zst extention
+      echo "$(ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} ${DUMP_PATH}/${d}.*${GZ_EXT} | head -n -10)" >> ${LOG}
+      ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} ${DUMP_PATH}/${d}.*${GZ_EXT} | head -n -10 | xargs -r rm
+    fi
+    continue
   else
-    rm ${BAK}
-    echo "Backup of ${d} to ${BAK} failed!!" >> ${LOG}
+    if [[ -f ${BAK}${BAK_EXT} ]]; then
+      rm -rf ${BAK}${BAK_EXT}
+    fi
+    echo "Backup of ${BAK}${BAK_EXT} failed!!" >> ${LOG}
+    exit 1;
   fi
 done
 
-echo "Deleting old dumps" >> ${LOG}
-# keep 1 day => delete all but the last 10 dumps
-ls -rt ${DUMP_PATH}/sormas.20*.gz | head -n -10 | xargs -r rm
-ls -rt ${DUMP_PATH}/sormas_audit.20*.gz | head -n -10 | xargs -r rm
+# remove double quotations from variable
+BACKUP_FILES=$( echo $BACKUP_FILES | tr -d '"' )
+# Start Filebackup
+if [ -n "${BACKUP_FILES}" ]; then
+  FILE_BACKUP_TARGET=${DUMP_PATH}/files.${COMMON}${BAK_EXT}
+  echo "Backup of ${BACKUP_FILES} in ${BACKUP_PATH}" >> ${LOG}
+  cd ${BACKUP_PATH} && \
+  tar cf ${FILE_BACKUP_TARGET} -I 'zstd -T0 -${COMPRESSION_LEVEL}' ${BACKUP_FILES}
+  if [ $? -ge 1 ]; then
+    echo "Backup of ${BACKUP_FILES} in ${BACKUP_PATH} failed" >> ${LOG}
+    rm ${FILE_BACKUP_TARGET}
+    exit 42;
+  fi
+  if [ "${DELETE}" == "t" ];then
+    echo "Deleting old file backups" >> ${LOG}
+    # keep 1 day => delete all but the last 10 files - with .zst extention
+    echo "$(ls -rt ${DUMP_PATH}/files.*${BAK_EXT} | head -n -10)" >> ${LOG}
+    ls -rt ${DUMP_PATH}/files.*${BAK_EXT} | head -n -10 | xargs -r rm
+  fi
+fi
+
+exit 0;

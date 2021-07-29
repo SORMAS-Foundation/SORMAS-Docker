@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:${CENTRAL_KEYCLOAK_VERSION}
+    env_file:
+      - .env_keycloak
+    volumes:
+      - ./keycloak/data:/opt/jboss/keycloak/standalone/data/
+    ports:
+      - 8080:8080
+
+  # FIXME replace with etcd
+  redis:
+    image: hzibraunschweig/central-redis:${CENTRAL_DOCKER_VERSION}
+    volumes:
+      - ./redis/config:/usr/local/etc/redis/config/
+      - ./redis/fixtures:/srv/fixtures
+      - ./redis/tls/ca/public:/srv/tls/ca/public
+      - ./redis/tls/server:/srv/tls/server
+      - ./redis/tls/dh:/srv/tls/dh
+    env_file:
+      - .env_redis
+    ports:
+      - 6379:6379
