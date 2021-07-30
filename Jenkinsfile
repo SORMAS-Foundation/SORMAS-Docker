@@ -9,7 +9,7 @@ node {
     stage('set variables') {
         echo 'Setting variables'
         sh """
-        sed -i 's,SORMAS_URL=.*$,SORMAS_URL=http://10.160.41.100/,' ./.env
+        sed -i 's,SORMAS_URL=.*\$,SORMAS_URL=http://10.160.41.100/,' ./.env
 		sed -i 's,SORMAS_DOCKER_VERSION=.*\$,SORMAS_DOCKER_VERSION=${SORMAS_DOCKER_VERSION},' ./.env
 		sed -i "/^GEO_TEMPLATE/d " ./.env
         """        
