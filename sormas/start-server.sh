@@ -267,18 +267,15 @@ echo "Sormas Central"
 if [ ! -z  "$SORMAS_CENTRAL_ENABLED" ]; then
   echo "Sormas Central enabled"
   sed -i -E "s/#?central.oidc.url=.*/central.oidc.url=${CENTRAL_OIDC_URL}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?central.redis.host=.*/central.redis.host=${CENTRAL_REDIS_HOST}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?central.redis.keystorePath=.*/central.redis.keystorePath=${CENTRAL_REDIS_KEYSTOREPATH}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?central.redis.keystorePassword=.*/central.redis.keystorePassword=${CENTRAL_REDIS_KEYSTOREPASSWORD}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?central.redis.truststorePath=.*/central.redis.truststorePath=\/tmp\/s2s\/redis\/redis.truststore.p12/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?central.redis.truststorePassword=.*/central.redis.truststorePassword=password/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?central.etcd.host=.*/central.etcd.host=${CENTRAL_REDIS_HOST}/" "${PROPERTIES_FILE}"
+  sed -i -E "s~#?central.etcd.caPath=.*~central.etcd.caPath=${CENTRAL_ETCD_CA_PATH}~" "${PROPERTIES_FILE}"
 fi
 
 #### SORMAS2SORMAS ###
 echo "SORMAS2SORMAS"
 if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
   echo "SORMAS2SORMAS enabled"
-  sed -i -E "s/#?sormas2sormas.path=.*/sormas2sormas.path=${SORMAS2SORMAS_PATH}/" "${PROPERTIES_FILE}"
+  sed -i -E "s~#?sormas2sormas.path=.*~sormas2sormas.path=${SORMAS2SORMAS_PATH}~" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.id=.*/sormas2sormas.id=${SORMAS2SORMAS_ID}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.keystoreName=.*/sormas2sormas.keystoreName=${SORMAS2SORMAS_KEYSTORENAME}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.keystorePass=.*/sormas2sormas.keystorePass=${SORMAS2SORMAS_KEYPASSWORD}/" "${PROPERTIES_FILE}"
@@ -288,8 +285,9 @@ if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
   sed -i -E "s/#?sormas2sormas.oidc.realm=.*/sormas2sormas.oidc.realm=${SORMAS2SORMAS_OIDC_REALM}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.oidc.clientId=.*/sormas2sormas.oidc.clientId=${SORMAS2SORMAS_OIDC_CLIENTID}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.oidc.clientSecret=.*/sormas2sormas.oidc.clientSecret=${SORMAS2SORMAS_OIDC_CLIENTSECRET}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?sormas2sormas.redis.clientName=.*/sormas2sormas.redis.clientName=${SORMAS2SORMAS_REDIS_CLIENTNAME}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?sormas2sormas.redis.clientPassword=.*/sormas2sormas.redis.clientPassword=${SORMAS2SORMAS_REDIS_CLIENTPASSWORD}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.etcd.clientName=.*/sormas2sormas.redis.clientName=${SORMAS2SORMAS_REDIS_CLIENTNAME}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.etcd.clientPassword=.*/sormas2sormas.redis.clientPassword=${SORMAS2SORMAS_REDIS_CLIENTPASSWORD}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.etcd.keyPrefix=.*/sormas2sormas.etcd.keyPrefix=${SORMAS2SORMAS_ETCD_KEYPREFIX}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.retainCaseExternalToken=.*/sormas2sormas.retainCaseExternalToken=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}/" "${PROPERTIES_FILE}"
 fi
 
