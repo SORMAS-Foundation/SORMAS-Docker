@@ -14,7 +14,7 @@ node {
 		sed -i "/^GEO_TEMPLATE/d " ./.env
         """        
         SORMAS_VERSION= sh (
-        	script: 'curl -s https://raw.githubusercontent.com/hzi-braunschweig/SORMAS-Project/development/sormas-base/pom.xml | grep SNAPSHOT | sed s/\\<version\>// | sed s/\\<\\\\/version\>// | sed \'s/[[:space:]]//g\'', 
+        	script: 'curl -s https://raw.githubusercontent.com/hzi-braunschweig/SORMAS-Project/development/sormas-base/pom.xml | grep SNAPSHOT | sed s/\\<version\\>// | sed s/\\<\\\\/version\\>// | sed \'s/[[:space:]]//g\'', 
         	returnStdout: true
         ).trim()
         echo "${SORMAS_VERSION}"
