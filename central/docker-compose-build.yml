@@ -1,6 +1,6 @@
 version: '3.8'
 
 services:
-  redis:
-    build: redis
-    image: hzibraunschweig/central-redis:${CENTRAL_DOCKER_VERSION}
+  etcd:
+    build: etcd
+    image: hzibraunschweig/central-etcd:${CENTRAL_DOCKER_VERSION}
