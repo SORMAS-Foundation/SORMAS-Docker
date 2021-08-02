@@ -53,11 +53,12 @@ docker-compose up
 ### Default Logins
 There are the default users for demo systems. Make sure to deactivate them or change the passwords on productive systems:
 
-Admin
-name: admin pw: sadmin
+Admin  
+name: admin  
+pw: sadmin  
 
 All default users are listed here:
-https://github.com/hzi-braunschweig/SORMAS-Project/blob/master/SERVER_UPDATE.md#default-logins
+https://github.com/hzi-braunschweig/SORMAS-Project/blob/master/docs/SERVER_UPDATE.md#default-logins
 
 If you wish to provide a demologin page, copy the demologin.html to the custom folder (this page uses the default logins):
 ```
@@ -98,11 +99,33 @@ These Options are available to customize the installation:
 
 **MAIL_HOST** Hostname or IP of the SMTP host
 
+**SMTP_PORT** Port of the SMTP service used by log SMTPAppender and Payara notification emailing
+
+**SMTP_USER** Username used by log SMTPAppender for authorization to SMTP service (email in case of Gmail as Relay)
+
+**SMTP_PASSWORD** Password used by log SMTPAppender for authorization to SMTP service (email pass in case of Gmail as Relay)
+
+**SMTP_STARTTLS** Enables (negotiates) switching to TLS from unencrypted mode (boolean -> true/false)
+
+**SMTP_SSL** Enables SSL only (boolean -> true/false)
+
+**SMTP_ASYNC_SENDING** Log SMTPAppender will send emails asynchronously (boolean -> true/false)
+
+**SMTP_AUTH_ENABLED** Describes SMTP host user/password authentication for javamail resource Payara notifications (boolean -> true/false), mind that currently only false is supported
+
+**EMAIL_NOTIFICATION_ENABLED** Enables javamail resource Payara notifications - general toggle (boolean -> true/false), have in mind that each of featureconfiguration notification has to be enabled in sormas db
+
+**LOG_SENDER_ADDRESS** Specifies email FROM property of log SMTPAppender message
+
+**LOG_RECIPIENT_ADDRESS** Specifies email TO property of log SMTPAppender message (if it is empty - error-log mail shipment is DISABLED)
+
+**LOG_SUBJECT** Specifies SUBJECT property of log SMTPAppender message
+
 **SEPARATOR** CSV separator 
 
-**EMAIL_SENDER_ADDRESS** email from which the mail is going to be send
+**EMAIL_SENDER_ADDRESS** Javamail resource Payara notification email address from which the mail is going to be send
 
-**EMAIL_SENDER_NAME** Name of the sender of the email
+**EMAIL_SENDER_NAME** Javamail resource Payara notification email's sender name
 
 **LATITUDE** Latitude of the map center
 
@@ -157,10 +180,6 @@ These Options are available to customize the installation:
 **SORMAS_ORG_ID** ID of the organisiation
 
 **SORMAS_ORG_NAME** Name of the organisation
-
-**SORMAS_S2S_CERT_PASS** Password for the certificate
-
-**SORMAS_S2S_REST_PASSWORD** Password for the rest user to connect to sormas
 
 ### PIA
 If you choose to align SORMAS with a PIA instance, use the docker-compose-sb.yml.
