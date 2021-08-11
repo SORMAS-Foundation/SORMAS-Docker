@@ -282,10 +282,11 @@ if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
   sed -i -E "s/#?sormas2sormas.rootCaAlias=.*/sormas2sormas.rootCaAlias=${SORMAS2SORMAS_ROOTCALIAS}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.truststoreName=.*/sormas2sormas.truststoreName=${SORMAS2SORMAS_TRUSTSTORENAME}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.truststorePass=.*/sormas2sormas.truststorePass=${SORMAS2SORMAS_TRUSTSTOREPASSWORD}/" "${PROPERTIES_FILE}"
+ 
   sed -i -E "s/#?sormas2sormas.oidc.realm=.*/sormas2sormas.oidc.realm=${SORMAS2SORMAS_OIDC_REALM}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.oidc.clientId=.*/sormas2sormas.oidc.clientId=${SORMAS2SORMAS_OIDC_CLIENTID}/" "${PROPERTIES_FILE}"
-  sed -i -E "s~#?sormas2sormas.oidc.caPath=.*~sormas2sormas.oidc.caPath=${SORMAS2SORMAS_OIDC_CA_PATH}~" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.oidc.clientSecret=.*/sormas2sormas.oidc.clientSecret=${SORMAS2SORMAS_OIDC_CLIENTSECRET}/" "${PROPERTIES_FILE}"
+ 
   sed -i -E "s/#?sormas2sormas.etcd.clientName=.*/sormas2sormas.etcd.clientName=${SORMAS2SORMAS_ETCD_CLIENTNAME}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.etcd.clientPassword=.*/sormas2sormas.etcd.clientPassword=${SORMAS2SORMAS_ETCD_CLIENTPASSWORD}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.etcd.keyPrefix=.*/sormas2sormas.etcd.keyPrefix=${SORMAS2SORMAS_ETCD_KEYPREFIX}/" "${PROPERTIES_FILE}"
