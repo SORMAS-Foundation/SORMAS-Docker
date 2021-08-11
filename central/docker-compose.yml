@@ -13,6 +13,8 @@ services:
 
   etcd:
     image: hzibraunschweig/central-etcd:${CENTRAL_DOCKER_VERSION}
+    env_file:
+      - .env_etcd
     volumes:
       - ./etcd/fixtures:/srv/fixtures
       - ./etcd/tls-setup/certs/etcd:/srv/certs
