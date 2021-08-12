@@ -10,7 +10,7 @@ sleep 3
 while read -r line <&3; do
   key=$(echo "${line}" |  cut -d' ' -f1)
   value=$(echo "${line}" |  cut -d' ' -f2)
-  etcdctl put "$key" "$value" --user="root" --password="password" || exit 0
+  etcdctl put "$key" "$value" --user="root" --password="${ROOT_PWD}" || exit 0
 done 3<srv/sample_data.txt
 
 
@@ -18,12 +18,12 @@ echo "import done"
 
 echo "setup root"
 etcdctl role add root
-etcdctl user add root --new-user-password="password"
+etcdctl user add root --new-user-password="${ROOT_PWD}"
 etcdctl user grant-role root root
 
 echo "setting up s2s"
 etcdctl role add s2s-client-role
-etcdctl user add s2s-client --new-user-password="password"
+etcdctl user add s2s-client --new-user-password="${S2S_CLIENT_PWD}"
 etcdctl role grant-permission s2s-client-role --prefix=true read /s2s/
 etcdctl user grant-role s2s-client s2s-client-role
 
