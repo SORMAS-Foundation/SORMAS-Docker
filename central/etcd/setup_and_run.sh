@@ -6,12 +6,17 @@
 echo "starting import"
 sleep 3
 
+if [ ! -f /srv/fixtures/import.txt ]; then
+    echo "File not found!"
+fi
+
+
 # see https://mywiki.wooledge.org/BashFAQ/089
 while read -r line <&3; do
   key=$(echo "${line}" |  cut -d' ' -f1)
   value=$(echo "${line}" |  cut -d' ' -f2)
   etcdctl put "$key" "$value" --user="root" --password="${ROOT_PWD}" || exit 0
-done 3<srv/sample_data.txt
+done 3</srv/fixtures/import.txt
 
 
 echo "import done"
