@@ -1,4 +1,4 @@
-FROM quay.io/coreos/etcd:v3.4.15
+FROM quay.io/coreos/etcd:v3.5.0
 
 RUN apt update && apt upgrade -y
 RUN apt install bash procps -y
