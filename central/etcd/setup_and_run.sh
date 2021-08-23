@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # fork to background
-/usr/local/bin/etcd --listen-client-urls=http://0.0.0.0:2379 --advertise-client-urls=http://etcd:2379 &
+/usr/local/bin/etcd --config-file /etc/etcd/etcd.yml &
 
 echo "starting import"
 sleep 3
@@ -16,7 +16,7 @@ while read -r line <&3; do
   key=$(echo "${line}" |  cut -d' ' -f1)
   value=$(echo "${line}" |  cut -d' ' -f2)
   echo "Inserting ${key} : ${value}"
-  etcdctl put "$key" "$value" || exit 0
+  etcdctl --cacert=/srv/certs/ca.pem --endpoints=https://localhost:2379 put "$key" "$value" || exit 0
 done 3</srv/fixtures/import.txt
 
 
