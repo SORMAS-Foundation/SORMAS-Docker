@@ -1,0 +1,14 @@
+data-dir: /var/run/etcd/
+name: etcd
+log-level: debug
+
+initial-advertise-peer-urls: http://etcd:2380
+listen-peer-urls: http://0.0.0.0:2380
+advertise-client-urls: http://etcd:2379
+listen-client-urls: http://0.0.0.0:2379
+initial-cluster-state: new
+cert-file: /srv/certs/etcd.pem
+key-file: /srv/certs/etcd-key.pem
+
+# ==== TODO network device will be broken -> hardcoded
+# initial-cluster:
