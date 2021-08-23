@@ -15,6 +15,7 @@ fi
 while read -r line <&3; do
   key=$(echo "${line}" |  cut -d' ' -f1)
   value=$(echo "${line}" |  cut -d' ' -f2)
+  echo "Inserting ${key} : ${value}"
   etcdctl put "$key" "$value" || exit 0
 done 3</srv/fixtures/import.txt
 
