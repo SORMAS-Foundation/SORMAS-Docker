@@ -39,8 +39,4 @@ ps aux  |  grep -i etcd  |  awk '{print $2}'  |  xargs kill -15
 
 sleep 3
 
-/usr/local/bin/etcd \
-  --listen-client-urls=https://0.0.0.0:2379 \
-  --advertise-client-urls=https://etcd:2379 \
-  --cert-file=/srv/certs/etcd.pem \
-  --key-file=/srv/certs/etcd-key.pem
+/usr/local/bin/etcd --config-file /etc/etcd/etcd.yml
