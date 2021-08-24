@@ -17,7 +17,7 @@ while read -r line <&3; do
   value=$(echo "${line}" |  cut -d' ' -f2)
   echo "Inserting ${key} : ${value}"
   etcdctl --cacert=/srv/certs/ca.pem --endpoints=https://localhost:2379 put "$key" "$value" || exit 0
-done 3</srv/fixtures/import.txt
+done 3</srv/fixtures/server-descriptors.txt
 
 
 echo "import done"
