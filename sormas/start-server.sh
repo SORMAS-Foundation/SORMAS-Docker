@@ -192,6 +192,7 @@ sed -i "/^app.url/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^namesimilaritythreshold/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^duplicatechecks.excludepersonsonlylinkedtoarchivedentries/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^map.usecountrycenter/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^feature.automaticcaseclassification/d" ${DOMAIN_DIR}/sormas.properties
 
 echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ncountry.locale=${LOCALE}" >>${DOMAIN_DIR}/sormas.properties
@@ -207,6 +208,7 @@ echo -e "\napp.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMA
 echo -e "\nnamesimilaritythreshold=${NAMESIMILARITYTHRESHOLD}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nduplicatechecks.excludepersonsonlylinkedtoarchivedentries=${DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nmap.usecountrycenter=${MAP_USECOUNTRYCENTER}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nfeature.automaticcaseclassification=${FEATURE_AUTOMATICCASECLASSIFICATION}" >>${DOMAIN_DIR}/sormas.properties
 
 #------------------GEOCODING
 sed -i "/^geocodingServiceUrlTemplate/d " ${DOMAIN_DIR}/sormas.properties
@@ -267,28 +269,29 @@ echo "Sormas Central"
 if [ ! -z  "$SORMAS_CENTRAL_ENABLED" ]; then
   echo "Sormas Central enabled"
   sed -i -E "s/#?central.oidc.url=.*/central.oidc.url=${CENTRAL_OIDC_URL}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?central.redis.host=.*/central.redis.host=${CENTRAL_REDIS_HOST}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?central.redis.keystorePath=.*/central.redis.keystorePath=${CENTRAL_REDIS_KEYSTOREPATH}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?central.redis.keystorePassword=.*/central.redis.keystorePassword=${CENTRAL_REDIS_KEYSTOREPASSWORD}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?central.redis.truststorePath=.*/central.redis.truststorePath=\/tmp\/s2s\/redis\/redis.truststore.p12/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?central.redis.truststorePassword=.*/central.redis.truststorePassword=password/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?central.etcd.host=.*/central.etcd.host=${CENTRAL_ETCD_HOST}/" "${PROPERTIES_FILE}"
+  sed -i -E "s~#?central.etcd.caPath=.*~central.etcd.caPath=${CENTRAL_ETCD_CA_PATH}~" "${PROPERTIES_FILE}"
 fi
 
 #### SORMAS2SORMAS ###
 echo "SORMAS2SORMAS"
 if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
   echo "SORMAS2SORMAS enabled"
+  sed -i -E "s~#?sormas2sormas.path=.*~sormas2sormas.path=${SORMAS2SORMAS_PATH}~" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.id=.*/sormas2sormas.id=${SORMAS2SORMAS_ID}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.keystoreName=.*/sormas2sormas.keystoreName=${SORMAS2SORMAS_KEYSTORENAME}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.keystorePass=.*/sormas2sormas.keystorePass=${SORMAS2SORMAS_KEYPASSWORD}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?sormas2sormas.rootCaAlias=.*/sormas2sormas.rootCaAlias=${SORMAS2SORMAS_ROOTCAALIAS}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.rootCaAlias=.*/sormas2sormas.rootCaAlias=${SORMAS2SORMAS_ROOTCALIAS}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.truststoreName=.*/sormas2sormas.truststoreName=${SORMAS2SORMAS_TRUSTSTORENAME}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.truststorePass=.*/sormas2sormas.truststorePass=${SORMAS2SORMAS_TRUSTSTOREPASSWORD}/" "${PROPERTIES_FILE}"
+ 
   sed -i -E "s/#?sormas2sormas.oidc.realm=.*/sormas2sormas.oidc.realm=${SORMAS2SORMAS_OIDC_REALM}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.oidc.clientId=.*/sormas2sormas.oidc.clientId=${SORMAS2SORMAS_OIDC_CLIENTID}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.oidc.clientSecret=.*/sormas2sormas.oidc.clientSecret=${SORMAS2SORMAS_OIDC_CLIENTSECRET}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?sormas2sormas.redis.clientName=.*/sormas2sormas.redis.clientName=${SORMAS2SORMAS_REDIS_CLIENTNAME}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?sormas2sormas.redis.clientPassword=.*/sormas2sormas.redis.clientPassword=${SORMAS2SORMAS_REDIS_CLIENTPASSWORD}/" "${PROPERTIES_FILE}"
+ 
+  sed -i -E "s/#?sormas2sormas.etcd.clientName=.*/sormas2sormas.etcd.clientName=${SORMAS2SORMAS_ETCD_CLIENTNAME}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.etcd.clientPassword=.*/sormas2sormas.etcd.clientPassword=${SORMAS2SORMAS_ETCD_CLIENTPASSWORD}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.etcd.keyPrefix=.*/sormas2sormas.etcd.keyPrefix=${SORMAS2SORMAS_ETCD_KEYPREFIX}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.retainCaseExternalToken=.*/sormas2sormas.retainCaseExternalToken=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}/" "${PROPERTIES_FILE}"
 fi
 

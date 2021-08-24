@@ -11,16 +11,14 @@ services:
     ports:
       - 8080:8080
 
-  # FIXME replace with etcd
-  redis:
-    image: hzibraunschweig/central-redis:${CENTRAL_DOCKER_VERSION}
-    volumes:
-      - ./redis/config:/usr/local/etc/redis/config/
-      - ./redis/fixtures:/srv/fixtures
-      - ./redis/tls/ca/public:/srv/tls/ca/public
-      - ./redis/tls/server:/srv/tls/server
-      - ./redis/tls/dh:/srv/tls/dh
+  etcd:
+    image: hzibraunschweig/central-etcd:${CENTRAL_DOCKER_VERSION}
     env_file:
-      - .env_redis
+      - .env_etcd
+    volumes:
+      - ./etcd/fixtures:/srv/fixtures
+      - ./etcd/tls-setup/certs/etcd:/srv/certs
     ports:
-      - 6379:6379
+      - 4001:4001
+      - 2379:2379
+      - 2380:2380

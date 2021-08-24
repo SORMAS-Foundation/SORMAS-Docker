@@ -18,9 +18,11 @@ cat << EOF > /usr/local/apache2/conf.d/001_ssl_${SORMAS_SERVER_URL}.conf
 Listen 443
 <VirtualHost *:443>
         ServerName ${SORMAS_SERVER_URL}
+        # RedirectMatch: All locations not listed here will be redirected to sormas-ui
+        # APACHE_REDIRECT_EXCLUDE Example Usage: "|test|test2" will add /test and /test2 to that list
+        # IMPORTANT: it needs to start with "|"
+	      RedirectMatch "^(/(?!downloads|keycloak|metrics${APACHE_REDIRECT_EXCLUDE}).*)" https://${SORMAS_SERVER_URL}/sormas-ui\$1
 
-	RedirectMatch "^(/(?!downloads|keycloak|metrics).*)" https://${SORMAS_SERVER_URL}/sormas-ui\$1
-	
         ErrorLog /var/log/apache2/error.log
         LogLevel warn
         LogFormat "%h %l %u %t \"%r\" %>s %b _%D_ \"%{User}i\"  \"%{Connection}i\"  \"%{Referer}i\" \"%{User-agent}i\"" combined_ext
@@ -45,7 +47,7 @@ Listen 443
         ProxyPassReverse /sormas-rest http://sormas:6080/sormas-rest
         ProxyPass /keycloak http://keycloak:8080/keycloak connectiontimeout=5 timeout=600
         ProxyPassReverse /keycloak http://keycloak:8080/keycloak
-	ProxyPass /sormas-angular http://sormas-angular:80/ connectiontimeout=5 timeout=600
+	      ProxyPass /sormas-angular http://sormas-angular:80/ connectiontimeout=5 timeout=600
         ProxyPassReverse /sormas-angular/ http://sormas-angular:80/
         <Location /metrics>
             ProxyPass  http://sormas:6080/metrics connectiontimeout=5 timeout=600
@@ -54,6 +56,7 @@ Listen 443
             Deny from all
             Allow from ${PROMETHEUS_SERVERS}
         </Location>
+
         RequestHeader set X-Forwarded-Proto https
 
         Options -Indexes
@@ -74,6 +77,9 @@ Listen 443
             AddOutputFilterByType DEFLATE application/javascript application/x-javascript
             DeflateCompressionLevel 1
         </IfModule>
+        # Includes all files with the .conf ending in the conf.d/001_ssl_includes/ Directory
+        # IMPORTANT: if you include a location you need to add it to the APACHE_REDIRECT_EXCLUDE variable 
+        IncludeOptional conf.d/001_ssl_includes/*.conf
 </VirtualHost>
 EOF
 exec $@

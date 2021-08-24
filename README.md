@@ -300,3 +300,8 @@ given as a floating point value with the dot ( . ) as decimal separator, for exa
 **DB_DUMP_MEM_RESERVED** Memory reserved for the database dump tool. This memory may not be used by other processes on the same host. (For example 100M for 100MB)
 
 **DB_DUMP_CPUS** CPU cores reserved for the used web server. This should be a floating point value. (Example: 0.5 )
+
+Mind that services-base.yml file contains only the common set of environmental properties and settings for each of custom docker-compose.yml.
+
+
+
