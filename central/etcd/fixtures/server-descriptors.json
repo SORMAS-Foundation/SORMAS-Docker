@@ -1,0 +1,11 @@
+[
+  {
+    "key":"/s2s/2.sormas.id.sormas_a",
+    "value":  {"id":"2.sormas.id.sormas_a","name":"sormas_a_org_name","hostName":"sormas_a:6080"}
+  },
+  {
+    "key": "/s2s/2.sormas.id.sormas_b",
+    "value": {"id":"2.sormas.id.sormas_b","name":"sormas_b_org_name","hostName":"sormas_b:6080"}
+  }
+]
+

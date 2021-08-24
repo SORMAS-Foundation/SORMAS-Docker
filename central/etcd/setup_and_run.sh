@@ -6,19 +6,18 @@
 echo "starting import"
 sleep 3
 
-if [ ! -f /srv/fixtures/import.txt ]; then
-    echo "File not found!"
+if [ ! -f /srv/fixtures/server-descriptors.json ]; then
+    echo "/srv/fixtures/server-descriptors.json not found!"
+    exit 1
 fi
 
 
-# see https://mywiki.wooledge.org/BashFAQ/089
-while read -r line <&3; do
-  key=$(echo "${line}" |  cut -d' ' -f1)
-  value=$(echo "${line}" |  cut -d' ' -f2)
-  echo "Inserting ${key} : ${value}"
-  etcdctl --cacert=/srv/certs/ca.pem --endpoints=https://localhost:2379 put "$key" "$value" || exit 0
-done 3</srv/fixtures/server-descriptors.txt
-
+for row in $(jq -c '.[]' < /srv/fixtures/server-descriptors.json); do
+   key=$(echo "${row}" | jq -r .key)
+   value=$(echo "${row}" | jq -r .value)
+   echo "Inserting ${key} : ${value}"
+   etcdctl --cacert=/srv/certs/ca.pem --endpoints=https://localhost:2379 put "$key" "$value" || exit 1
+done
 
 echo "import done"
 
