@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # fork to background
-/usr/local/bin/etcd --listen-client-urls=http://0.0.0.0:2379 --advertise-client-urls=http://etcd:2379 &
+/usr/local/bin/etcd --config-file /etc/etcd/etcd.yml &
 
 echo "starting import"
 sleep 3
@@ -15,8 +15,10 @@ fi
 while read -r line <&3; do
   key=$(echo "${line}" |  cut -d' ' -f1)
   value=$(echo "${line}" |  cut -d' ' -f2)
-  etcdctl put "$key" "$value" --user="root" --password="${ROOT_PWD}" || exit 0
-done 3</srv/fixtures/import.txt
+  echo "Inserting ${key} : ${value}"
+  etcdctl --cacert=/srv/certs/ca/ca.pem --endpoints=https://localhost:2379 put "$key" "$value" || exit 0
+done 3</srv/fixtures/server-descriptors.txt
+
 
 
 echo "import done"
@@ -39,8 +41,4 @@ ps aux  |  grep -i etcd  |  awk '{print $2}'  |  xargs kill -15
 
 sleep 3
 
-/usr/local/bin/etcd \
-  --listen-client-urls=https://0.0.0.0:2379 \
-  --advertise-client-urls=https://etcd:2379 \
-  --cert-file=/srv/certs/etcd.pem \
-  --key-file=/srv/certs/etcd-key.pem
+/usr/local/bin/etcd --config-file /etc/etcd/etcd.yml
