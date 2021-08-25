@@ -20,6 +20,7 @@ while read -r line <&3; do
 done 3</srv/fixtures/server-descriptors.txt
 
 
+
 echo "import done"
 
 echo "setup root"
