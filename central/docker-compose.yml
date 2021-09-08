@@ -12,7 +12,7 @@ services:
       - 8080:8080
 
   etcd:
-    image: hzibraunschweig/central-etcd:${CENTRAL_DOCKER_VERSION}
+    image: quay.io/coreos/etcd:${CENTRAL_ETCD_VERSION}
     env_file:
       - .env_etcd
     volumes:
