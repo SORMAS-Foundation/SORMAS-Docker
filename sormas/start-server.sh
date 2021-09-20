@@ -193,6 +193,8 @@ sed -i "/^namesimilaritythreshold/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^duplicatechecks.excludepersonsonlylinkedtoarchivedentries/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^map.usecountrycenter/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^feature.automaticcaseclassification/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^daysAfterCaseGetsArchived/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^daysAfterEventGetsArchived/d" ${DOMAIN_DIR}/sormas.properties
 
 echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ncountry.locale=${LOCALE}" >>${DOMAIN_DIR}/sormas.properties
@@ -209,6 +211,8 @@ echo -e "\nnamesimilaritythreshold=${NAMESIMILARITYTHRESHOLD}" >>${DOMAIN_DIR}/s
 echo -e "\nduplicatechecks.excludepersonsonlylinkedtoarchivedentries=${DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nmap.usecountrycenter=${MAP_USECOUNTRYCENTER}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nfeature.automaticcaseclassification=${FEATURE_AUTOMATICCASECLASSIFICATION}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ndaysAfterCaseGetsArchived=${CASEARCHIVEDAYS}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ndaysAfterEventGetsArchived=${EVENTARCHIVEDAYS}" >>${DOMAIN_DIR}/sormas.properties
 
 #------------------GEOCODING
 sed -i "/^geocodingServiceUrlTemplate/d " ${DOMAIN_DIR}/sormas.properties
@@ -222,8 +226,6 @@ sed -i "s/\${GEO_UUID}/${GEO_UUID}/" ${DOMAIN_DIR}/sormas.properties
 
 sed -i "s/\#rscript.executable=.*/rscript.executable=Rscript/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#\s\devmode=.*/devmode=${DEVMODE}/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/\#\s\daysAfterCaseGetsArchived=.*/daysAfterCaseGetsArchived=${CASEARCHIVEDAYS}/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/\#\s\daysAfterEventGetsArchived=.*/daysAfterEventGetsArchived=${EVENTARCHIVEDAYS}/" ${DOMAIN_DIR}/sormas.properties
 
 #------------------PIA CONFIG
 if [ ! -z "$PIA_URL" ];then
@@ -289,8 +291,8 @@ if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
   sed -i -E "s/#?sormas2sormas.oidc.clientId=.*/sormas2sormas.oidc.clientId=${SORMAS2SORMAS_OIDC_CLIENTID}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.oidc.clientSecret=.*/sormas2sormas.oidc.clientSecret=${SORMAS2SORMAS_OIDC_CLIENTSECRET}/" "${PROPERTIES_FILE}"
  
-  sed -i -E "s/#?sormas2sormas.etcd.clientName=.*/sormas2sormas.etcd.clientName=${SORMAS2SORMAS_ETCD_CLIENTNAME}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?sormas2sormas.etcd.clientPassword=.*/sormas2sormas.etcd.clientPassword=${SORMAS2SORMAS_ETCD_CLIENTPASSWORD}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?central.etcd.clientName=.*/central.etcd.clientName=${SORMAS2SORMAS_ETCD_CLIENTNAME}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?central.etcd.clientPassword=.*/central.etcd.clientPassword=${SORMAS2SORMAS_ETCD_CLIENTPASSWORD}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.etcd.keyPrefix=.*/sormas2sormas.etcd.keyPrefix=${SORMAS2SORMAS_ETCD_KEYPREFIX}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.retainCaseExternalToken=.*/sormas2sormas.retainCaseExternalToken=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}/" "${PROPERTIES_FILE}"
 fi
