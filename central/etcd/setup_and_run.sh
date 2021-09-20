@@ -3,6 +3,7 @@
 # fork to background
 /usr/local/bin/etcd --config-file /etc/etcd/etcd.yml &
 
+
 echo "starting import"
 sleep 3
 
@@ -18,7 +19,6 @@ while read -r line <&3; do
   echo "Inserting ${key} : ${value}"
   etcdctl --cacert=/srv/certs/ca/ca.pem --endpoints=https://localhost:2379 put "$key" "$value" || exit 0
 done 3</srv/fixtures/server-descriptors.txt
-
 
 
 echo "import done"
@@ -42,3 +42,4 @@ ps aux  |  grep -i etcd  |  awk '{print $2}'  |  xargs kill -15
 sleep 3
 
 /usr/local/bin/etcd --config-file /etc/etcd/etcd.yml
+
