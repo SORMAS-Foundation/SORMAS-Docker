@@ -17,8 +17,10 @@ services:
       - .env_etcd
     volumes:
       - ./etcd/fixtures:/srv/fixtures
-      - ./etcd/tls-setup/certs/etcd:/srv/certs
+      - ./etcd/tls-setup/certs/:/srv/certs/
+      - ./etcd/etcd.yml:/etc/etcd/etcd.yml:ro
     ports:
-      - 4001:4001
-      - 2379:2379
-      - 2380:2380
+      - "4001:4001"
+      - "2379:2379"
+      - "2380:2380"
+

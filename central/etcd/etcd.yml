@@ -1,0 +1,8 @@
+data-dir: /var/run/etcd/
+name: etcd
+log-level: debug
+listen-client-urls: https://0.0.0.0:2379
+advertise-client-urls: https://etcd:2379
+client-transport-security:
+  cert-file: /srv/certs/etcd/etcd.pem
+  key-file: /srv/certs/etcd/etcd-key.pem
