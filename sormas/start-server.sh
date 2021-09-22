@@ -291,8 +291,8 @@ if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
   sed -i -E "s/#?sormas2sormas.oidc.clientId=.*/sormas2sormas.oidc.clientId=${SORMAS2SORMAS_OIDC_CLIENTID}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.oidc.clientSecret=.*/sormas2sormas.oidc.clientSecret=${SORMAS2SORMAS_OIDC_CLIENTSECRET}/" "${PROPERTIES_FILE}"
  
-  sed -i -E "s/#?sormas2sormas.etcd.clientName=.*/sormas2sormas.etcd.clientName=${SORMAS2SORMAS_ETCD_CLIENTNAME}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?sormas2sormas.etcd.clientPassword=.*/sormas2sormas.etcd.clientPassword=${SORMAS2SORMAS_ETCD_CLIENTPASSWORD}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?central.etcd.clientName=.*/sormas2sormas.etcd.clientName=${SORMAS2SORMAS_ETCD_CLIENTNAME}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?central.etcd.clientPassword=.*/sormas2sormas.etcd.clientPassword=${SORMAS2SORMAS_ETCD_CLIENTPASSWORD}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.etcd.keyPrefix=.*/sormas2sormas.etcd.keyPrefix=${SORMAS2SORMAS_ETCD_KEYPREFIX}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.retainCaseExternalToken=.*/sormas2sormas.retainCaseExternalToken=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}/" "${PROPERTIES_FILE}"
 fi
