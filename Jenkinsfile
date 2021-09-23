@@ -20,7 +20,6 @@ node {
 
     stage('Build PGDUMP') {
         echo 'Building PGDUMP'
-        sh """
         sh "source ./.env"
         echo "${SORMAS_DOCKER_VERSION}"
     }
