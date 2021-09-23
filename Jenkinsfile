@@ -7,18 +7,16 @@ node {
     }
     
     stage('set variables') {
-        echo 'Setting variables'
-        SORMAS_VERSION=pgdump-devops
-        echo "${SORMAS_VERSION}"
+        echo 'Setting variables for pgdump'
     }
 
     stage('Build SORMAS') {
-        echo 'Building SORMAS'
+        echo 'Building pgdump'
     }
     
     
     stage('DEPLOY SORMAS') {
-        echo 'Deploying....'
+        echo 'Deploying pgdump'
     }
     
 }
