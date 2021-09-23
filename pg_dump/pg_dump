@@ -62,9 +62,9 @@ if [ -n "${BACKUP_FILES}" ]; then
   fi
   if [ "${DELETE}" == "t" ];then
     echo "Deleting old file backups" >> ${LOG}
-    # keep 1 day => delete all but the last 10 files - with .zst extention
-    echo "$(ls -rt ${DUMP_PATH}/files.*${BAK_EXT} | head -n -10)" >> ${LOG}
-    ls -rt ${DUMP_PATH}/files.*${BAK_EXT} | head -n -10 | xargs -r rm
+    # delete all BUT the last 1 ONLY (documents) file - with .zst extention
+    echo "$(ls -rt ${DUMP_PATH}/files.*${BAK_EXT} | head -n -1)" >> ${LOG}
+    ls -rt ${DUMP_PATH}/files.*${BAK_EXT} | head -n -1 | xargs -r rm
   fi
 fi
 
