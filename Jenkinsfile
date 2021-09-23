@@ -18,13 +18,11 @@ node {
         echo "${SORMAS_VERSION}"
     }
 
-    stage('Build SORMAS') {
+    stage('Build PGDUMP') {
         echo 'Building PGDUMP'
-        sh "cat ./.env"
-    }
-
-    stage('DEPLOY SORMAS') {
-        echo 'Deploying pgdump'
+        sh """
+        sh "source ./.env"
+        echo "${SORMAS_DOCKER_VERSION}"
     }
 
 }
