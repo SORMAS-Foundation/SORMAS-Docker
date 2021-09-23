@@ -16,8 +16,6 @@ node {
           returnStdout: true
         ).trim()
         echo "${SORMAS_VERSION}"
-        SORMAS_VERSION=sh "curl -s https://raw.githubusercontent.com/hzi-braunschweig/SORMAS-Project/development/sormas-base/pom.xml | grep SNAPSHOT | sed s/\<version\>// | sed s/\<\\/version\>// | sed 's/[[:space:]]//g' "
-        echo "${SORMAS_VERSION}"
     }
 
     stage('Build SORMAS') {
