@@ -19,7 +19,10 @@ node {
 
     stage('Build PGDUMP') {
         echo 'Building PGDUMP'
-        SORMAS_DOCKER_VERSION=DEVOPS
+        SORMAS_DOCKER_VERSION=sh (
+           script: 'echo DEVOPS',
+           returnStdout: true
+        ).trim()
         sh "sudo buildah bud --build-arg SORMAS_URL='http://10.160.41.100/' --build-arg SORMAS_VERSION=${SORMAS_VERSION} --pull-always --no-cache -t sormas-pg-dump:${SORMAS_DOCKER_VERSION} pg_dump/"
         echo "${SORMAS_VERSION}"
         echo "${SORMAS_DOCKER_VERSION}"
