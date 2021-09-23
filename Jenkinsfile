@@ -10,7 +10,12 @@ node {
         echo 'Setting variables'        
         sh "sed -i 's,SORMAS_URL=.*\$,SORMAS_URL=http://10.160.41.100/,' ./.env"
 	sh "sed -i 's,SORMAS_DOCKER_VERSION=.*\$,SORMAS_DOCKER_VERSION=DEVOPS,' ./.env"
-	sh "sed -i '/^GEO_TEMPLATE/d ' ./.env"      
+	sh "sed -i '/^GEO_TEMPLATE/d ' ./.env"
+        SORMAS_VERSION= sh (
+          script: 'curl -s https://raw.githubusercontent.com/hzi-braunschweig/SORMAS-Project/development/sormas-base/pom.xml | grep SNAPSHOT | sed s/\\<version\\>// | sed s/\\<\\\\/version\\>// | sed \'s/[[:space:]]//g\'',
+          returnStdout: true
+        ).trim()
+        echo "${SORMAS_VERSION}"
         SORMAS_VERSION=sh "curl -s https://raw.githubusercontent.com/hzi-braunschweig/SORMAS-Project/development/sormas-base/pom.xml | grep SNAPSHOT | sed s/\<version\>// | sed s/\<\\/version\>// | sed 's/[[:space:]]//g' "
         echo "${SORMAS_VERSION}"
     }
