@@ -15,15 +15,14 @@ node {
           script: 'curl -s https://raw.githubusercontent.com/hzi-braunschweig/SORMAS-Project/development/sormas-base/pom.xml | grep SNAPSHOT | sed s/\\<version\\>// | sed s/\\<\\\\/version\\>// | sed \'s/[[:space:]]//g\'',
           returnStdout: true
         ).trim()
-        echo "${SORMAS_VERSION}"
     }
 
     stage('Build PGDUMP') {
         echo 'Building PGDUMP'
-        sh """
-          source ./.env
-          echo "${SORMAS_DOCKER_VERSION}"
-        """
+        SORMAS_DOCKER_VERSION=DEVOPS
+        sh "sudo buildah bud --build-arg SORMAS_URL='http://10.160.41.100/' --build-arg SORMAS_VERSION=${SORMAS_VERSION} --pull-always --no-cache -t sormas-pg-dump:${SORMAS_DOCKER_VERSION} pg_dump/"
+        echo "${SORMAS_VERSION}"
+        echo "${SORMAS_DOCKER_VERSION}"
     }
 
 }
