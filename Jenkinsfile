@@ -37,7 +37,7 @@ node {
 
     stage('Deploy PGDUMP to docker.io') {
         echo 'Deploying PGDUMP to docker.io'
-        withCredentials([ usernamePassword(credentialsId: 'docker.io', usernameVariable: 'MY_SECRET_USER', passwordVariable: 'MY_SECRET_USER_PASSWORD' )]) {
+        withCredentials([ usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'MY_SECRET_USER', passwordVariable: 'MY_SECRET_USER_PASSWORD' )]) {
                 sh """
                 sudo buildah login -u '$MY_SECRET_USER' -p '$MY_SECRET_USER_PASSWORD' docker.io
                 sudo buildah push -f v2s2 sormas-pg-dump:${SORMAS_DOCKER_VERSION} hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
