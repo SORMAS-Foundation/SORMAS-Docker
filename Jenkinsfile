@@ -25,8 +25,8 @@ node {
         sh "sudo buildah bud --build-arg SORMAS_URL='http://10.160.41.100/' --build-arg SORMAS_VERSION=${SORMAS_VERSION} --pull-always --no-cache -t sormas-pg-dump:${SORMAS_DOCKER_VERSION} pg_dump/"
     }
 
-    stage('Deploy PGDUMP') {
-        echo 'Deploying PGDUMP'
+    stage('Deploy PGDUMP registry') {
+        echo 'Deploying PGDUMP registry'
         withCredentials([ usernamePassword(credentialsId: 'registry.netzlink.com', usernameVariable: 'MY_SECRET_USER_NLI', passwordVariable: 'MY_SECRET_USER_PASSWORD_NLI' )]) {
                 sh """
                 sudo buildah login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
@@ -34,6 +34,17 @@ node {
                 """
         }
     }
+
+    stage('Deploy PGDUMP to docker.io') {
+        echo 'Deploying PGDUMP to docker.io'
+        withCredentials([ usernamePassword(credentialsId: 'docker.io', usernameVariable: 'MY_SECRET_USER', passwordVariable: 'MY_SECRET_USER_PASSWORD' )]) {
+                sh """
+                sudo buildah login -u '$MY_SECRET_USER' -p '$MY_SECRET_USER_PASSWORD' docker.io
+                sudo buildah push -f v2s2 sormas-pg-dump:${SORMAS_DOCKER_VERSION} hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+                """
+        }
+    }
+
 
 
 }
