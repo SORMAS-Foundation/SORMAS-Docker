@@ -21,6 +21,7 @@ node {
 
     stage('Build PGDUMP') {
         echo 'Building PGDUMP'
+        sh "cat ./.env" 
         // sh "sudo buildah bud --build-arg SORMAS_URL='http://10.160.41.100/' --build-arg SORMAS_VERSION=${SORMAS_VERSION} --pull-always --no-cache -t sormas-pg-dump:${SORMAS_DOCKER_VERSION} pg_dump/"
     }
 
