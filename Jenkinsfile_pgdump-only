@@ -1,0 +1,50 @@
+node {
+    
+    def SORMAS_VERSION=''
+        
+    stage('checkout') {
+        git branch: '${BRANCH}', url: 'https://github.com/hzi-braunschweig/SORMAS-Docker.git'
+    }
+    
+    stage('set variables') {
+        echo 'Setting variables'        
+        sh "sed -i 's,SORMAS_URL=.*\$,SORMAS_URL=http://10.160.41.100/,' ./.env"
+	sh "sed -i 's,SORMAS_DOCKER_VERSION=.*\$,SORMAS_DOCKER_VERSION=DEVOPS,' ./.env"
+	sh "sed -i '/^GEO_TEMPLATE/d ' ./.env"
+        SORMAS_VERSION= sh (
+          script: 'curl -s https://raw.githubusercontent.com/hzi-braunschweig/SORMAS-Project/development/sormas-base/pom.xml | grep SNAPSHOT | sed s/\\<version\\>// | sed s/\\<\\\\/version\\>// | sed \'s/[[:space:]]//g\'',
+          returnStdout: true
+        ).trim()
+        echo "${SORMAS_VERSION}"
+        echo "${SORMAS_DOCKER_VERSION}"
+    }
+
+    stage('Build PGDUMP') {
+        echo 'Building PGDUMP'
+        sh "cat ./.env"
+        sh "sudo buildah bud --build-arg SORMAS_URL='http://10.160.41.100/' --build-arg SORMAS_VERSION=${SORMAS_VERSION} --pull-always --no-cache -t sormas-pg-dump:${SORMAS_DOCKER_VERSION} pg_dump/"
+    }
+
+    stage('Deploy PGDUMP registry') {
+        echo 'Deploying PGDUMP registry'
+        withCredentials([ usernamePassword(credentialsId: 'registry.netzlink.com', usernameVariable: 'MY_SECRET_USER_NLI', passwordVariable: 'MY_SECRET_USER_PASSWORD_NLI' )]) {
+                sh """
+                sudo buildah login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
+                sudo buildah push -f v2s2 sormas-pg-dump:${SORMAS_DOCKER_VERSION} registry.netzlink.com/hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+                """
+        }
+    }
+
+    stage('Deploy PGDUMP to docker.io') {
+        echo 'Deploying PGDUMP to docker.io'
+        withCredentials([ usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'MY_SECRET_USER', passwordVariable: 'MY_SECRET_USER_PASSWORD' )]) {
+                sh """
+                sudo buildah login -u '$MY_SECRET_USER' -p '$MY_SECRET_USER_PASSWORD' docker.io
+                sudo buildah push -f v2s2 sormas-pg-dump:${SORMAS_DOCKER_VERSION} hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+                """
+        }
+    }
+
+
+
+}
