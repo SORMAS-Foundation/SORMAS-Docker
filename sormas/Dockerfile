@@ -30,9 +30,13 @@ RUN useradd payara
 
 COPY setup-server.sh /setup-server.sh
 
-
 RUN chmod +x /setup-server.sh
 RUN /setup-server.sh
 COPY start-server.sh /start-server.sh
 RUN chmod +x /start-server.sh
+
+COPY glowroot-0.13.6-dist.zip /opt
+RUN cd /opt \
+  && unzip glowroot-0.13.6-dist.zip
+
 CMD ["/start-server.sh"]
