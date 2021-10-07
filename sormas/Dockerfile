@@ -36,7 +36,9 @@ COPY start-server.sh /start-server.sh
 RUN chmod +x /start-server.sh
 
 COPY glowroot-0.13.6-dist.zip /opt
+
 RUN cd /opt \
+  && apt-get -y install unzip \
   && unzip glowroot-0.13.6-dist.zip
 
 CMD ["/start-server.sh"]
