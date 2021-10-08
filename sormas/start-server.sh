@@ -103,6 +103,12 @@ echo "Configuring domain and database connection..."
 set +e
 ${ASADMIN} delete-jvm-options -Xmx4096m
 ${ASADMIN} create-jvm-options -Xmx${JVM_MAX}
+
+if [ ! -z "${GLOWROOT_ENABLED}" ];then
+  echo "Enable Glowroot"
+  ${ASADMIN} create-jvm-options -javaagent:/opt/glowroot/glowroot.jar
+fi
+
 set -e
 # Proxy settings
 if [ ! -z "$PROXY_HOST" ];then
@@ -158,10 +164,6 @@ if [ ! -z "$AUTHENTICATION_PROVIDER" -a "$AUTHENTICATION_PROVIDER" = "KEYCLOAK" 
   ${ASADMIN} set-config-property --propertyName=sormas.backend.security.oidc.json --propertyValue="{\"realm\":\"SORMAS\",\"auth-server-url\":\"https://${SORMAS_SERVER_URL}/keycloak/auth/\",\"ssl-required\":\"external\",\"resource\":\"sormas-backend\",\"credentials\":{\"secret\":\"${KEYCLOAK_SORMAS_BACKEND_SECRET}\"},\"confidential-port\":0}" --source=domain
 fi
 
-if [ ! -z "$GLOWROOT_ENABLED" ];then
-  echo "Enable Glowroot"
-  ${ASADMIN} create-jvm-options -javaagent:/opt/glowroot-0.13.6-dist/glowroot/glowroot.jar
-fi
 
 ${PAYARA_HOME}/bin/asadmin stop-domain --domaindir ${DOMAINS_HOME}
 chown -R ${USER_NAME}:${USER_NAME} ${DOMAIN_DIR}

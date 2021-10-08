@@ -54,7 +54,7 @@ services:
     mem_limit: ${APPSERVER_MEM}
     mem_reservation: ${APPSERVER_MEM_RESERVED}
     ports:
-      - "5432:5432"
+      - "4000:4000"
 
   base-postgres:
     restart: unless-stopped
