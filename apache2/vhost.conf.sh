@@ -14,6 +14,8 @@ cat << EOF > /usr/local/apache2/conf.d/000_${SORMAS_SERVER_URL}.conf
 </VirtualHost>
 EOF
 
+REDIRECT_MATCH_LBDS_CONTEXT_PATH=`echo ${LBDS_CONTEXT_PATH} | sed "s#^/##"`
+
 cat << EOF > /usr/local/apache2/conf.d/001_ssl_${SORMAS_SERVER_URL}.conf
 Listen 443
 <VirtualHost *:443>
@@ -22,7 +24,7 @@ Listen 443
         # APACHE_REDIRECT_EXCLUDE Example Usage: "|test|test2" will add /test and /test2 to that list
         # IMPORTANT: it needs to start with "|"
 	      RedirectMatch "^(/(?!downloads|keycloak|metrics${APACHE_REDIRECT_EXCLUDE}).*)" https://${SORMAS_SERVER_URL}/sormas-ui\$1
-
+	    RedirectMatch "^(/(?!downloads|keycloak|metrics|${REDIRECT_MATCH_LBDS_CONTEXT_PATH}).*)" https://${SORMAS_SERVER_URL}/sormas-ui\$1
         ErrorLog /var/log/apache2/error.log
         LogLevel warn
         LogFormat "%h %l %u %t \"%r\" %>s %b _%D_ \"%{User}i\"  \"%{Connection}i\"  \"%{Referer}i\" \"%{User-agent}i\"" combined_ext
@@ -43,6 +45,8 @@ Listen 443
         ProxyPreserveHost On
         ProxyPass /sormas-ui http://sormas:6080/sormas-ui connectiontimeout=5 timeout=1800
         ProxyPassReverse /sormas-ui http://sormas:6080/sormas-ui
+        ProxyPass ${LBDS_CONTEXT_PATH} http://lbds:8080${LBDS_CONTEXT_PATH} connectiontimeout=5 timeout=1800
+        ProxyPassReverse ${LBDS_CONTEXT_PATH} http://lbds:8080${LBDS_CONTEXT_PATH}
         ProxyPass /sormas-rest http://sormas:6080/sormas-rest connectiontimeout=5 timeout=1800
         ProxyPassReverse /sormas-rest http://sormas:6080/sormas-rest
         ProxyPass /keycloak http://keycloak:8080/keycloak connectiontimeout=5 timeout=600
