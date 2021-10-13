@@ -14,9 +14,11 @@ node {
         	returnStdout: true
         ).trim()
         if (params.BUILD_NIGHTLY != null && params.BUILD_NIGHTLY) {
+            echo 'Build NIGHTLY'
 			SORMAS_VERSION = SORMAS_VERSION_NIGHTLY
         }
         else {
+            echo 'Build Version from .env'
             SORMAS_VERSION = sh (
             	script: "source ./.env &> /dev/null && echo $SORMAS_VERSION",
             	returnStdout: true
