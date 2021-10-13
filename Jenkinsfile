@@ -18,7 +18,7 @@ node {
         }
         else {
             SORMAS_VERSION = sh (
-            	script: "source ./.env && echo $SORMAS_VERSION",
+            	script: "source ./.env &> /dev/null && echo $SORMAS_VERSION",
             	returnStdout: true
             ).trim()
         }
