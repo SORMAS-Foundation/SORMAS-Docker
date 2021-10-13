@@ -2,6 +2,7 @@ node {
     
     def SORMAS_VERSION=''
     def SORMAS_VERSION_NIGHTLY=''
+    
         
     stage('checkout') {
         git branch: '${BRANCH}', url: 'https://github.com/hzi-braunschweig/SORMAS-Docker.git'
@@ -16,6 +17,9 @@ node {
         if (params.BUILD_NIGHTLY != null && params.BUILD_NIGHTLY) {
             echo 'Build NIGHTLY'
 			SORMAS_VERSION = SORMAS_VERSION_NIGHTLY
+			sh """
+			sed -i 's,SORMAS_URL=.*\$,SORMAS_URL=http://10.160.41.100/,' ./.env
+			"""
         }
         else {
             echo 'Build Version from .env'
@@ -25,7 +29,6 @@ node {
             ).trim()
         }
         sh """
-        sed -i 's,SORMAS_URL=.*\$,SORMAS_URL=http://10.160.41.100/,' ./.env
 		sed -i 's,SORMAS_DOCKER_VERSION=.#*\$,SORMAS_DOCKER_VERSION=${SORMAS_DOCKER_VERSION},' ./.env
 		sed -i "/^GEO_TEMPLATE/d " ./.env
 		cat ./.env
