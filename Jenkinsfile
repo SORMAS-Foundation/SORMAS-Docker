@@ -1,6 +1,7 @@
 node {
     
     def SORMAS_VERSION=''
+    def SORMAS_VERSION_NIGHTLY=''
         
     stage('checkout') {
         git branch: '${BRANCH}', url: 'https://github.com/hzi-braunschweig/SORMAS-Docker.git'
@@ -8,16 +9,27 @@ node {
     
     stage('set variables') {
         echo 'Setting variables'
+        SORMAS_VERSION_NIGHTLY= sh (
+        	script: 'curl -s https://raw.githubusercontent.com/hzi-braunschweig/SORMAS-Project/development/sormas-base/pom.xml | grep SNAPSHOT | sed s/\\<version\\>// | sed s/\\<\\\\/version\\>// | sed \'s/[[:space:]]//g\'', 
+        	returnStdout: true
+        ).trim()
+        if (params.BUILD_NIGHTLY != null && params.BUILD_NIGHTLY) {
+			SORMAS_VERSION = SORMAS_VERSION_NIGHTLY
+        }
+        else {
+            SORMAS_VERSION = sh (
+            	script: "source ./.env && echo $SORMAS_VERSION",
+            	returnStdout: true
+            ).trim()
+        }
         sh """
         sed -i 's,SORMAS_URL=.*\$,SORMAS_URL=http://10.160.41.100/,' ./.env
 		sed -i 's,SORMAS_DOCKER_VERSION=.#*\$,SORMAS_DOCKER_VERSION=${SORMAS_DOCKER_VERSION},' ./.env
 		sed -i "/^GEO_TEMPLATE/d " ./.env
 		cat ./.env
         """        
-        SORMAS_VERSION= sh (
-        	script: 'curl -s https://raw.githubusercontent.com/hzi-braunschweig/SORMAS-Project/development/sormas-base/pom.xml | grep SNAPSHOT | sed s/\\<version\\>// | sed s/\\<\\\\/version\\>// | sed \'s/[[:space:]]//g\'', 
-        	returnStdout: true
-        ).trim()
+        
+        
         echo "${SORMAS_VERSION}"
     }
 
