@@ -20,7 +20,7 @@ node {
         else {
             echo 'Build Version from .env'
             SORMAS_VERSION = sh (
-            	script: "source ./.env &> /dev/null && echo $SORMAS_VERSION",
+            	script: "source ./.env &> /dev/null && echo \$SORMAS_VERSION",
             	returnStdout: true
             ).trim()
         }
