@@ -195,6 +195,8 @@ sed -i "/^map.usecountrycenter/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^feature.automaticcaseclassification/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^daysAfterCaseGetsArchived/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^daysAfterEventGetsArchived/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^documentUploadSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^importFileSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
 
 echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ncountry.locale=${LOCALE}" >>${DOMAIN_DIR}/sormas.properties
@@ -213,6 +215,8 @@ echo -e "\nmap.usecountrycenter=${MAP_USECOUNTRYCENTER}" >>${DOMAIN_DIR}/sormas.
 echo -e "\nfeature.automaticcaseclassification=${FEATURE_AUTOMATICCASECLASSIFICATION}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ndaysAfterCaseGetsArchived=${CASEARCHIVEDAYS}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ndaysAfterEventGetsArchived=${EVENTARCHIVEDAYS}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ndocumentUploadSizeLimitMb=${DOCUMENTUPLOADSIZELIMITMB}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nimportFileSizeLimitMb=${IMPORTFILESIZELIMITMB}" >>${DOMAIN_DIR}/sormas.properties
 
 #------------------GEOCODING
 sed -i "/^geocodingServiceUrlTemplate/d " ${DOMAIN_DIR}/sormas.properties
@@ -295,6 +299,11 @@ if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
  
   sed -i -E "s/#?sormas2sormas.etcd.keyPrefix=.*/sormas2sormas.etcd.keyPrefix=${SORMAS2SORMAS_ETCD_KEYPREFIX}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.retainCaseExternalToken=.*/sormas2sormas.retainCaseExternalToken=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}/" "${PROPERTIES_FILE}"
+  
+  sed -i -E "s/#?sormas2sormas.ignoreProperty.additionalDetails=.*/sormas2sormas.ignoreProperty.additionalDetails=${SORMAS2SORMAS_IGNOREPROPERTY_ADDITIONALDETAILS}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.ignoreProperty.externalId=.*/sormas2sormas.ignoreProperty.externalId=${SORMAS2SORMAS_IGNOREPROPERTY_EXTERNALID}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.ignoreProperty.externalToken=.*/sormas2sormas.ignoreProperty.externalToken=${SORMAS2SORMAS_IGNOREPROPERTY_EXTERNALTOKEN}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.ignoreProperty.internalToken=.*/sormas2sormas.ignoreProperty.internalToken=${SORMAS2SORMAS_IGNOREPROPERTY_INTERNALTOKEN}/" "${PROPERTIES_FILE}"
 fi
 
 
