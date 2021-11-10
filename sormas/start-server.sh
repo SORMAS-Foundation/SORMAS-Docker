@@ -279,6 +279,7 @@ if [ ! -z  "$SORMAS_CENTRAL_ENABLED" ]; then
   sed -i -E "s~#?central.etcd.caPath=.*~central.etcd.caPath=${CENTRAL_ETCD_CA_PATH}~" "${PROPERTIES_FILE}"
   sed -i -E "s/#?central.etcd.clientName=.*/central.etcd.clientName=${CENTRAL_ETCD_CLIENTNAME}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?central.etcd.clientPassword=.*/central.etcd.clientPassword=${CENTRAL_ETCD_CLIENTPASSWORD}/" "${PROPERTIES_FILE}" 
+  sed -i -E "s/^.*central.location.sync=.*/central.location.sync=${CENTRAL_LOCATION_SYNC}/" "${PROPERTIES_FILE}"
 fi
 
 #### SORMAS2SORMAS ###
