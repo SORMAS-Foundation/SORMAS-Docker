@@ -110,6 +110,10 @@ if [ ! -z "$PROXY_HOST" ];then
 ${ASADMIN} create-system-properties --target server-config org.jboss.resteasy.jaxrs.client.proxy.host=${PROXY_HOST}
 ${ASADMIN} create-system-properties --target server-config org.jboss.resteasy.jaxrs.client.proxy.port=${PROXY_PORT}
 ${ASADMIN} create-system-properties --target server-config org.jboss.resteasy.jaxrs.client.proxy.scheme=${PROXY_SCHEME}
+  if [ ! -z "$SORMAS_CENTRAL_ENABLED" ]; then
+    keytool -storepass ${CACERTS_PASS} -importcert -trustcacerts -destkeystore ${DOMAIN_DIR}/config/cacerts.jks -file /tmp/certs/${CENTRAL_ETCD_HOST}.crt -alias s2s-central-etcd -noprompt
+    keytool -storepass ${CACERTS_PASS} -importcert -trustcacerts -destkeystore ${DOMAIN_DIR}/config/cacerts.jks -file /tmp/certs/${CENTRAL_OIDC_URL}.crt -alias s2s-central-keycloak -noprompt
+  fi
 fi
 # JDBC pool
 echo "Configuring JDBC pool"
