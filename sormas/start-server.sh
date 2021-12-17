@@ -221,7 +221,7 @@ echo -e "geocodingLatitudeJsonPath=${GEO_LAT_TEMPLATE}" >>${DOMAIN_DIR}/sormas.p
 sed -i "s/\${GEO_UUID}/${GEO_UUID}/" ${DOMAIN_DIR}/sormas.properties
 
 sed -i "s/\#rscript.executable=.*/rscript.executable=Rscript/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/\#\s\devmode=.*/devmode=${DEVMODE}/" ${DOMAIN_DIR}/sormas.properties
+sed -i "s:#\s*devmode=.*:devmode=${DEVMODE}:" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#\s\daysAfterCaseGetsArchived=.*/daysAfterCaseGetsArchived=${CASEARCHIVEDAYS}/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#\s\daysAfterEventGetsArchived=.*/daysAfterEventGetsArchived=${EVENTARCHIVEDAYS}/" ${DOMAIN_DIR}/sormas.properties
 
