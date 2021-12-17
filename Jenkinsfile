@@ -19,6 +19,7 @@ node {
     	echo 'Building SORMAS'
     	sh """
     	source ./.env
+    	echo ${SORMAS_VERSION}
     	sudo buildah bud --build-arg SORMAS_URL="http://10.160.41.100/" --build-arg SORMAS_VERSION=${SORMAS_VERSION} --pull-always --no-cache -t sormas-application:${SORMAS_DOCKER_VERSION} sormas/
 		sudo buildah bud  --build-arg SORMAS_URL="http://10.160.41.100/" --build-arg SORMAS_VERSION=${SORMAS_VERSION} --no-cache -t sormas-postgres:${SORMAS_DOCKER_VERSION} postgres/
 		sudo buildah bud --build-arg SORMAS_URL="http://10.160.41.100/" --build-arg SORMAS_VERSION=${SORMAS_VERSION} --pull-always --no-cache -t sormas-apache2:${SORMAS_DOCKER_VERSION} apache2/
