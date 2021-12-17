@@ -49,7 +49,7 @@ node {
         withCredentials([ usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'MY_SECRET_USER', passwordVariable: 'MY_SECRET_USER_PASSWORD' )]) {
         	sh """
         	
-        	sudo buildah login -u $MY_SECRET_USER -p $MY_SECRET_USER_PASSWORD docker.io
+        	sudo buildah login -u '$MY_SECRET_USER' -p '$MY_SECRET_USER_PASSWORD' docker.io
         	
         	sudo buildah push -f v2s2 sormas-application hzibraunschweig/sormas-application:$SORMAS_DOCKER_VERSION
 			sudo buildah push -f v2s2 sormas-postgres hzibraunschweig/sormas-postgres:$SORMAS_DOCKER_VERSION
