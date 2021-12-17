@@ -10,15 +10,9 @@ node {
         echo 'Setting variables'
         sh """
         sed -i 's,SORMAS_URL=.*\$,SORMAS_URL=http://10.160.41.100/,' ./.env
-		sed -i 's,SORMAS_DOCKER_VERSION=.#*\$,SORMAS_DOCKER_VERSION=${SORMAS_DOCKER_VERSION},' ./.env
 		sed -i "/^GEO_TEMPLATE/d " ./.env
 		cat ./.env
         """        
-        SORMAS_VERSION= sh (
-        	script: 'curl -s https://raw.githubusercontent.com/hzi-braunschweig/SORMAS-Project/development/sormas-base/pom.xml | grep SNAPSHOT | sed s/\\<version\\>// | sed s/\\<\\\\/version\\>// | sed \'s/[[:space:]]//g\'', 
-        	returnStdout: true
-        ).trim()
-        echo "${SORMAS_VERSION}"
     }
 
     stage('Build SORMAS') {
@@ -33,7 +27,7 @@ node {
     }
     
     
-    stage('DEPLOY SORMAS') {
+    stage('DEPLOY SORMAS to local registry') {
     echo 'Deploying....'
         withCredentials([ usernamePassword(credentialsId: 'registry.netzlink.com', usernameVariable: 'MY_SECRET_USER_NLI', passwordVariable: 'MY_SECRET_USER_PASSWORD_NLI' )]) {
         	sh """
@@ -45,29 +39,19 @@ node {
         	"""
         }    
 	}
-
-    
-    stage('Build LBDS') {
-		echo 'Building....'
-        withCredentials([ usernamePassword(credentialsId: 'crowdcodeNexus', usernameVariable: 'CROWDCODE_NEXUS_USER', passwordVariable: 'CROWDCODE_NEXUS_PASSWORD' )]) {
+	stage('DEPLOY SORMAS to dockerhub') {
+    echo 'Deploying....'
+        withCredentials([ usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'MY_SECRET_USER', passwordVariable: 'MY_SECRET_USER_PASSWORD' )]) {
         	sh """
-        	source ./.env
-        	cd lbds
-        	sudo buildah bud --pull-always --no-cache --build-arg LDBS_JAR_FILE_VERSION=${LDBS_JAR_FILE_VERSION} --build-arg CROWDCODE_NEXUS_USER=${CROWDCODE_NEXUS_USER} --build-arg CROWDCODE_NEXUS_PASSWORD="${CROWDCODE_NEXUS_PASSWORD}" -t hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION} .
+        	
+        	sudo buildah login -u $MY_SECRET_USER -p $MY_SECRET_USER_PASSWORD docker.io
+        	
+        	sudo buildah push -f v2s2 sormas-application hzibraunschweig/sormas-application:$SORMAS_DOCKER_VERSION
+			sudo buildah push -f v2s2 sormas-postgres hzibraunschweig/sormas-postgres:$SORMAS_DOCKER_VERSION
+			sudo buildah push -f v2s2 sormas-apache2  hzibraunschweig/sormas-apache2:$SORMAS_DOCKER_VERSION
+			sudo buildah push -f v2s2 sormas-pg-dump hzibraunschweig/sormas-pg-dump:$SORMAS_DOCKER_VERSION
         	"""
-        }
-    }
- 
-    
-    stage('Deploy LBDS') {
-        echo 'Deploying....'
-        withCredentials([ usernamePassword(credentialsId: 'registry.netzlink.com', usernameVariable: 'MY_SECRET_USER_NLI', passwordVariable: 'MY_SECRET_USER_PASSWORD_NLI' )]) {
-        	sh """
-            sudo buildah login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
-            sudo buildah push -f v2s2 hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION} registry.netzlink.com/hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION}
-            sudo buildah push -f v2s2 hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION} registry.netzlink.com/hzibraunschweig/lbds:${SORMAS_DOCKER_VERSION}
-            echo 'Finished'
-            """                                                                                                                 
-        }
-    }
+        }    
+	}
+
 }
