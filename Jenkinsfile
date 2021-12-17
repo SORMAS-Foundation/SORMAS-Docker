@@ -9,7 +9,7 @@ node {
     stage('set variables') {
         echo 'Setting variables'
         sh """
-        sed -i 's,SORMAS_URL=.*\$,SORMAS_URL=http://10.160.41.100/,' ./.env
+        sed -i 's,SORMAS_URL=.*\$,SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/,' ./.env
 		sed -i "/^GEO_TEMPLATE/d " ./.env
 		cat ./.env
         """        
@@ -24,10 +24,10 @@ node {
     	echo 'Building SORMAS'
     	sh """
     	source ./.env
-    	sudo buildah bud --build-arg SORMAS_URL="http://10.160.41.100/" --build-arg SORMAS_VERSION=${SORMAS_VERSION} --pull-always --no-cache -t sormas-application:${SORMAS_DOCKER_VERSION} sormas/
-		sudo buildah bud  --build-arg SORMAS_URL="http://10.160.41.100/" --build-arg SORMAS_VERSION=${SORMAS_VERSION} --no-cache -t sormas-postgres:${SORMAS_DOCKER_VERSION} postgres/
-		sudo buildah bud --build-arg SORMAS_URL="http://10.160.41.100/" --build-arg SORMAS_VERSION=${SORMAS_VERSION} --pull-always --no-cache -t sormas-apache2:${SORMAS_DOCKER_VERSION} apache2/
-		sudo buildah bud --build-arg SORMAS_URL="http://10.160.41.100/" --build-arg SORMAS_VERSION=${SORMAS_VERSION} --pull-always --no-cache -t sormas-pg-dump:${SORMAS_DOCKER_VERSION} pg_dump/
+    	sudo buildah bud --build-arg SORMAS_URL="https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/" --build-arg SORMAS_VERSION=${SORMAS_VERSION} --pull-always --no-cache -t sormas-application:${SORMAS_DOCKER_VERSION} sormas/
+		sudo buildah bud  --build-arg SORMAS_URL="https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/" --build-arg SORMAS_VERSION=${SORMAS_VERSION} --no-cache -t sormas-postgres:${SORMAS_DOCKER_VERSION} postgres/
+		sudo buildah bud --build-arg SORMAS_URL="https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/" --build-arg SORMAS_VERSION=${SORMAS_VERSION} --pull-always --no-cache -t sormas-apache2:${SORMAS_DOCKER_VERSION} apache2/
+		sudo buildah bud --build-arg SORMAS_URL="https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/" --build-arg SORMAS_VERSION=${SORMAS_VERSION} --pull-always --no-cache -t sormas-pg-dump:${SORMAS_DOCKER_VERSION} pg_dump/
     	"""
     }
     
