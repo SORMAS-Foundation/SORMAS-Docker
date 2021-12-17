@@ -51,10 +51,10 @@ node {
         	
         	sudo buildah login -u '$MY_SECRET_USER' -p '$MY_SECRET_USER_PASSWORD' docker.io
         	
-        	sudo buildah push -f v2s2 sormas-application hzibraunschweig/sormas-application:$SORMAS_DOCKER_VERSION
-			sudo buildah push -f v2s2 sormas-postgres hzibraunschweig/sormas-postgres:$SORMAS_DOCKER_VERSION
-			sudo buildah push -f v2s2 sormas-apache2  hzibraunschweig/sormas-apache2:$SORMAS_DOCKER_VERSION
-			sudo buildah push -f v2s2 sormas-pg-dump hzibraunschweig/sormas-pg-dump:$SORMAS_DOCKER_VERSION
+        	sudo buildah push -f v2s2 sormas-application:${SORMAS_DOCKER_VERSION} hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
+			sudo buildah push -f v2s2 sormas-postgres:${SORMAS_DOCKER_VERSION} hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
+			sudo buildah push -f v2s2 sormas-apache2:${SORMAS_DOCKER_VERSION}  hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
+			sudo buildah push -f v2s2 sormas-pg-dump:${SORMAS_DOCKER_VERSION} hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
         	"""
         }    
 	}
