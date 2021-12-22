@@ -71,8 +71,8 @@ node {
 	        	sudo buildah login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
 	        	
 	        	sudo buildah pull registry.netzlink.com/hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
-	        	sudo buildah logout
-	        	sudo buildah login -u $MY_SECRET_USER_DOCKER -p $MY_SECRET_USER_PASSWORD_DOCKER docker.io
+	        	sudo buildah logout registry.netzlink.com
+	        	sudo buildah login -u '$MY_SECRET_USER_DOCKER' -p '$MY_SECRET_USER_PASSWORD_DOCKER' docker.io
 	        	sudo buildah push -f v2s2 hzibraunschweig/sormas-apache2:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
 	        	
 	        	sudo buildah logout
