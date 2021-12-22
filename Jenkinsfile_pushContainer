@@ -24,7 +24,7 @@ node {
 	        	sh """
 	        	sed -i "/^GEO_TEMPLATE/d " ./.env
 				source ./.env
-				sudo buildah login -u $MY_SECRET_USER_NLI -p $MY_SECRET_USER_PASSWORD_NLI registry.netzlink.com
+				sudo buildah login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
 	        	
 	        	sudo buildah push -f v2s2 sormas-application registry.netzlink.com/hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
 	            sudo buildah push -f v2s2 sormas-application registry.netzlink.com/hzibraunschweig/sormas-application:latest
