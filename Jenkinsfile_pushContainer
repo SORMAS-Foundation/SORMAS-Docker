@@ -67,7 +67,7 @@ node {
         withCredentials([ usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'MY_SECRET_USER_DOCKER', passwordVariable: 'MY_SECRET_USER_PASSWORD_DOCKER' )]) {
         	withCredentials([ usernamePassword(credentialsId: 'registry.netzlink.com', usernameVariable: 'MY_SECRET_USER_NLI', passwordVariable: 'MY_SECRET_USER_PASSWORD_NLI' )]) {
 	        	sh """
-	        	sudo buildah rmi --all
+	        	sudo buildah rmi --all -f 
 	        	sudo buildah login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
 	        	
 	    
@@ -116,7 +116,7 @@ node {
         withCredentials([ usernamePassword(credentialsId: 'quay_registry', usernameVariable: 'MY_SECRET_USER_QUAY', passwordVariable: 'MY_SECRET_USER_PASSWORD_QUAY' )]) {
         	withCredentials([ usernamePassword(credentialsId: 'registry.netzlink.com', usernameVariable: 'MY_SECRET_USER_NLI', passwordVariable: 'MY_SECRET_USER_PASSWORD_NLI' )]) {
 	        	sh """
-	        	sudo buildah rmi --all
+	        	sudo buildah rmi --all -f
 	        	sudo buildah login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
 	        	
 	    
