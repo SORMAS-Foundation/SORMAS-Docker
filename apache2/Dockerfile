@@ -29,6 +29,7 @@ RUN mkdir -p /var/www/sormas/downloads && \
     cd - && \
     rm -rf ${DEPLOY_PATH}
 
+COPY ./lbds-app/*  /var/www/sormas/downloads/
 
 ENTRYPOINT ["/tmp/vhost.conf.sh"]
 CMD ["/usr/local/apache2/bin/httpd","-D","FOREGROUND"]
