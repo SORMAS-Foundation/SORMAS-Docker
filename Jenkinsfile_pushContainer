@@ -70,22 +70,22 @@ node {
 	        	sudo buildah login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
 	        	
 	    		
-	        	sudo buildah rmi sormas-application
+	        	sudo buildah rmi sormas-application:${SORMAS_DOCKER_VERSION}
 	        	sudo buildah pull registry.netzlink.com/hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
 	        	
-	        	sudo buildah rmi sormas-postgres
+	        	sudo buildah rmi sormas-postgres:${SORMAS_DOCKER_VERSION}
 	        	sudo buildah pull registry.netzlink.com/hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
 	        	
-	        	sudo buildah rmi sormas-apache2
+	        	sudo buildah rmi sormas-apache2:${SORMAS_DOCKER_VERSION}
 	        	sudo buildah pull registry.netzlink.com/hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
 	        	
-	        	sudo buildah rmi sormas-pg-dump
+	        	sudo buildah rmi sormas-pg-dump:${SORMAS_DOCKER_VERSION}
 	        	sudo buildah pull registry.netzlink.com/hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
 	        	
-	        	sudo buildah rmi sormas-keycloak
+	        	sudo buildah rmi sormas-keycloak:${SORMAS_DOCKER_VERSION}
 	        	sudo buildah pull registry.netzlink.com/hzibraunschweig/sormas-keycloak:${SORMAS_DOCKER_VERSION}
 	        	
-	        	sudo buildah rmi keycloak-postgres
+	        	sudo buildah rmi keycloak-postgres:${SORMAS_DOCKER_VERSION}
 	        	sudo buildah pull registry.netzlink.com/hzibraunschweig/keycloak-postgres:${SORMAS_DOCKER_VERSION}
 	        	
 	        	
@@ -124,22 +124,22 @@ node {
 	        	sudo buildah login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
 	        	
 	    		
-	        	sudo buildah rmi sormas-application
+	        	sudo buildah rmi sormas-application:${SORMAS_DOCKER_VERSION}
 	        	sudo buildah pull registry.netzlink.com/hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
 	        	
-	        	sudo buildah rmi sormas-postgres
+	        	sudo buildah rmi sormas-postgres:${SORMAS_DOCKER_VERSION}
 	        	sudo buildah pull registry.netzlink.com/hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
 	        	
-	        	sudo buildah rmi sormas-apache2
+	        	sudo buildah rmi sormas-apache2:${SORMAS_DOCKER_VERSION}
 	        	sudo buildah pull registry.netzlink.com/hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
 	        	
-	        	sudo buildah rmi sormas-pg-dump
+	        	sudo buildah rmi sormas-pg-dump:${SORMAS_DOCKER_VERSION}
 	        	sudo buildah pull registry.netzlink.com/hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
 	        	
-	        	sudo buildah rmi sormas-keycloak
+	        	sudo buildah rmi sormas-keycloak:${SORMAS_DOCKER_VERSION}
 	        	sudo buildah pull registry.netzlink.com/hzibraunschweig/sormas-keycloak:${SORMAS_DOCKER_VERSION}
 	        	
-	        	sudo buildah rmi keycloak-postgres
+	        	sudo buildah rmi keycloak-postgres:${SORMAS_DOCKER_VERSION}
 	        	sudo buildah pull registry.netzlink.com/hzibraunschweig/keycloak-postgres:${SORMAS_DOCKER_VERSION}
 	        	
 	        	
