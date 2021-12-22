@@ -147,3 +147,16 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
+  sormas-angular:
+    restart: unless-stopped
+    image: registry.netzlink.com/sormas/sormas_angular_app:latest
+    environment:
+      - KEYCLOAK_REALM=${SORMAS_ANGULAR_KEYCLOAK_REALM}
+      - KEYCLOAK_CLIENT_ID=${SORMAS_ANGULAR_KEYCLOAK_CLIENT_ID}
+      - KEYCLOAK_URL=${SORMAS_SERVER_URL}/keycloak/auth/
+      - SORMAS_REST_API_URL=${SORMAS_SERVER_URL}/sormas-rest
+    depends_on:
+      sormas:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy

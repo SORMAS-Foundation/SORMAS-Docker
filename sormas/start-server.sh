@@ -110,6 +110,15 @@ if [ ! -z "$PROXY_HOST" ];then
 ${ASADMIN} create-system-properties --target server-config org.jboss.resteasy.jaxrs.client.proxy.host=${PROXY_HOST}
 ${ASADMIN} create-system-properties --target server-config org.jboss.resteasy.jaxrs.client.proxy.port=${PROXY_PORT}
 ${ASADMIN} create-system-properties --target server-config org.jboss.resteasy.jaxrs.client.proxy.scheme=${PROXY_SCHEME}
+  if [ ! -z "$SORMAS_CENTRAL_ENABLED" ]; then
+    set +e
+    # manipulet environments to remove everything except the hostnames
+    central_etcd_ssl_cert=${CENTRAL_ETCD_HOST%:443}
+    central_keycloak_ssl_cert=${CENTRAL_OIDC_URL#https:\\/\\/}
+    keytool -storepass ${CACERTS_PASS} -importcert -trustcacerts -destkeystore ${DOMAIN_DIR}/config/cacerts.jks -file /tmp/certs/${central_etcd_ssl_cert}.crt -alias s2s-central-etcd -noprompt
+    keytool -storepass ${CACERTS_PASS} -importcert -trustcacerts -destkeystore ${DOMAIN_DIR}/config/cacerts.jks -file /tmp/certs/${central_keycloak_ssl_cert}.crt -alias s2s-central-keycloak -noprompt
+    set -e
+  fi
 fi
 # JDBC pool
 echo "Configuring JDBC pool"
@@ -192,6 +201,11 @@ sed -i "/^app.url/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^namesimilaritythreshold/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^duplicatechecks.excludepersonsonlylinkedtoarchivedentries/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^map.usecountrycenter/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^feature.automaticcaseclassification/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^daysAfterCaseGetsArchived/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^daysAfterEventGetsArchived/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^documentUploadSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^importFileSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
 
 echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ncountry.locale=${LOCALE}" >>${DOMAIN_DIR}/sormas.properties
@@ -207,6 +221,11 @@ echo -e "\napp.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMA
 echo -e "\nnamesimilaritythreshold=${NAMESIMILARITYTHRESHOLD}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nduplicatechecks.excludepersonsonlylinkedtoarchivedentries=${DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nmap.usecountrycenter=${MAP_USECOUNTRYCENTER}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nfeature.automaticcaseclassification=${FEATURE_AUTOMATICCASECLASSIFICATION}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ndaysAfterCaseGetsArchived=${CASEARCHIVEDAYS}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ndaysAfterEventGetsArchived=${EVENTARCHIVEDAYS}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ndocumentUploadSizeLimitMb=${DOCUMENTUPLOADSIZELIMITMB}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nimportFileSizeLimitMb=${IMPORTFILESIZELIMITMB}" >>${DOMAIN_DIR}/sormas.properties
 
 #------------------GEOCODING
 sed -i "/^geocodingServiceUrlTemplate/d " ${DOMAIN_DIR}/sormas.properties
@@ -220,8 +239,6 @@ sed -i "s/\${GEO_UUID}/${GEO_UUID}/" ${DOMAIN_DIR}/sormas.properties
 
 sed -i "s/\#rscript.executable=.*/rscript.executable=Rscript/" ${DOMAIN_DIR}/sormas.properties
 sed -i "s/\#\s\devmode=.*/devmode=${DEVMODE}/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/\#\s\daysAfterCaseGetsArchived=.*/daysAfterCaseGetsArchived=${CASEARCHIVEDAYS}/" ${DOMAIN_DIR}/sormas.properties
-sed -i "s/\#\s\daysAfterEventGetsArchived=.*/daysAfterEventGetsArchived=${EVENTARCHIVEDAYS}/" ${DOMAIN_DIR}/sormas.properties
 
 #------------------PIA CONFIG
 if [ ! -z "$PIA_URL" ];then
@@ -267,8 +284,11 @@ echo "Sormas Central"
 if [ ! -z  "$SORMAS_CENTRAL_ENABLED" ]; then
   echo "Sormas Central enabled"
   sed -i -E "s/#?central.oidc.url=.*/central.oidc.url=${CENTRAL_OIDC_URL}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?central.etcd.host=.*/central.etcd.host=${CENTRAL_REDIS_HOST}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?central.etcd.host=.*/central.etcd.host=${CENTRAL_ETCD_HOST}/" "${PROPERTIES_FILE}"
   sed -i -E "s~#?central.etcd.caPath=.*~central.etcd.caPath=${CENTRAL_ETCD_CA_PATH}~" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?central.etcd.clientName=.*/central.etcd.clientName=${CENTRAL_ETCD_CLIENTNAME}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?central.etcd.clientPassword=.*/central.etcd.clientPassword=${CENTRAL_ETCD_CLIENTPASSWORD}/" "${PROPERTIES_FILE}" 
+  sed -i -E "s/^.*central.location.sync=.*/central.location.sync=${CENTRAL_LOCATION_SYNC}/" "${PROPERTIES_FILE}"
 fi
 
 #### SORMAS2SORMAS ###
@@ -282,13 +302,18 @@ if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
   sed -i -E "s/#?sormas2sormas.rootCaAlias=.*/sormas2sormas.rootCaAlias=${SORMAS2SORMAS_ROOTCAALIAS}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.truststoreName=.*/sormas2sormas.truststoreName=${SORMAS2SORMAS_TRUSTSTORENAME}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.truststorePass=.*/sormas2sormas.truststorePass=${SORMAS2SORMAS_TRUSTSTOREPASSWORD}/" "${PROPERTIES_FILE}"
+ 
   sed -i -E "s/#?sormas2sormas.oidc.realm=.*/sormas2sormas.oidc.realm=${SORMAS2SORMAS_OIDC_REALM}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.oidc.clientId=.*/sormas2sormas.oidc.clientId=${SORMAS2SORMAS_OIDC_CLIENTID}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.oidc.clientSecret=.*/sormas2sormas.oidc.clientSecret=${SORMAS2SORMAS_OIDC_CLIENTSECRET}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?sormas2sormas.etcd.clientName=.*/sormas2sormas.redis.clientName=${SORMAS2SORMAS_REDIS_CLIENTNAME}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?sormas2sormas.etcd.clientPassword=.*/sormas2sormas.redis.clientPassword=${SORMAS2SORMAS_REDIS_CLIENTPASSWORD}/" "${PROPERTIES_FILE}"
+ 
   sed -i -E "s/#?sormas2sormas.etcd.keyPrefix=.*/sormas2sormas.etcd.keyPrefix=${SORMAS2SORMAS_ETCD_KEYPREFIX}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.retainCaseExternalToken=.*/sormas2sormas.retainCaseExternalToken=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}/" "${PROPERTIES_FILE}"
+  
+  sed -i -E "s/#?sormas2sormas.ignoreProperty.additionalDetails=.*/sormas2sormas.ignoreProperty.additionalDetails=${SORMAS2SORMAS_IGNOREPROPERTY_ADDITIONALDETAILS}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.ignoreProperty.externalId=.*/sormas2sormas.ignoreProperty.externalId=${SORMAS2SORMAS_IGNOREPROPERTY_EXTERNALID}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.ignoreProperty.externalToken=.*/sormas2sormas.ignoreProperty.externalToken=${SORMAS2SORMAS_IGNOREPROPERTY_EXTERNALTOKEN}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.ignoreProperty.internalToken=.*/sormas2sormas.ignoreProperty.internalToken=${SORMAS2SORMAS_IGNOREPROPERTY_INTERNALTOKEN}/" "${PROPERTIES_FILE}"
 fi
 
 
