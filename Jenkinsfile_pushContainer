@@ -1,7 +1,18 @@
 node { 
         
+    def SORMAS_VERSION
+    def SORMAS_DOCKER_VERSION
+    
     stage('checkout') {
         git branch: '${BRANCH}', url: 'https://github.com/hzi-braunschweig/SORMAS-Docker.git'
+        SORMAS_VERSION = sh (
+        	script: "source ./.env &> /dev/null && echo \$SORMAS_VERSION",
+        	returnStdout: true
+        ).trim()
+        SORMAS_DOCKER_VERSION = sh (
+        	script: "source ./.env &> /dev/null && echo \$SORMAS_DOCKER_VERSION",
+        	returnStdout: true
+        ).trim()
     }
     
     
