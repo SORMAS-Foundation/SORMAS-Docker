@@ -145,7 +145,7 @@ node {
 	        	
 	        	sudo buildah login -u '$MY_SECRET_USER_QUAY' -p '$MY_SECRET_USER_PASSWORD_QUAY' quay.io
 	        	sudo buildah images
-	        	sudo buildah push -f v2s2 sormas-application:$SORMAS_DOCKER_VERSION  quay.io/zibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
+	        	sudo buildah push -f v2s2 sormas-application:$SORMAS_DOCKER_VERSION  quay.io/hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
 	        	sudo buildah push -f v2s2 sormas-application:$SORMAS_DOCKER_VERSION  quay.io/hzibraunschweig/sormas-application:latest
 	        	
 	        	sudo buildah push -f v2s2 sormas-postgres:$SORMAS_DOCKER_VERSION  quay.io/hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
