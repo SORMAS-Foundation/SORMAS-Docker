@@ -67,7 +67,7 @@ node {
         withCredentials([ usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'MY_SECRET_USER_DOCKER', passwordVariable: 'MY_SECRET_USER_PASSWORD_DOCKER' )]) {
         	withCredentials([ usernamePassword(credentialsId: 'registry.netzlink.com', usernameVariable: 'MY_SECRET_USER_NLI', passwordVariable: 'MY_SECRET_USER_PASSWORD_NLI' )]) {
 	        	sh """
-	        	sudo buildah rmi --prune
+	        	sudo buildah rmi --prune --all
 	        	sudo buildah login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
 	        	
 	    
@@ -88,23 +88,23 @@ node {
 	        	sudo buildah logout registry.netzlink.com
 	        	sudo buildah login -u '$MY_SECRET_USER_DOCKER' -p '$MY_SECRET_USER_PASSWORD_DOCKER' docker.io
 	        	sudo buildah images
-	        	sudo buildah push -f v2s2 sormas-application:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
-	        	sudo buildah push -f v2s2 sormas-application:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-application:latest
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-application:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
+	        	sudo buildah push -f v2s2 sregistry.netzlink.com/ormas-application:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-application:latest
 	        	
-	        	sudo buildah push -f v2s2 sormas-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
-	        	sudo buildah push -f v2s2 sormas-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-postgres:latest
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-postgres:latest
 	        	
-	        	sudo buildah push -f v2s2 sormas-apache2:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
-	        	sudo buildah push -f v2s2 sormas-apache2:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-apache2:latest
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-apache2:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-apache2:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-apache2:latest
 	        	
-	        	sudo buildah push -f v2s2 sormas-pg-dump:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
-	        	sudo buildah push -f v2s2 sormas-pg-dump:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-pg-dump:latest
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-pg-dump:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-pg-dump:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-pg-dump:latest
 	        	
-	        	sudo buildah push -f v2s2 sormas-keycloak:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-keycloak:${SORMAS_DOCKER_VERSION}
-	        	sudo buildah push -f v2s2 sormas-keycloak:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-keycloak:latest
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-keycloak:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-keycloak:${SORMAS_DOCKER_VERSION}
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-keycloak:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-keycloak:latest
 	        	
-	        	sudo buildah push -f v2s2 keycloak-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/keycloak-postgres:${SORMAS_DOCKER_VERSION}
-	        	sudo buildah push -f v2s2 keycloak-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/keycloak-postgres:latest
+	        	sudo buildah push -f v2s2 registry.netzlink.com/keycloak-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/keycloak-postgres:${SORMAS_DOCKER_VERSION}
+	        	sudo buildah push -f v2s2 registry.netzlink.com/keycloak-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/keycloak-postgres:latest
 	        	
 	        	sudo buildah logout docker.io
 	        	"""
@@ -116,7 +116,7 @@ node {
         withCredentials([ usernamePassword(credentialsId: 'quay_registry', usernameVariable: 'MY_SECRET_USER_QUAY', passwordVariable: 'MY_SECRET_USER_PASSWORD_QUAY' )]) {
         	withCredentials([ usernamePassword(credentialsId: 'registry.netzlink.com', usernameVariable: 'MY_SECRET_USER_NLI', passwordVariable: 'MY_SECRET_USER_PASSWORD_NLI' )]) {
 	        	sh """
-	        	sudo buildah rmi --prune
+	        	sudo buildah rmi --prune --all
 	        	sudo buildah login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
 	        	
 	    
@@ -138,23 +138,23 @@ node {
 	        	
 	        	sudo buildah login -u '$MY_SECRET_USER_QUAY' -p '$MY_SECRET_USER_PASSWORD_QUAY' quay.io
 	        	sudo buildah images
-	        	sudo buildah push -f v2s2 sormas-application:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
-	        	sudo buildah push -f v2s2 sormas-application:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-application:latest
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-application:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-application:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-application:latest
 	        	
-	        	sudo buildah push -f v2s2 sormas-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
-	        	sudo buildah push -f v2s2 sormas-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-postgres:latest
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-postgres:latest
 	        	
-	        	sudo buildah push -f v2s2 sormas-apache2:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
-	        	sudo buildah push -f v2s2 sormas-apache2:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-apache2:latest
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-apache2:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-apache2:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-apache2:latest
 	        	
-	        	sudo buildah push -f v2s2 sormas-pg-dump:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
-	        	sudo buildah push -f v2s2 sormas-pg-dump:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-pg-dump:latest
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-pg-dump:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-pg-dump:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-pg-dump:latest
 	        	
-	        	sudo buildah push -f v2s2 sormas-keycloak:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-keycloak:${SORMAS_DOCKER_VERSION}
-	        	sudo buildah push -f v2s2 sormas-keycloak:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-keycloak:latest
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-keycloak:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-keycloak:${SORMAS_DOCKER_VERSION}
+	        	sudo buildah push -f v2s2 registry.netzlink.com/sormas-keycloak:$SORMAS_DOCKER_VERSION  hzibraunschweig/sormas-keycloak:latest
 	        	
-	        	sudo buildah push -f v2s2 keycloak-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/keycloak-postgres:${SORMAS_DOCKER_VERSION}
-	        	sudo buildah push -f v2s2 keycloak-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/keycloak-postgres:latest
+	        	sudo buildah push -f v2s2 registry.netzlink.com/keycloak-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/keycloak-postgres:${SORMAS_DOCKER_VERSION}
+	        	sudo buildah push -f v2s2 registry.netzlink.com/keycloak-postgres:$SORMAS_DOCKER_VERSION  hzibraunschweig/keycloak-postgres:latest
 	        	
 	        	sudo buildah logout quay.io
 	        	"""
