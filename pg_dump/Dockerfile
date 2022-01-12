@@ -6,6 +6,7 @@ RUN apk update --no-cache && \
 
 COPY pg_dump /root
 COPY entrypoint.sh /entrypoint.sh
+COPY prescripts.d /prescripts.d
 
 ENTRYPOINT ["/entrypoint.sh" ]
 CMD [ "/usr/sbin/crond", "-f" ]

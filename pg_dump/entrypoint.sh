@@ -1,6 +1,11 @@
 #!/bin/sh
 set -e
 
+
+####################################################################################################
+### Crontab settings
+####################################################################################################
+
 # see man 5 crontab
 #
 # examples for minutes and hours:
@@ -23,6 +28,21 @@ cat<<EOF | crontab -
 # min     hour      day     month     weekday command
 ${MIN}    ${HOUR}   *       *         *       /root/pg_dump
 EOF
+
+####################################################################################################
+### Run prescripts
+####################################################################################################
+
+for file in $(ls /prescripts.d/); do
+    echo "Running /prescripts.d/$file"
+    /prescripts.d/$file
+done
+
+echo "Prescripts done"
+
+####################################################################################################
+### Run cmd
+####################################################################################################
 
 # see: https://github.com/dubiousjim/dcron/issues/13
 # ignore using `exec` for `dcron` to get another pid instead of `1`
