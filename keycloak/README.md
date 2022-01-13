@@ -10,7 +10,7 @@
 
 # Container Keycloak
 
-The Keycloak container is built from `jboss/keycloak:11.0.0`.
+The Keycloak container is built from `jboss/keycloak:16.1.0`.
 
 It loads a predefined `SORMAS` Realm, `sormas` theme and a custom SPI `sormas-keycloak-service-provider`.
 
