@@ -22,7 +22,7 @@ if [ $? -ne 0 ];then
 fi
 
 for d in ${DBS};do
-  BAK="${DUMP_PATH}/$d.${COMMON}.sql"
+  BAK="${DUMP_PATH}/db/$d.${COMMON}.sql"
   if [ -f "${BAK}${BAK_EXT}" ];then
     echo "Backup of ${d} skipped. File ${BAK}${BAK_EXT} already exists!!"
     continue
@@ -49,7 +49,7 @@ done
 BACKUP_FILES=$( echo $BACKUP_FILES | tr -d '"' )
 # Start Filebackup
 if [ -n "${BACKUP_FILES}" ]; then
-  FILE_BACKUP_TARGET=${DUMP_PATH}/files.${COMMON}${BAK_EXT}
+  FILE_BACKUP_TARGET=${DUMP_PATH}/documents/files.${COMMON}${BAK_EXT}
   echo "Backup of ${BACKUP_FILES} in ${BACKUP_PATH}"
   cd ${BACKUP_PATH} && \
   tar cf ${FILE_BACKUP_TARGET} -I 'zstd -T0 -${COMPRESSION_LEVEL}' ${BACKUP_FILES}
