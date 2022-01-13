@@ -104,9 +104,11 @@ set +e
 ${ASADMIN} delete-jvm-options -Xmx4096m
 ${ASADMIN} create-jvm-options -Xmx${JVM_MAX}
 
-if [ ! -z "${GLOWROOT_ENABLED}" ];then
+if [ "${GLOWROOT_ENABLED}" == "true" ];then
   echo "Enable Glowroot"
   ${ASADMIN} create-jvm-options "-javaagent\:/opt/glowroot/glowroot.jar"
+else
+  echo "Do not Enable Glowroot"
 fi
 
 set -e
