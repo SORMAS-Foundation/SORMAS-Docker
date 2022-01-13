@@ -26,7 +26,7 @@ HOUR=${HOUR:-0,4,7,8,9,10,11,12,13,14,15,16,17,18,20}
 
 cat<<EOF | crontab -
 # min     hour      day     month     weekday command
-${MIN}    ${HOUR}   *       *         *       /root/pg_dump >> /var/opt/db_dumps/configs/pg_dump.log 2>&1
+${MIN}    ${HOUR}   *       *         *       /root/pg_dump >> /var/opt/db_dumps/logs/pg_dump.log 2>&1
 EOF
 
 ####################################################################################################
