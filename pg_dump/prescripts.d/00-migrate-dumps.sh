@@ -12,4 +12,4 @@ function MigrateDumps() {
 
 MigrateDumps /var/opt/db_dumps/db "/var/opt/db_dumps/*.sql.zst"
 MigrateDumps /var/opt/db_dumps/documents "/var/opt/db_dumps/files.*.zst"
-MigrateDumps /var/opt/db_dumps/configs "/var/opt/db_dumps/pg_dump.log"
+MigrateDumps /var/opt/db_dumps/logs "/var/opt/db_dumps/pg_dump.log"
