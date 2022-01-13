@@ -33,10 +33,9 @@ for d in ${DBS};do
     if [ "${DELETE}" == "t" ];then
       echo "Deleting old dumps for ${d}"
       # keep 1 day => delete all but the last 10 dumps - with .gz or .zst extention
-      echo "$(ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} ${DUMP_PATH}/${d}.*${GZ_EXT} | head -n -10)"
-      ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} ${DUMP_PATH}/${d}.*${GZ_EXT} | head -n -10 | xargs -r rm
+      echo "$(ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} ${DUMP_PATH}/${d}.*${GZ_EXT} 2>/dev/null | head -n -10)"
+      ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} ${DUMP_PATH}/${d}.*${GZ_EXT} 2>/dev/null | head -n -10 | xargs -r rm
     fi
-    continue
   else
     if [[ -f ${BAK}${BAK_EXT} ]]; then
       rm -rf ${BAK}${BAK_EXT}
@@ -62,8 +61,8 @@ if [ -n "${BACKUP_FILES}" ]; then
   if [ "${DELETE}" == "t" ];then
     echo "Deleting old file backups"
     # delete all BUT the last 1 ONLY (documents) file - with .zst extention
-    echo "$(ls -rt ${DUMP_PATH}/files.*${BAK_EXT} | head -n -1)"
-    ls -rt ${DUMP_PATH}/files.*${BAK_EXT} | head -n -1 | xargs -r rm
+    echo "$(ls -rt ${DUMP_PATH}/files.*${BAK_EXT} 2>/dev/null | head -n -1)"
+    ls -rt ${DUMP_PATH}/files.*${BAK_EXT} 2>/dev/null | head -n -1 | xargs -r rm
   fi
 fi
 
