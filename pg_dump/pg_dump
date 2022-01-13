@@ -12,29 +12,28 @@ fi
 # default compression is set to 3
 COMPRESSION_LEVEL=${2:-3}
 DUMP_PATH=/var/opt/db_dumps
-LOG=${DUMP_PATH}/pg_dump.log
 BAK_EXT=.zst
 GZ_EXT=.gz
 # Get a list of all databases and skip postgres and template databases
 DBS=$(psql -h ${DB_HOST} -U ${POSTGRES_USER} -l -t --field-separator=': ' -A -x | grep Name | awk '{ print $2 }' | grep -v -E 'postgres|template')
 if [ $? -ne 0 ];then
-  echo "Backup process step during DBS listing failed!!" >> ${LOG}
+  echo "Backup process step during DBS listing failed!!"
   exit 100;
 fi
 
 for d in ${DBS};do
   BAK="${DUMP_PATH}/$d.${COMMON}.sql"
   if [ -f "${BAK}${BAK_EXT}" ];then
-    echo "Backup of ${d} skipped. File ${BAK}${BAK_EXT} already exists!!" >> ${LOG}
+    echo "Backup of ${d} skipped. File ${BAK}${BAK_EXT} already exists!!"
     continue
   fi
   pg_dump -h ${DB_HOST} -U ${POSTGRES_USER} ${d} | zstd -$COMPRESSION_LEVEL -T0 >${BAK}${BAK_EXT}
   if [ $? -eq 0 ];then
-    echo "Backup using compression_level ($COMPRESSION_LEVEL) of ${BAK}${BAK_EXT} completed." >> ${LOG}
+    echo "Backup using compression_level ($COMPRESSION_LEVEL) of ${BAK}${BAK_EXT} completed."
     if [ "${DELETE}" == "t" ];then
-      echo "Deleting old dumps for ${d}" >> ${LOG}
+      echo "Deleting old dumps for ${d}"
       # keep 1 day => delete all but the last 10 dumps - with .gz or .zst extention
-      echo "$(ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} ${DUMP_PATH}/${d}.*${GZ_EXT} | head -n -10)" >> ${LOG}
+      echo "$(ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} ${DUMP_PATH}/${d}.*${GZ_EXT} | head -n -10)"
       ls -rt ${DUMP_PATH}/${d}.*${BAK_EXT} ${DUMP_PATH}/${d}.*${GZ_EXT} | head -n -10 | xargs -r rm
     fi
     continue
@@ -42,7 +41,7 @@ for d in ${DBS};do
     if [[ -f ${BAK}${BAK_EXT} ]]; then
       rm -rf ${BAK}${BAK_EXT}
     fi
-    echo "Backup of ${BAK}${BAK_EXT} failed!!" >> ${LOG}
+    echo "Backup of ${BAK}${BAK_EXT} failed!!"
     exit 1;
   fi
 done
@@ -52,18 +51,18 @@ BACKUP_FILES=$( echo $BACKUP_FILES | tr -d '"' )
 # Start Filebackup
 if [ -n "${BACKUP_FILES}" ]; then
   FILE_BACKUP_TARGET=${DUMP_PATH}/files.${COMMON}${BAK_EXT}
-  echo "Backup of ${BACKUP_FILES} in ${BACKUP_PATH}" >> ${LOG}
+  echo "Backup of ${BACKUP_FILES} in ${BACKUP_PATH}"
   cd ${BACKUP_PATH} && \
   tar cf ${FILE_BACKUP_TARGET} -I 'zstd -T0 -${COMPRESSION_LEVEL}' ${BACKUP_FILES}
   if [ $? -ge 1 ]; then
-    echo "Backup of ${BACKUP_FILES} in ${BACKUP_PATH} failed" >> ${LOG}
+    echo "Backup of ${BACKUP_FILES} in ${BACKUP_PATH} failed"
     rm ${FILE_BACKUP_TARGET}
     exit 42;
   fi
   if [ "${DELETE}" == "t" ];then
-    echo "Deleting old file backups" >> ${LOG}
+    echo "Deleting old file backups"
     # delete all BUT the last 1 ONLY (documents) file - with .zst extention
-    echo "$(ls -rt ${DUMP_PATH}/files.*${BAK_EXT} | head -n -1)" >> ${LOG}
+    echo "$(ls -rt ${DUMP_PATH}/files.*${BAK_EXT} | head -n -1)"
     ls -rt ${DUMP_PATH}/files.*${BAK_EXT} | head -n -1 | xargs -r rm
   fi
 fi
