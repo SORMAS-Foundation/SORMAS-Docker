@@ -50,8 +50,8 @@ services:
       - DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES=${DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES}
       - MAP_USECOUNTRYCENTER=${MAP_USECOUNTRYCENTER}
       - FEATURE_AUTOMATICCASECLASSIFICATION=${FEATURE_AUTOMATICCASECLASSIFICATION}      
-    mem_limit: ${APPSERVER_MEM}
-    mem_reservation: ${APPSERVER_MEM_RESERVED}
+    #mem_limit: ${APPSERVER_MEM}
+    #mem_reservation: ${APPSERVER_MEM_RESERVED}
 
   base-postgres:
     restart: unless-stopped
@@ -66,8 +66,8 @@ services:
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
-    mem_limit: ${DB_MEM}
-    mem_reservation: ${DB_MEM_RESERVED}
+    #mem_limit: ${DB_MEM}
+    #mem_reservation: ${DB_MEM_RESERVED}
     healthcheck:
       test: ["CMD", "psql", "-U", "${SORMAS_POSTGRES_USER}", "-c", "SELECT 1;", "${DB_NAME}"]
       interval: 30s
@@ -86,9 +86,9 @@ services:
       - POSTGRES_USER=${KEYCLOAK_DB_USER}
       - POSTGRES_DB=${KEYCLOAK_DB_NAME}
       - TZ=${TZ}
-    cpus: ${KEYCLOAK_DB_CPUS}
-    mem_limit: ${KEYCLOAK_DB_MEM}
-    mem_reservation: ${KEYCLOAK_DB_MEM_RESERVED}
+    #cpus: ${KEYCLOAK_DB_#cpus}
+    #mem_limit: ${KEYCLOAK_DB_MEM}
+    #mem_reservation: ${KEYCLOAK_DB_MEM_RESERVED}
     healthcheck:
       test: [ "CMD", "psql", "-U", "${KEYCLOAK_DB_USER}", "-c", "SELECT 1;", "${KEYCLOAK_DB_NAME}" ]
       interval: 30s
@@ -101,9 +101,9 @@ services:
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
     environment:
       - TZ=${TZ}
-    cpus: ${DB_DUMP_CPUS}
-    mem_limit: ${DB_DUMP_MEM}
-    mem_reservation: ${DB_DUMP_MEM_RESERVED}
+    #cpus: ${DB_DUMP_#cpus}
+    #mem_limit: ${DB_DUMP_MEM}
+    #mem_reservation: ${DB_DUMP_MEM_RESERVED}
 
   base-apache2:
     restart: unless-stopped
@@ -113,9 +113,9 @@ services:
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
       - TZ=${TZ}
-    cpus: ${WEBSERVER_CPUS}
-    mem_limit: ${WEBSERVER_MEM}
-    mem_reservation: ${WEBSERVER_MEM_RESERVED}
+    #cpus: ${WEBSERVER_#cpus}
+    #mem_limit: ${WEBSERVER_MEM}
+    #mem_reservation: ${WEBSERVER_MEM_RESERVED}
     healthcheck:
       test: ["CMD", "curl", "-f", "-I", "-k", "--resolve", "${SORMAS_SERVER_URL}:443:127.0.0.1", "https://${SORMAS_SERVER_URL}/downloads/"]
       interval: 30s
@@ -155,9 +155,9 @@ services:
     ports:
       - 443:443
       - 80:80
-    cpus: ${WEBSERVER_CPUS}
-    mem_limit: ${WEBSERVER_MEM}
-    mem_reservation: ${WEBSERVER_MEM_RESERVED}
+    #cpus: ${WEBSERVER_#cpus}
+    #mem_limit: ${WEBSERVER_MEM}
+    #mem_reservation: ${WEBSERVER_MEM_RESERVED}
 
   base-keycloak:
     restart: unless-stopped
@@ -177,9 +177,9 @@ services:
       - KEYCLOAK_SORMAS_UI_SECRET=${KEYCLOAK_SORMAS_UI_SECRET}
       - KEYCLOAK_SORMAS_REST_SECRET=${KEYCLOAK_SORMAS_REST_SECRET}
       - KEYCLOAK_SORMAS_BACKEND_SECRET=${KEYCLOAK_SORMAS_BACKEND_SECRET}
-    cpus: ${KEYCLOAK_CPUS}
-    mem_limit: ${KEYCLOAK_MEM}
-    mem_reservation: ${KEYCLOAK_MEM_RESERVED}
+    #cpus: ${KEYCLOAK_#cpus}
+    #mem_limit: ${KEYCLOAK_MEM}
+    #mem_reservation: ${KEYCLOAK_MEM_RESERVED}
     healthcheck:
       test: ["CMD", "curl", "-f", "-I", "http://localhost:8080/keycloak/auth/realms/master"]
       interval: 30s
