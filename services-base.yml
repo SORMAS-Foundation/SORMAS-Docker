@@ -53,8 +53,6 @@ services:
       - GLOWROOT_ENABLED=${GLOWROOT_ENABLED}
     mem_limit: ${APPSERVER_MEM}
     mem_reservation: ${APPSERVER_MEM_RESERVED}
-    ports:
-      - "4000:4000"
 
   base-postgres:
     restart: unless-stopped
