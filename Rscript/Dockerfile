@@ -1,4 +1,4 @@
-FROM hzibraunschweig/sormas-payara:5.192
+FROM hzibraunschweig/sormas-payara:5.2021.10
 ENV DEBIAN_FRONTEND=noninteractive
 
 
