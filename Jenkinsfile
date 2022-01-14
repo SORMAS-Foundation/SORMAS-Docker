@@ -102,8 +102,8 @@ node {
             sudo docker login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
             sudo docker tag hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION} registry.netzlink.com/hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION}
             sudo docker push  registry.netzlink.com/hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION}
-            sudo docker tag hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION} registry.netzlink.com/hzibraunschweig/lbds:$${SORMAS_DOCKER_VERSION}
-            sudo docker push registry.netzlink.com/hzibraunschweig/lbds:$${SORMAS_DOCKER_VERSION}
+            sudo docker tag hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION} registry.netzlink.com/hzibraunschweig/lbds:${SORMAS_DOCKER_VERSION}
+            sudo docker push registry.netzlink.com/hzibraunschweig/lbds:${SORMAS_DOCKER_VERSION}
             echo 'Finished'
             """                                                                                                                 
         }
