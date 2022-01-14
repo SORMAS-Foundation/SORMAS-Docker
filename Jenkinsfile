@@ -57,7 +57,6 @@ node {
         	sudo docker login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
             sudo docker tag sormas-application:${SORMAS_DOCKER_VERSION} registry.netzlink.com/hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
             sudo docker push registry.netzlink.com/hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
-            
 			sudo docker tag sormas-postgres:${SORMAS_DOCKER_VERSION} registry.netzlink.com/hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
 			sudo docker push registry.netzlink.com/hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
 			sudo docker tag sormas-apache2:${SORMAS_DOCKER_VERSION} registry.netzlink.com/hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
@@ -71,10 +70,14 @@ node {
         withCredentials([ usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'MY_SECRET_USER_NLI', passwordVariable: 'MY_SECRET_USER_PASSWORD_NLI' )]) {
         	sh """
         	sudo docker login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' docker.io
-        	sudo docker push hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
-			sudo docker push hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
-			sudo docker push hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
-			sudo docker push hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+            sudo docker tag sormas-application:${SORMAS_DOCKER_VERSION} docker.io/hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
+            sudo docker push docker.io/hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
+			sudo docker tag sormas-postgres:${SORMAS_DOCKER_VERSION} docker.io/hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
+			sudo docker push docker.io/hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
+			sudo docker tag sormas-apache2:${SORMAS_DOCKER_VERSION} docker.io/hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
+			sudo docker push docker.io/hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
+			sudo docker tag sormas-pg-dump:${SORMAS_DOCKER_VERSION} docker.io/hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+			sudo docker push docker.io/hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
         	"""
         }  
 	}
@@ -86,7 +89,7 @@ node {
         	sh """
         	source ./.env
         	cd lbds
-        	sudo buildah bud --pull-always --no-cache --build-arg LDBS_JAR_FILE_VERSION=${LDBS_JAR_FILE_VERSION} --build-arg CROWDCODE_NEXUS_USER=${CROWDCODE_NEXUS_USER} --build-arg CROWDCODE_NEXUS_PASSWORD="${CROWDCODE_NEXUS_PASSWORD}" -t hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION} .
+        	sudo docker build --pull --no-cache --build-arg LDBS_JAR_FILE_VERSION=${LDBS_JAR_FILE_VERSION} --build-arg CROWDCODE_NEXUS_USER=${CROWDCODE_NEXUS_USER} --build-arg CROWDCODE_NEXUS_PASSWORD="${CROWDCODE_NEXUS_PASSWORD}" -t hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION} .
         	"""
         }
     }
@@ -96,9 +99,11 @@ node {
         echo 'Deploying....'
         withCredentials([ usernamePassword(credentialsId: 'registry.netzlink.com', usernameVariable: 'MY_SECRET_USER_NLI', passwordVariable: 'MY_SECRET_USER_PASSWORD_NLI' )]) {
         	sh """
-            sudo buildah login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
-            sudo buildah push -f v2s2 hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION} registry.netzlink.com/hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION}
-            sudo buildah push -f v2s2 hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION} registry.netzlink.com/hzibraunschweig/lbds:${SORMAS_DOCKER_VERSION}
+            sudo docker login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
+            sudo docker tag hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION} registry.netzlink.com/hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION}
+            sudo docker push  registry.netzlink.com/hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION}
+            sudo docker tag hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION} registry.netzlink.com/hzibraunschweig/lbds:$${SORMAS_DOCKER_VERSION}
+            sudo docker push registry.netzlink.com/hzibraunschweig/lbds:$${SORMAS_DOCKER_VERSION}
             echo 'Finished'
             """                                                                                                                 
         }
