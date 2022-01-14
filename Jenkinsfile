@@ -42,10 +42,10 @@ node {
     	echo 'Building SORMAS'
     	sh """
     	source ./.env
-    	sudo buildah bud --build-arg SORMAS_URL=\$SORMAS_URL --build-arg SORMAS_VERSION=\$SORMAS_VERSION --pull-always --no-cache -t sormas-application:${SORMAS_DOCKER_VERSION} sormas/
-		sudo buildah bud  --build-arg SORMAS_URL=\$SORMAS_URL --build-arg SORMAS_VERSION=\$SORMAS_VERSION --no-cache -t sormas-postgres:${SORMAS_DOCKER_VERSION} postgres/
-		sudo buildah bud --build-arg SORMAS_URL=\$SORMAS_URL --build-arg SORMAS_VERSION=\$SORMAS_VERSION --pull-always --no-cache -t sormas-apache2:${SORMAS_DOCKER_VERSION} apache2/
-		sudo buildah bud --build-arg SORMAS_URL=\$SORMAS_URL --build-arg SORMAS_VERSION=\$SORMAS_VERSION --pull-always --no-cache -t sormas-pg-dump:${SORMAS_DOCKER_VERSION} pg_dump/
+    	sudo docker build --build-arg SORMAS_URL=\$SORMAS_URL --build-arg SORMAS_VERSION=\$SORMAS_VERSION --pull --no-cache -t sormas-application:${SORMAS_DOCKER_VERSION} sormas/ 
+    	sudo docker build  --build-arg SORMAS_URL=\$SORMAS_URL --build-arg SORMAS_VERSION=\$SORMAS_VERSION --pull --no-cache -t sormas-postgres:${SORMAS_DOCKER_VERSION} postgres/
+		sudo docker build --build-arg SORMAS_URL=\$SORMAS_URL --build-arg SORMAS_VERSION=\$SORMAS_VERSION --pull --no-cache -t sormas-apache2:${SORMAS_DOCKER_VERSION} apache2/
+		sudo docker build --build-arg SORMAS_URL=\$SORMAS_URL --build-arg SORMAS_VERSION=\$SORMAS_VERSION --pull --no-cache -t sormas-pg-dump:${SORMAS_DOCKER_VERSION} pg_dump/
     	"""
     }
     
