@@ -54,9 +54,7 @@ services:
       - BACKUP_FILES=${BACKUP_FILES}
       - BACKUP_PATH=${SORMAS_PATH}
     volumes:
-      - /backup/documents:/var/opt/db_dumps/documents
-      - /backup/pg_dump:/var/opt/db_dumps/pg_dump
-      - /backup/config:/var/opt/db_dumps/config
+      - /backup:/var/opt/db_dumps
       - ${SORMAS_PATH}:${SORMAS_PATH}
     depends_on:
       postgres:
