@@ -55,10 +55,15 @@ node {
         withCredentials([ usernamePassword(credentialsId: 'registry.netzlink.com', usernameVariable: 'MY_SECRET_USER_NLI', passwordVariable: 'MY_SECRET_USER_PASSWORD_NLI' )]) {
         	sh """
         	sudo docker login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
-            sudo docker push sormas-application:${SORMAS_DOCKER_VERSION} registry.netzlink.com/hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
-			sudo docker push sormas-postgres:${SORMAS_DOCKER_VERSION} registry.netzlink.com/hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
-			sudo docker push sormas-apache2:${SORMAS_DOCKER_VERSION}  registry.netzlink.com/hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
-			sudo docker push sormas-pg-dump:${SORMAS_DOCKER_VERSION} registry.netzlink.com/hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+            sudo docker tag sormas-application:${SORMAS_DOCKER_VERSION} registry.netzlink.com/hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
+            sudo docker push registry.netzlink.com/hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
+            
+			sudo docker tag sormas-postgres:${SORMAS_DOCKER_VERSION} registry.netzlink.com/hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
+			sudo docker push registry.netzlink.com/hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
+			sudo docker tag sormas-apache2:${SORMAS_DOCKER_VERSION} registry.netzlink.com/hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
+			sudo docker push registry.netzlink.com/hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
+			sudo docker tag sormas-pg-dump:${SORMAS_DOCKER_VERSION} registry.netzlink.com/hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+			sudo docker push registry.netzlink.com/hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
         	"""
         }
           
@@ -66,10 +71,10 @@ node {
         withCredentials([ usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'MY_SECRET_USER_NLI', passwordVariable: 'MY_SECRET_USER_PASSWORD_NLI' )]) {
         	sh """
         	sudo docker login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' docker.io
-        	sudo docker push sormas-application:${SORMAS_DOCKER_VERSION} hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
-			sudo docker push sormas-postgres:${SORMAS_DOCKER_VERSION} hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
-			sudo docker push sormas-apache2:${SORMAS_DOCKER_VERSION}  hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
-			sudo docker push sormas-pg-dump:${SORMAS_DOCKER_VERSION} hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
+        	sudo docker push hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
+			sudo docker push hzibraunschweig/sormas-postgres:${SORMAS_DOCKER_VERSION}
+			sudo docker push hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
+			sudo docker push hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
         	"""
         }  
 	}
