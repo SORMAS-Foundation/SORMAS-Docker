@@ -307,7 +307,7 @@ if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
   sed -i -E "s/#?sormas2sormas.id=.*/sormas2sormas.id=${SORMAS2SORMAS_ID}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.keystoreName=.*/sormas2sormas.keystoreName=${SORMAS2SORMAS_KEYSTORENAME}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.keystorePass=.*/sormas2sormas.keystorePass=${SORMAS2SORMAS_KEYPASSWORD}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?sormas2sormas.rootCaAlias=.*/sormas2sormas.rootCaAlias=${SORMAS2SORMAS_ROOTCALIAS}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.rootCaAlias=.*/sormas2sormas.rootCaAlias=${SORMAS2SORMAS_ROOTCAALIAS}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.truststoreName=.*/sormas2sormas.truststoreName=${SORMAS2SORMAS_TRUSTSTORENAME}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.truststorePass=.*/sormas2sormas.truststorePass=${SORMAS2SORMAS_TRUSTSTOREPASSWORD}/" "${PROPERTIES_FILE}"
 
