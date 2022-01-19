@@ -161,7 +161,7 @@ services:
   lbds:
     stdin_open: true
     tty: true
-    image: hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION}
+    image: hzibraunschweig/lbds:${LBDS_JAR_FILE_VERSION}
     environment:
       - TZ=Europe/Berlin
       - LANG=de_DE.UTF-8

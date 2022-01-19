@@ -10,7 +10,7 @@ node {
         withCredentials([ usernamePassword(credentialsId: 'crowdcodeNexus', usernameVariable: 'CROWDCODE_NEXUS_USER', passwordVariable: 'CROWDCODE_NEXUS_PASSWORD' )]) {
         	sh """
         	cd lbds
-        	sudo buildah bud --pull-always --no-cache --build-arg LDBS_JAR_FILE_VERSION=${LDBS_JAR_FILE_VERSION} --build-arg CROWDCODE_NEXUS_USER=${CROWDCODE_NEXUS_USER} --build-arg CROWDCODE_NEXUS_PASSWORD="${CROWDCODE_NEXUS_PASSWORD}" -t hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION} .
+        	sudo buildah bud --pull-always --no-cache --build-arg LBDS_JAR_FILE_VERSION=${LBDS_JAR_FILE_VERSION} --build-arg CROWDCODE_NEXUS_USER=${CROWDCODE_NEXUS_USER} --build-arg CROWDCODE_NEXUS_PASSWORD="${CROWDCODE_NEXUS_PASSWORD}" -t hzibraunschweig/lbds:${LBDS_JAR_FILE_VERSION} .
         	"""
         }
     }
@@ -24,7 +24,7 @@ node {
         	echo "'${MY_SECRET_USER_NLI}'"
 
             sudo buildah login -u '$MY_SECRET_USER_NLI' -p '$MY_SECRET_USER_PASSWORD_NLI' registry.netzlink.com
-            sudo buildah push -f v2s2 hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION} registry.netzlink.com/hzibraunschweig/lbds:${LDBS_JAR_FILE_VERSION}
+            sudo buildah push -f v2s2 hzibraunschweig/lbds:${LBDS_JAR_FILE_VERSION} registry.netzlink.com/hzibraunschweig/lbds:${LBDS_JAR_FILE_VERSION}
             echo 'Finished'
             """                                                                                                                 
         }
