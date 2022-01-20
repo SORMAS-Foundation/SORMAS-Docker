@@ -9,5 +9,5 @@ sed -i "s/SORMAS_VERSION=.*/SORMAS_VERSION=$1/" /home/deploy/SORMAS-Docker/.env
 sudo docker-compose -f /home/deploy/SORMAS-Docker/docker-compose.yml down
 sudo docker-compose -f /home/deploy/SORMAS-Docker/docker-compose.yml rm --force
 sudo docker image prune -f -a
-sudo docker-compose -f /home/deploy/SORMAS-Docker/docker-compose-build.yml build --no-cache keycloak sormas postgres keycloak-postgres pg_dump apache2
+sudo docker-compose -f /home/deploy/SORMAS-Docker/docker-compose-build.yml build --no-cache keycloak sormas postgres keycloak-postgres pg_dump apache2 lbds
 sudo docker-compose -f /home/deploy/SORMAS-Docker/docker-compose.yml up -d

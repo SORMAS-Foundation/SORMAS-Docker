@@ -136,6 +136,15 @@ def get_tuning_values(config, filename):
       values['maintenance_work_mem'] = int( 2 * GB )
   if "wal_buffers" in values and values['wal_buffers'] > int( 16 * MB ):
       values['wal_buffers'] =int( 16 * MB )
+  # set max_connections depending on JDBC_MAXPOOLSIZE
+  pool_size = 0
+  try:
+    pool_size = int( os.environ['DB_JDBC_MAXPOOLSIZE'] )
+  except:
+    pool_size = 128
+  if pool_size < 128:
+    pool_size = 128
+  values['max_connections'] = pool_size * 2 + 14
   return values
 
 def alter_system(filename, config, values):
@@ -144,7 +153,10 @@ def alter_system(filename, config, values):
     if name in config:
       config_value = human_to_int(config[name])
       if value > config_value:
-        auto.write(name + " = '" + humanize(value) + "'\n")
+        if name in ['max_connections']:
+          auto.write(name + " = '" + str(value) + "'\n")
+        else:
+          auto.write(name + " = '" + humanize(value) + "'\n")
   auto.close()
 
 def main(program_args):
