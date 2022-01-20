@@ -285,6 +285,8 @@ echo -e "\ninterface.patientdiary.email=${PD_EMAIL}" >>${DOMAIN_DIR}/sormas.prop
 echo -e "\ninterface.patientdiary.password=${PD_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.defaultuser.username=${PD_DEFAULT_USERNAME}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.defaultuser.password=${PD_DEFAULT_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.patientdiary.acceptPhoneContact=${PD_ACCEPTPHONECONTACT}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.patientdiary.frontendAuthurl=${PD_FRONTENDAUTHURL}" >>${DOMAIN_DIR}/sormas.properties
 fi
 
 #------------------BRANDING CONFIG
@@ -347,6 +349,13 @@ fi
 sed -i "/^survnet\.url/d" "${DOMAIN_DIR}/sormas.properties"
 if [ ! -z "$SURVNET_ENABLED" ];then
 echo -e "\nsurvnet.url=${SURVNET_URL}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\nsurvnet.versionEndpoint=${SURVNET_VERSION_ENDPOINT}" >>${DOMAIN_DIR}/sormas.properties
+fi
+
+#------------------SORMAS-Stats CONFIG
+sed -i "/^sormasStats\.url/d" "${DOMAIN_DIR}/sormas.properties"
+if [ ! -z "$SORMAS_STATS_ENABLED" ] && [ "$SORMAS_STATS_ENABLED" == "true"];then
+echo -e "\nsormasStats.url=${SORMAS_STATS_URL}" >>${DOMAIN_DIR}/sormas.properties
 fi
 
 #------------------DEMIS CONFIG
