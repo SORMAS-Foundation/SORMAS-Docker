@@ -38,6 +38,8 @@ services:
     extends:
       file: services-base.yml
       service: base-postgres
+    environment:
+      - DB_JDBC_MAXPOOLSIZE=${DB_JDBC_MAXPOOLSIZE}
     volumes:
       - ${SORMAS_PATH}/psqldata:/var/lib/postgresql/data
     ports:
