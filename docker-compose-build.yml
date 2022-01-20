@@ -42,6 +42,12 @@ services:
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
     command: /bin/false
 
+  pg_debug:
+    build:
+      context: pg_debug
+    image: hzibraunschweig/sormas-pg-debug:${SORMAS_DOCKER_VERSION}
+    command: /bin/false
+
   letsencrypt:
     build:
       context: letsencrypt
