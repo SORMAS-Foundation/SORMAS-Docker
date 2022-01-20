@@ -65,6 +65,7 @@ services:
         - SORMAS_URL=${SORMAS_URL}
         - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
         - SORMAS_VERSION=${SORMAS_VERSION}
+        - LBDS_CONTEXT_PATH=${LBDS_CONTEXT_PATH}
     image: hzibraunschweig/sormas-apache2:${SORMAS_DOCKER_VERSION}
     command: /bin/false
 
@@ -84,3 +85,12 @@ services:
     build:
       context: keycloak-postgres
     image: hzibraunschweig/keycloak-postgres:${SORMAS_DOCKER_VERSION}
+
+  lbds:
+    build:
+      context: lbds
+      args:
+        - LBDS_JAR_FILE_VERSION=${LBDS_JAR_FILE_VERSION}
+        - CROWDCODE_NEXUS_USER=${CROWDCODE_NEXUS_USER}
+        - CROWDCODE_NEXUS_PASSWORD=${CROWDCODE_NEXUS_PASSWORD}
+    image: hzibraunschweig/lbds:${LBDS_JAR_FILE_VERSION}
