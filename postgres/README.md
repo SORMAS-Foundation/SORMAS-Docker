@@ -49,3 +49,14 @@ ALTER TABLE IF EXISTS schema_version OWNER TO ${SORMAS_POSTGRES_USER};
   </a>
 </p>
 
+# Environment variables
+
+These configurations of postgres can be passed to container via environment variables. For more information about them, please refer to postgres documentation.
+* SUPERUSER_RESERVED_CONNECTIONS
+* EFFECTIVE_IO_CONCURRENCY
+* RANDOM_PAGE_COST
+* BGWRITER_DELAY
+* BGWRITER_LRU_MAXPAGES
+* BGWRITER_LRU_MULTIPLIER
+* BGWRITER_FLUSH_AFTER
+* IDLE_IN_TRANSACTION_SESSION_TIMEOUT

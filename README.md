@@ -25,7 +25,7 @@ For production usage, ONLY checkout from the release tags, because only these co
 This project aims to build docker images for the SORMAS application (https://github.com/hzi-braunschweig/SORMAS-Project)
 
 ## Firewall
- 
+
 The host running the Docker installation with the SORMAS application should be behind an external firewall. Several containers open ports on the underlying host and circumvent the local firewall on the host (iptables).
 
 ## Quick Start
@@ -34,28 +34,28 @@ If you would like to set up a local instance for testing, follow these instructi
 
 ### Prerequisites
 
-In order to run the containerized SORMAS you need to have installed the following tools: 
+In order to run the containerized SORMAS you need to have installed the following tools:
 
 1. Docker (Version 19.3 is tested to run SORMAS)
 2. docker-compose
-3. Insert this line into your /etc/hosts file: 
-``` 
+3. Insert this line into your /etc/hosts file:
+```
 127.0.0.1	sormas-docker-test.com
-```  
+```
 
 ### Start the application
 1. Check out this repository
 2. Open a Shell in the projects root directory (the directory containing the docker-compose.yml
-3. Type in 
+3. Type in
 ```
 docker-compose up
 ```
 ### Default Logins
 There are the default users for demo systems. Make sure to deactivate them or change the passwords on productive systems:
 
-Admin  
-name: admin  
-pw: sadmin  
+Admin
+name: admin
+pw: sadmin
 
 All default users are listed here:
 https://github.com/hzi-braunschweig/SORMAS-Project/blob/master/docs/SERVER_UPDATE.md#default-logins
@@ -84,6 +84,8 @@ These Options are available to customize the installation:
 
 **DB_JDBC_MAXPOOLSIZE** Sets the maximum number of database connections
 
+**DB_JDBC_IDLE_TIMEOUT** Sets the maximum timeout of client idle connections
+
 ### SORMAS
 **SORMAS_VERSION** Version of SORMAS that should be installed (Dockerimages are provided starting from the Version 1.33.0)
 
@@ -93,7 +95,7 @@ These Options are available to customize the installation:
 
 **DOMAIN_NAME** Name of the Domain in the Payara Server
 
-**LOCALE** Default language of the SORMAS server 
+**LOCALE** Default language of the SORMAS server
 
 **EPIDPREFIX** Prefix for the data
 
@@ -121,7 +123,7 @@ These Options are available to customize the installation:
 
 **LOG_SUBJECT** Specifies SUBJECT property of log SMTPAppender message
 
-**SEPARATOR** CSV separator 
+**SEPARATOR** CSV separator
 
 **EMAIL_SENDER_ADDRESS** Javamail resource Payara notification email address from which the mail is going to be send
 
@@ -253,20 +255,20 @@ See also [keycloak-postgres](./keycloak-postgres/README.md)
 
 ### Changing the host name
 
-If you would like to run SORMAS using your own host name (e.g. https://sormas.example.com) , please follow these steps: 
+If you would like to run SORMAS using your own host name (e.g. https://sormas.example.com) , please follow these steps:
 
 1. obtain a certificate and private key for the chosen host name using e.g. letsencrypt
-2. copy the certificate file (e.g. fullchain.pem if you use letsencrpyt) to the ./apache2/certs directory using these filenames: 
+2. copy the certificate file (e.g. fullchain.pem if you use letsencrpyt) to the ./apache2/certs directory using these filenames:
 - [hostname].crt for the certificate file (e.g. sormas.example.com.crt)
 - [hostname].key for the private key file (e.g. sormas.example.com.key)
 3. set the environment variable SORMAS_SERVER_URL to the hostname you have chosen
 4. make sure dns resolves to the host name you have chosen
-4. run 
+4. run
 ```
-docker-compose up -d 
+docker-compose up -d
 ```
 
-SORMAS should now be reachable via the given hostname. 
+SORMAS should now be reachable via the given hostname.
 
 #### CPU and memory usage limits and reservations
 
@@ -300,6 +302,3 @@ given as a floating point value with the dot ( . ) as decimal separator, for exa
 **DB_DUMP_CPUS** CPU cores reserved for the used web server. This should be a floating point value. (Example: 0.5 )
 
 Mind that services-base.yml file contains only the common set of environmental properties and settings for each of custom docker-compose.yml.
-
-
-
