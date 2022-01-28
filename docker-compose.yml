@@ -12,6 +12,7 @@ services:
     links:
       - postgres
     environment:
+      - DB_JDBC_IDLE_TIMEOUT=${DB_JDBC_IDLE_TIMEOUT}
       - DB_JDBC_MAXPOOLSIZE=${DB_JDBC_MAXPOOLSIZE}
       - CUSTOMBRANDING_ENABLED=${CUSTOMBRANDING_ENABLED}
       - CUSTOMBRANDING_NAME=${CUSTOMBRANDING_NAME}
@@ -89,4 +90,3 @@ services:
       - AUTOHEAL_START_PERIOD=600
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-

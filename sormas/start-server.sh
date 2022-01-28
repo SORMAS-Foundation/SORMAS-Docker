@@ -123,13 +123,13 @@ fi
 # JDBC pool
 echo "Configuring JDBC pool"
 delete_jdbc_connection_pool "jdbc/${DOMAIN_NAME}DataPool" "${DOMAIN_NAME}DataPool"
-${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool
+${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" --idletimeout ${DB_JDBC_IDLE_TIMEOUT} ${DOMAIN_NAME}DataPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}DataPool jdbc/${DOMAIN_NAME}DataPool
 
 # Pool for audit log
 echo "Configuring audit log"
 delete_jdbc_connection_pool "jdbc/AuditlogPool" "${DOMAIN_NAME}AuditlogPool"
-${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME_AUDIT}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}AuditlogPool
+${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME_AUDIT}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" --idletimeout ${DB_JDBC_IDLE_TIMEOUT} ${DOMAIN_NAME}AuditlogPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}AuditlogPool jdbc/AuditlogPool
 
 set +e
@@ -287,7 +287,7 @@ if [ ! -z  "$SORMAS_CENTRAL_ENABLED" ]; then
   sed -i -E "s/#?central.etcd.host=.*/central.etcd.host=${CENTRAL_ETCD_HOST}/" "${PROPERTIES_FILE}"
   sed -i -E "s~#?central.etcd.caPath=.*~central.etcd.caPath=${CENTRAL_ETCD_CA_PATH}~" "${PROPERTIES_FILE}"
   sed -i -E "s/#?central.etcd.clientName=.*/central.etcd.clientName=${CENTRAL_ETCD_CLIENTNAME}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?central.etcd.clientPassword=.*/central.etcd.clientPassword=${CENTRAL_ETCD_CLIENTPASSWORD}/" "${PROPERTIES_FILE}" 
+  sed -i -E "s/#?central.etcd.clientPassword=.*/central.etcd.clientPassword=${CENTRAL_ETCD_CLIENTPASSWORD}/" "${PROPERTIES_FILE}"
   sed -i -E "s/^.*central.location.sync=.*/central.location.sync=${CENTRAL_LOCATION_SYNC}/" "${PROPERTIES_FILE}"
 fi
 
@@ -302,14 +302,14 @@ if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
   sed -i -E "s/#?sormas2sormas.rootCaAlias=.*/sormas2sormas.rootCaAlias=${SORMAS2SORMAS_ROOTCAALIAS}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.truststoreName=.*/sormas2sormas.truststoreName=${SORMAS2SORMAS_TRUSTSTORENAME}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.truststorePass=.*/sormas2sormas.truststorePass=${SORMAS2SORMAS_TRUSTSTOREPASSWORD}/" "${PROPERTIES_FILE}"
- 
+
   sed -i -E "s/#?sormas2sormas.oidc.realm=.*/sormas2sormas.oidc.realm=${SORMAS2SORMAS_OIDC_REALM}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.oidc.clientId=.*/sormas2sormas.oidc.clientId=${SORMAS2SORMAS_OIDC_CLIENTID}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.oidc.clientSecret=.*/sormas2sormas.oidc.clientSecret=${SORMAS2SORMAS_OIDC_CLIENTSECRET}/" "${PROPERTIES_FILE}"
- 
+
   sed -i -E "s/#?sormas2sormas.etcd.keyPrefix=.*/sormas2sormas.etcd.keyPrefix=${SORMAS2SORMAS_ETCD_KEYPREFIX}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.retainCaseExternalToken=.*/sormas2sormas.retainCaseExternalToken=${SORMAS2SORMAS_RETAINCASEEXTERNALTOKEN}/" "${PROPERTIES_FILE}"
-  
+
   sed -i -E "s/#?sormas2sormas.ignoreProperty.additionalDetails=.*/sormas2sormas.ignoreProperty.additionalDetails=${SORMAS2SORMAS_IGNOREPROPERTY_ADDITIONALDETAILS}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.ignoreProperty.externalId=.*/sormas2sormas.ignoreProperty.externalId=${SORMAS2SORMAS_IGNOREPROPERTY_EXTERNALID}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.ignoreProperty.externalToken=.*/sormas2sormas.ignoreProperty.externalToken=${SORMAS2SORMAS_IGNOREPROPERTY_EXTERNALTOKEN}/" "${PROPERTIES_FILE}"
