@@ -1,4 +1,4 @@
-FROM hzibraunschweig/sormas-rscript:3.5-5.2020.2
+FROM hzibraunschweig/sormas-rscript:3.5-5.2021.10
 
 ARG SORMAS_POSTGRES_PASSWORD=password
 ARG SORMAS_POSTGRES_USER=sormas_user
@@ -14,7 +14,7 @@ ARG JVM_MAX=4096m
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 EXPOSE 6080
 
-ARG SORMAS_VERSION=1.65.1
+ARG SORMAS_VERSION=1.67.0
 
 ENV SORMAS_VERSION=$SORMAS_VERSION
 
@@ -29,9 +29,18 @@ RUN useradd payara
 
 COPY setup-server.sh /setup-server.sh
 
-
 RUN chmod +x /setup-server.sh
 RUN /setup-server.sh
 COPY start-server.sh /start-server.sh
 RUN chmod +x /start-server.sh
+
+COPY glowroot-0.13.6-dist.zip /opt
+COPY admin.json /opt
+
+RUN cd /opt \
+  && apt-get -y install unzip \
+  && unzip glowroot-0.13.6-dist.zip \
+  && mv /opt/admin.json /opt/glowroot/admin.json
+
+
 CMD ["/start-server.sh"]
