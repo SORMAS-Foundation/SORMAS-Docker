@@ -45,7 +45,7 @@ mkdir -p ${CENTRAL_DIR}
 
 # Setting ASADMIN_CALL and creating domain
 echo "Creating domain for Payara..."
-${PAYARA_HOME}/bin/asadmin create-domain --domaindir ${DOMAINS_HOME} --portbase ${PORT_BASE} --nopassword --template ${PAYARA_HOME}/glassfish/common/templates/gf/production-domain.jar "${DOMAIN_NAME}"
+${PAYARA_HOME}/bin/asadmin create-domain --domaindir ${DOMAINS_HOME} --portbase ${PORT_BASE} --nopassword "${DOMAIN_NAME}"
 ASADMIN="${PAYARA_HOME}/bin/asadmin --port ${PORT_ADMIN}"
 
 chown -R ${USER_NAME}:${USER_NAME} ${PAYARA_HOME}
@@ -55,12 +55,15 @@ ${PAYARA_HOME}/bin/asadmin start-domain --domaindir ${DOMAINS_HOME} ${DOMAIN_NAM
 echo "Configuring domain and database connection..."
 
 # General domain settings
-${ASADMIN} delete-jvm-options -Xms2G
-${ASADMIN} delete-jvm-options -Xmx2G
+${ASADMIN} delete-jvm-options '-client'
+${ASADMIN} delete-jvm-options -Xmx512m
 ${ASADMIN} create-jvm-options -Xmx4096m
 
-${ASADMIN} set configs.config.server-config.admin-service.das-config.autodeploy-enabled=true
-${ASADMIN} set configs.config.server-config.admin-service.das-config.dynamic-reload-enabled=true
+${ASADMIN} create-jvm-options '-XX\:+IgnoreUnrecognizedVMOptions'
+${ASADMIN} create-system-properties --target server-config fish.payara.classloading.delegate=false
+${ASADMIN} get configs.config.server-config.ejb-container.max-pool-size
+${ASADMIN} set configs.config.server-config.ejb-container.max-pool-size=128
+${ASADMIN} set configs.config.server-config.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size=50
 
 # Set protocol in redirects according to X-Forwarded-Proto (set by reverse proxy)
 ${ASADMIN} set server.network-config.protocols.protocol.http-listener-1.http.scheme-mapping=X-Forwarded-Proto
@@ -136,7 +139,8 @@ cp ${DEPLOY_PATH}/deploy/s2s-import-to-truststore.sh /opt/sormas/sormas2sormas
 #Der String "300" tritt ausschließlich an Stellen auf an denen die (txn-)Timeouts definiert werden. Diese werden auf "0" gesetzt um die Timeouts zu deaktivieren
 echo "Configure payara timeouts ..."
 sed -i 's/"300"/"0"/g' ${DOMAIN_DIR}/config/domain.xml
-
+# Remove additional application.* log files
+sed -i -E "/<appender-ref ref=\"FILE_([A-Z])+\"\ \/>/d" ${DOMAIN_DIR}/config/logback.xml
 # echo "Set logging fo documents to WARNING level"
 # sed -i '/<root level="debug">/i\ \ \ \ <logger name="fr.opensagres.xdocreport" level="WARN" />' ${DOMAIN_DIR}/config/logback.xml
 
