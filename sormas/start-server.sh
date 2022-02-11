@@ -285,10 +285,10 @@ echo -e "\ninterface.patientdiary.email=${PD_EMAIL}" >>${DOMAIN_DIR}/sormas.prop
 echo -e "\ninterface.patientdiary.password=${PD_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.defaultuser.username=${PD_DEFAULT_USERNAME}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.defaultuser.password=${PD_DEFAULT_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
-if [ ! -z "$PD_ACCEPTPHONECONTACT" ] && [ "$PD_ACCEPTPHONECONTACT" == "true"];then
+if [ ! -z "$PD_ACCEPTPHONECONTACT" ] && ([ "$PD_ACCEPTPHONECONTACT" == "true" ] || [ "$PD_ACCEPTPHONECONTACT" == "True" ]);then
 echo -e "\ninterface.patientdiary.acceptPhoneContact=${PD_ACCEPTPHONECONTACT}" >>${DOMAIN_DIR}/sormas.properties
 fi
-if [ ! -z "$PD_FRONTENDAUTHURL" ] && [ "$PD_FRONTENDAUTHURL" == "true"];then
+if [ ! -z "$PD_FRONTENDAUTHURL" ] && [ "$PD_FRONTENDAUTHURL" != "" ];then
 echo -e "\ninterface.patientdiary.frontendAuthurl=${PD_FRONTENDAUTHURL}" >>${DOMAIN_DIR}/sormas.properties
 fi
 fi
@@ -354,14 +354,14 @@ sed -i "/^survnet\.url/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^survnet\.versionEndpoint/d" "${DOMAIN_DIR}/sormas.properties"
 if [ ! -z "$SURVNET_ENABLED" ];then
 echo -e "\nsurvnet.url=${SURVNET_URL}" >>${DOMAIN_DIR}/sormas.properties
-if [ ! -z "$SURVNET_VERSION_ENDPOINT" ] && [ ! "$SURVNET_VERSION_ENDPOINT" == ""];then
+if [ ! -z "$SURVNET_VERSION_ENDPOINT" ] && [ ! "$SURVNET_VERSION_ENDPOINT" == "" ];then
 echo -e "\nsurvnet.versionEndpoint=${SURVNET_VERSION_ENDPOINT}" >>${DOMAIN_DIR}/sormas.properties
 fi
 fi
 
 #------------------SORMAS-Stats CONFIG
 sed -i "/^sormasStats\.url/d" "${DOMAIN_DIR}/sormas.properties"
-if [ ! -z "$SORMAS_STATS_ENABLED" ] && [ "$SORMAS_STATS_ENABLED" == "true"];then
+if [ ! -z "$SORMAS_STATS_ENABLED" ] && [ "$SORMAS_STATS_ENABLED" == "true" ];then
 echo -e "\nsormasStats.url=${SORMAS_STATS_URL}" >>${DOMAIN_DIR}/sormas.properties
 fi
 
