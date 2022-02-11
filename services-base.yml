@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     image: hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
     environment:
+      - DB_JDBC_IDLE_TIMEOUT=${DB_JDBC_IDLE_TIMEOUT}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}

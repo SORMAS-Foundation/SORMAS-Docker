@@ -89,4 +89,3 @@ services:
       - AUTOHEAL_START_PERIOD=600
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-
