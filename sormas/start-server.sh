@@ -285,10 +285,10 @@ echo -e "\ninterface.patientdiary.email=${PD_EMAIL}" >>${DOMAIN_DIR}/sormas.prop
 echo -e "\ninterface.patientdiary.password=${PD_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.defaultuser.username=${PD_DEFAULT_USERNAME}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.defaultuser.password=${PD_DEFAULT_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
-if [ ! -z "$PD_ACCEPTPHONECONTACT" ] && [ "$PD_ACCEPTPHONECONTACT" == "true"];then
+if [ ! -z "$PD_ACCEPTPHONECONTACT" ] && ([ "$PD_ACCEPTPHONECONTACT" == "true"] || [ "$PD_ACCEPTPHONECONTACT" == "True"]);then
 echo -e "\ninterface.patientdiary.acceptPhoneContact=${PD_ACCEPTPHONECONTACT}" >>${DOMAIN_DIR}/sormas.properties
 fi
-if [ ! -z "$PD_FRONTENDAUTHURL" ] && [ "$PD_FRONTENDAUTHURL" == "true"];then
+if [ ! -z "$PD_FRONTENDAUTHURL" ] && [ "$PD_FRONTENDAUTHURL" != ""];then
 echo -e "\ninterface.patientdiary.frontendAuthurl=${PD_FRONTENDAUTHURL}" >>${DOMAIN_DIR}/sormas.properties
 fi
 fi
