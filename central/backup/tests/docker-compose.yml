@@ -1,0 +1,65 @@
+version: '2.3'
+
+services:
+  first_postgres:
+    labels:
+      - backup.type=postgres
+    build:
+      context: testers/first_postgres
+    environment:
+      - POSTGRES_PASSWORD=dbsecret_for_first_database
+      - POSTGRES_USER=first_user
+      - POSTGRES_DB=first_default_database
+    volumes:
+      - ./volumes/postgres_1:/var/lib/postgresql/data
+
+  second_postgres:
+    labels:
+      - backup.type=postgres
+    build:
+      context: testers/second_postgres
+    environment:
+      - POSTGRES_PASSWORD=dbsecret_for_second_database
+      - POSTGRES_USER=second_user
+      - POSTGRES_DB=second_default_database
+    volumes:
+      - ./volumes/postgres_2:/var/lib/postgresql/data
+
+  first_etcd:
+    labels:
+      - backup.type=etcd
+      - backup.user=root
+      - backup.password=password
+    build:
+      context: testers/first_etcd
+    environment:
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+
+  second_etcd:
+    labels:
+      - backup.type=etcd
+      - backup.user=root
+      - backup.password=second_password
+    build:
+      context: testers/second_etcd
+    environment:
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+
+  secured_etcd:
+    labels:
+      - backup.type=etcd
+      - backup.user=root
+      - backup.password=secured_password
+      - backup.encrypted=true
+    build:
+      context: testers/secured_etcd
+
+
+  backup:
+    build:
+      context: ..
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # - ../backup/main.sh:/main.sh

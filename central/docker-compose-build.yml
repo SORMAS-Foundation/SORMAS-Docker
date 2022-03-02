@@ -4,3 +4,7 @@ services:
   etcd:
     build: etcd
     image: hzibraunschweig/central-etcd:${CENTRAL_DOCKER_VERSION}
+
+  backup:
+    build: backup
+    image: hzibraunschweig/central-backup:${CENTRAL_DOCKER_VERSION}
