@@ -1,4 +1,4 @@
-FROM jboss/keycloak:16.1.0
+FROM jboss/keycloak:16.1.1
 
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 
