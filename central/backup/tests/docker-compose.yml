@@ -28,8 +28,6 @@ services:
   plain_etcd:
     labels:
       - backup.type=etcd
-      - backup.user=root
-      - backup.password=password
     build:
       context: testers/plain_etcd
     environment:
