@@ -1,6 +1,14 @@
 #!/bin/sh
 set -e
 
+#TODO Add removing of old backups - probably should be configurable
+#TODO Add readme for this image - remember to add description of tests
+#TODO Add comments inside code
+#TODO Add support for volume backups
+#TODO Investigate if visible password for ETCD access could stay (probably yes)
+#TODO Investigate if it is really required to check ETCD certificate (probably no)
+#TODO Add compression for etcd backups - search if it is possible to do by pipe like in postgres case
+
 GetContainerLabel() {
     CONTAINER_ID=$1
     LABEL=$2

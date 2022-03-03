@@ -25,24 +25,24 @@ services:
     volumes:
       - ./volumes/postgres_2:/var/lib/postgresql/data
 
-  first_etcd:
+  plain_etcd:
     labels:
       - backup.type=etcd
       - backup.user=root
       - backup.password=password
     build:
-      context: testers/first_etcd
+      context: testers/plain_etcd
     environment:
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
 
-  second_etcd:
+  auth_etcd:
     labels:
       - backup.type=etcd
       - backup.user=root
       - backup.password=second_password
     build:
-      context: testers/second_etcd
+      context: testers/auth_etcd
     environment:
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
