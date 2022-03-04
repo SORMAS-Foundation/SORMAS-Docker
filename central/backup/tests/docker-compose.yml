@@ -1,11 +1,11 @@
 version: '2.3'
 
 services:
-  first_postgres:
+  postgres_first:
     labels:
       - backup.type=postgres
     build:
-      context: testers/first_postgres
+      context: testers/postgres_first
     environment:
       - POSTGRES_PASSWORD=dbsecret_for_first_database
       - POSTGRES_USER=first_user
@@ -13,11 +13,11 @@ services:
     volumes:
       - ./volumes/postgres_1:/var/lib/postgresql/data
 
-  second_postgres:
+  postgres_second:
     labels:
       - backup.type=postgres
     build:
-      context: testers/second_postgres
+      context: testers/postgres_second
     environment:
       - POSTGRES_PASSWORD=dbsecret_for_second_database
       - POSTGRES_USER=second_user
@@ -25,34 +25,34 @@ services:
     volumes:
       - ./volumes/postgres_2:/var/lib/postgresql/data
 
-  plain_etcd:
+  etcd_plain:
     labels:
       - backup.type=etcd
     build:
-      context: testers/plain_etcd
+      context: testers/etcd_plain
     environment:
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
 
-  auth_etcd:
+  etcd_auth:
     labels:
       - backup.type=etcd
       - backup.user=root
       - backup.password=second_password
     build:
-      context: testers/auth_etcd
+      context: testers/etcd_auth
     environment:
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
 
-  secured_etcd:
+  etcd_secured:
     labels:
       - backup.type=etcd
       - backup.user=root
       - backup.password=secured_password
       - backup.encrypted=true
     build:
-      context: testers/secured_etcd
+      context: testers/etcd_secured
 
 
   backup:

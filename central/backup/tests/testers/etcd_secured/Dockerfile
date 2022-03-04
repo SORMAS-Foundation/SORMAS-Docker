@@ -5,7 +5,7 @@ RUN apt update && apt install -y bash openssl
 COPY etcd.yml /etc/etcd/etcd.yml
 RUN \
 mkdir /certs &&\
-openssl req -new -text -passout pass:abcd -subj /CN=secured_etcd -out /certs/server.req -keyout /certs/privkey.pem &&\
+openssl req -new -text -passout pass:abcd -subj /CN=etcd_secured -out /certs/server.req -keyout /certs/privkey.pem &&\
 openssl rsa -in /certs/privkey.pem -passin pass:abcd -out /certs/server.key &&\
 openssl req -x509 -in /certs/server.req -text -key /certs/server.key -out /certs/server.crt
 
