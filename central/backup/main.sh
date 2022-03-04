@@ -1,6 +1,14 @@
 #!/bin/sh
 set -e
 
+#TODO Add removing of old backups - probably should be configurable
+#TODO Add readme for this image - remember to add description of tests
+#TODO Add comments inside code
+#TODO Add support for volume backups
+#TODO Investigate if visible password for ETCD access could stay (probably yes)
+#TODO Investigate if it is really required to check ETCD certificate (probably no)
+#TODO Add compression for etcd backups - search if it is possible to do by pipe like in postgres case
+
 GetContainerLabel() {
     CONTAINER_ID=$1
     LABEL=$2
@@ -56,7 +64,10 @@ for CONTAINER_ID in $(GetBackupLabeledContainers etcd); do
     ETCD_PASSWORD=$(GetContainerLabel $CONTAINER_ID backup.password)
     ETCD_ENCRYPTED=$(GetContainerLabel $CONTAINER_ID backup.encrypted)
 
-    ETCD_FLAGS="--user=$ETCD_USER --password=$ETCD_PASSWORD"
+    ETCD_FLAGS=""
+    if [ "$ETCD_USER" != "" ] && [ "$ETCD_PASSWORD" != "" ]; then
+        ETCD_FLAGS="--user=$ETCD_USER --password=$ETCD_PASSWORD"
+    fi
 
     if [ "$ETCD_ENCRYPTED" == "true" ]; then
         ETCD_FLAGS="$ETCD_FLAGS --endpoints=https://$SERVICE:2379 --insecure-transport=false --insecure-skip-tls-verify"
