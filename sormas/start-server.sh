@@ -130,14 +130,19 @@ ${ASADMIN} create-system-properties --target server-config org.jboss.resteasy.ja
 fi
 # JDBC pool
 echo "Configuring JDBC pool"
-delete_jdbc_connection_pool "jdbc/${DOMAIN_NAME}DataPool" "${DOMAIN_NAME}DataPool"
-${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool
-${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}DataPool jdbc/${DOMAIN_NAME}DataPool
+if [ ! -z DB_JDBC_IDLE_TIMEOUT ] && [ ! -z DB_JDBC_MAXPOOLSIZE ] ; then
+  delete_jdbc_connection_pool "jdbc/${DOMAIN_NAME}DataPool" "${DOMAIN_NAME}DataPool"
+  ${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --idletimeout ${DB_JDBC_IDLE_TIMEOUT} --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}"  ${DOMAIN_NAME}DataPool
+  ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}DataPool jdbc/${DOMAIN_NAME}DataPool
+else 
+  echo "JDBC pool could not be configured because of missing Variables DB_JDBC_IDLE_TIMEOUT or DB_JDBC_MAXPOOLSIZE"
+  exit -1
+fi
 
 # Pool for audit log
 echo "Configuring audit log"
 delete_jdbc_connection_pool "jdbc/AuditlogPool" "${DOMAIN_NAME}AuditlogPool"
-${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME_AUDIT}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}AuditlogPool
+${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME_AUDIT}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" --idletimeout ${DB_JDBC_IDLE_TIMEOUT} ${DOMAIN_NAME}AuditlogPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}AuditlogPool jdbc/AuditlogPool
 
 set +e
@@ -285,8 +290,12 @@ echo -e "\ninterface.patientdiary.email=${PD_EMAIL}" >>${DOMAIN_DIR}/sormas.prop
 echo -e "\ninterface.patientdiary.password=${PD_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.defaultuser.username=${PD_DEFAULT_USERNAME}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.defaultuser.password=${PD_DEFAULT_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
+if [ ! -z "$PD_ACCEPTPHONECONTACT" ] && ([ "$PD_ACCEPTPHONECONTACT" == "true" ] || [ "$PD_ACCEPTPHONECONTACT" == "True" ]);then
 echo -e "\ninterface.patientdiary.acceptPhoneContact=${PD_ACCEPTPHONECONTACT}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$PD_FRONTENDAUTHURL" ] && [ "$PD_FRONTENDAUTHURL" != "" ];then
 echo -e "\ninterface.patientdiary.frontendAuthurl=${PD_FRONTENDAUTHURL}" >>${DOMAIN_DIR}/sormas.properties
+fi
 fi
 
 #------------------BRANDING CONFIG
@@ -350,14 +359,14 @@ sed -i "/^survnet\.url/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^survnet\.versionEndpoint/d" "${DOMAIN_DIR}/sormas.properties"
 if [ ! -z "$SURVNET_ENABLED" ];then
 echo -e "\nsurvnet.url=${SURVNET_URL}" >>${DOMAIN_DIR}/sormas.properties
-if [ ! -z "$SURVNET_VERSION_ENDPOINT" ] && [ ! "$SURVNET_VERSION_ENDPOINT" == ""];then
+if [ ! -z "$SURVNET_VERSION_ENDPOINT" ] && [ ! "$SURVNET_VERSION_ENDPOINT" == "" ];then
 echo -e "\nsurvnet.versionEndpoint=${SURVNET_VERSION_ENDPOINT}" >>${DOMAIN_DIR}/sormas.properties
 fi
 fi
 
 #------------------SORMAS-Stats CONFIG
 sed -i "/^sormasStats\.url/d" "${DOMAIN_DIR}/sormas.properties"
-if [ ! -z "$SORMAS_STATS_ENABLED" ] && [ "$SORMAS_STATS_ENABLED" == "true"];then
+if [ ! -z "$SORMAS_STATS_ENABLED" ] && [ "$SORMAS_STATS_ENABLED" == "true" ];then
 echo -e "\nsormasStats.url=${SORMAS_STATS_URL}" >>${DOMAIN_DIR}/sormas.properties
 fi
 

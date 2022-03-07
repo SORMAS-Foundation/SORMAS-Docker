@@ -84,6 +84,8 @@ These Options are available to customize the installation:
 
 **DB_JDBC_MAXPOOLSIZE** Sets the maximum number of database connections
 
+**DB_JDBC_IDLE_TIMEOUT** Sets the maximum timeout of client idle connections
+
 ### SORMAS
 **SORMAS_VERSION** Version of SORMAS that should be installed (Dockerimages are provided starting from the Version 1.33.0)
 
