@@ -212,6 +212,8 @@ sed -i "/^email.sender.name/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^country.center.latitude/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^country.center.longitude/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^map.zoom/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^map.tiles.url /d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^map.tiles.attribution/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^app.url/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^ui.url/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^namesimilaritythreshold/d" ${DOMAIN_DIR}/sormas.properties
@@ -233,6 +235,12 @@ echo -e "\nemail.sender.name=${EMAIL_SENDER_NAME}" >>${DOMAIN_DIR}/sormas.proper
 echo -e "\ncountry.center.latitude=${LATITUDE}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ncountry.center.longitude=${LONGITUDE}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nmap.zoom=${MAP_ZOOM}" >>${DOMAIN_DIR}/sormas.properties
+if [ ! -z "$MAP_TILES_URL" ] && [ "$MAP_TILES_URL" != "" ];then
+echo -e "\nmap.tiles.url=${MAP_TILES_URL}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$MAP_TILES_ATTRIBUTION" ] && [ "$MAP_TILES_ATTRIBUTION" != "" ];then
+echo -e "\nmap.tiles.attribution=${MAP_TILES_ATTRIBUTION}" >>${DOMAIN_DIR}/sormas.properties
+fi
 echo -e "\napp.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk;" >>${DOMAIN_DIR}/sormas.properties
 if [ -n "${UI_URL}" ]; then
   echo -e "\nui.url=https://${SORMAS_SERVER_URL}/sormas-ui/"
@@ -281,6 +289,7 @@ sed -i "/^interface\.patientdiary\.email/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^interface\.patientdiary\.password/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^interface\.patientdiary\.defaultuser\.username/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^interface\.patientdiary\.defaultuser\.password/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^interface\.patientdiary\.tokenLifetime\.password/d" "${DOMAIN_DIR}/sormas.properties"
 
 if [ ! -z "$PATIENTDIARY_ENABLED" ];then
 echo -e "\ninterface.patientdiary.url=${PD_URL}" >>${DOMAIN_DIR}/sormas.properties
@@ -295,6 +304,9 @@ echo -e "\ninterface.patientdiary.acceptPhoneContact=${PD_ACCEPTPHONECONTACT}" >
 fi
 if [ ! -z "$PD_FRONTENDAUTHURL" ] && [ "$PD_FRONTENDAUTHURL" != "" ];then
 echo -e "\ninterface.patientdiary.frontendAuthurl=${PD_FRONTENDAUTHURL}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$PD_TOKENLIFETIME" ] && [ "$PD_TOKENLIFETIME" != "" ];then
+echo -e "\ninterface.patientdiary.tokenLifetime=${PD_TOKENLIFETIME}" >>${DOMAIN_DIR}/sormas.properties
 fi
 fi
 
