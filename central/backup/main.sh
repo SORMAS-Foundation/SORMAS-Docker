@@ -38,11 +38,19 @@ GetDatabasesToBackup() {
 DumpDatabase() {
     SERVICE=$1
     DATABASE=$2
-    mkdir -p /backup/postgres/
-    pg_dump $DATABASE | zstd > /backup/postgres/$SERVICE.$DATABASE.$DATE.zst
+    mkdir -p /backup/postgres/$SERVICE/$DATABASE
+    pg_dump $DATABASE | zstd > /backup/postgres/$SERVICE/$DATABASE/$SERVICE.$DATABASE.$DATE.zst
 }
 
+######################################################################################################################################################
+### Main
+######################################################################################################################################################
+
 export DATE=$(date +%F-%T)
+
+##################################################
+### Postgres backups
+##################################################
 
 for CONTAINER_ID in $(GetBackupLabeledContainers postgres); do
     SERVICE=$(GetComposeService $CONTAINER_ID)
@@ -57,6 +65,10 @@ for CONTAINER_ID in $(GetBackupLabeledContainers postgres); do
         DumpDatabase $SERVICE $DATABASE
     done
 done
+
+##################################################
+### ETCD backups
+##################################################
 
 for CONTAINER_ID in $(GetBackupLabeledContainers etcd); do
     SERVICE=$(GetComposeService $CONTAINER_ID)
@@ -75,6 +87,29 @@ for CONTAINER_ID in $(GetBackupLabeledContainers etcd); do
         ETCD_FLAGS="$ETCD_FLAGS --endpoints=http://$SERVICE:2379"
     fi
 
-    mkdir -p /backup/etcd/
-    etcdctl snapshot save /backup/etcd/$SERVICE.etcd.$DATE $ETCD_FLAGS
+    mkdir -p /backup/etcd/$SERVICE
+    etcdctl snapshot save /backup/etcd/$SERVICE/$SERVICE.etcd.$DATE $ETCD_FLAGS
 done
+
+##################################################
+### Old backups removal
+##################################################
+
+
+# rm -fr /tmp/test
+# mkdir /tmp/test
+# cd /tmp/test
+
+# TMP_DATE=$(date +%s)
+# for i in $(seq 0 100); do
+#     touch file.$(date --date=@$TMP_DATE +%F-%T)
+#     TMP_DATE=$(($TMP_DATE-60*30))
+# done
+
+# tree /tmp/test -C
+
+# for SERVICE in /backup/postgres/*; do
+#     for DATABASE in /backup/postgres/$(basename $SERVICE)/*; do
+#         ls $DATABASE
+#     done
+# done

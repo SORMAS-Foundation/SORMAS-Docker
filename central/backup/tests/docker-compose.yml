@@ -54,10 +54,9 @@ services:
     build:
       context: testers/etcd_secured
 
-
   backup:
     build:
       context: ..
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      # - ../backup/main.sh:/main.sh
+      - ../main.sh:/main.sh
