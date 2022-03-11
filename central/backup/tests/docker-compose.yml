@@ -29,10 +29,8 @@ services:
     labels:
       - backup.type=etcd
     build:
-      context: testers/etcd_plain
-    environment:
-      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
-      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+      context: testers/etcd
+    command: plain
 
   etcd_auth:
     labels:
@@ -40,10 +38,8 @@ services:
       - backup.user=root
       - backup.password=second_password
     build:
-      context: testers/etcd_auth
-    environment:
-      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
-      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+      context: testers/etcd
+    command: auth
 
   etcd_secured:
     labels:
@@ -52,7 +48,8 @@ services:
       - backup.password=secured_password
       - backup.encrypted=true
     build:
-      context: testers/etcd_secured
+      context: testers/etcd
+    command: secured
 
   backup:
     build:
