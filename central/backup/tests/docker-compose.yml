@@ -5,7 +5,8 @@ services:
     labels:
       - backup.type=postgres
     build:
-      context: testers/postgres_first
+      context: testers/postgres
+    command: first
     environment:
       - POSTGRES_PASSWORD=dbsecret_for_first_database
       - POSTGRES_USER=first_user
@@ -17,7 +18,8 @@ services:
     labels:
       - backup.type=postgres
     build:
-      context: testers/postgres_second
+      context: testers/postgres
+    command: second
     environment:
       - POSTGRES_PASSWORD=dbsecret_for_second_database
       - POSTGRES_USER=second_user
