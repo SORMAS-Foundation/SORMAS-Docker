@@ -20,3 +20,5 @@ COPY main.sh /main.sh
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 CMD [ "/usr/sbin/crond", "-f" ]
+
+VOLUME "/backup"
