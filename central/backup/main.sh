@@ -1,13 +1,10 @@
 #!/bin/sh
 set -e
 
-#TODO Add removing of old backups - probably should be configurable
 #TODO Add readme for this image - remember to add description of tests
 #TODO Add comments inside code
-#TODO Add support for volume backups
 #TODO Investigate if visible password for ETCD access could stay (probably yes)
 #TODO Investigate if it is really required to check ETCD certificate (probably no)
-#TODO Add compression for etcd backups - search if it is possible to do by pipe like in postgres case
 
 GetContainerLabel() {
     CONTAINER_ID=$1
@@ -61,8 +58,10 @@ DumpETCD() {
     SERVICE=$1
     ETCD_FLAGS=$2
     mkdir -p /backup/etcd/$SERVICE
-    #zst is temporary mock, real compression have to be added
-    etcdctl snapshot save /backup/etcd/$SERVICE/$SERVICE.etcd.$DATE.zst $ETCD_FLAGS &>/dev/null
+
+    TMP_BACKUP=$(mktemp -u)
+    etcdctl snapshot save $TMP_BACKUP $ETCD_FLAGS &>/dev/null
+    zstd -q --rm $TMP_BACKUP -o /backup/etcd/$SERVICE/$SERVICE.etcd.$DATE.zst
 }
 
 CleanETCDDumps() {
