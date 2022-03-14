@@ -35,11 +35,39 @@ GetDatabasesToBackup() {
     psql -l -t | cut -d '|' -f 1 | tr -d '[[:blank:]]' | grep -v -E "postgres|template0|template1" | sed '/^$/d'
 }
 
+CleanOldDumps() {
+    DUMP_DIR=$1
+    DUMPS_TO_REMOVE=$(ls $DUMP_DIR | head -n -10)
+    for DUMP in $DUMPS_TO_REMOVE; do
+        echo "Removing old dump \"$DUMP\""
+        rm $DUMP_DIR/$DUMP
+    done
+}
+
 DumpDatabase() {
     SERVICE=$1
     DATABASE=$2
     mkdir -p /backup/postgres/$SERVICE/$DATABASE
     pg_dump $DATABASE | zstd > /backup/postgres/$SERVICE/$DATABASE/$SERVICE.$DATABASE.$DATE.zst
+}
+
+CleanDatabaseDumps() {
+    SERVICE=$1
+    DATABASE=$2
+    CleanOldDumps /backup/postgres/$SERVICE/$DATABASE
+}
+
+DumpETCD() {
+    SERVICE=$1
+    ETCD_FLAGS=$2
+    mkdir -p /backup/etcd/$SERVICE
+    #zst is temporary mock, real compression have to be added
+    etcdctl snapshot save /backup/etcd/$SERVICE/$SERVICE.etcd.$DATE.zst $ETCD_FLAGS &>/dev/null
+}
+
+CleanETCDDumps() {
+    SERVICE=$1
+    CleanOldDumps /backup/etcd/$SERVICE
 }
 
 ######################################################################################################################################################
@@ -63,6 +91,7 @@ for CONTAINER_ID in $(GetBackupLabeledContainers postgres); do
 
     for DATABASE in $(GetDatabasesToBackup); do
         DumpDatabase $SERVICE $DATABASE
+        CleanDatabaseDumps $SERVICE $DATABASE
     done
 done
 
@@ -87,8 +116,9 @@ for CONTAINER_ID in $(GetBackupLabeledContainers etcd); do
         ETCD_FLAGS="$ETCD_FLAGS --endpoints=http://$SERVICE:2379"
     fi
 
-    mkdir -p /backup/etcd/$SERVICE
-    etcdctl snapshot save /backup/etcd/$SERVICE/$SERVICE.etcd.$DATE $ETCD_FLAGS
+    DumpETCD $SERVICE "$ETCD_FLAGS"
+    CleanETCDDumps $SERVICE
+    #TODO add checking for errors
 done
 
 ##################################################

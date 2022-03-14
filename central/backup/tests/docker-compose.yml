@@ -58,4 +58,5 @@ services:
       context: ..
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./volumes/backup:/backup
       - ../main.sh:/main.sh
