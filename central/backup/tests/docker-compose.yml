@@ -56,7 +56,10 @@ services:
   backup:
     build:
       context: ..
+    environment:
+      - MAX_DUMPS=3
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./volumes/backup:/backup
+      - ./local-test.sh:/local-test.sh
       - ../main.sh:/main.sh

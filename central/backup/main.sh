@@ -37,7 +37,7 @@ GetDatabasesToBackup() {
 
 CleanOldDumps() {
     DUMP_DIR=$1
-    DUMPS_TO_REMOVE=$(ls $DUMP_DIR | head -n -10)
+    DUMPS_TO_REMOVE=$(ls $DUMP_DIR | head -n -$MAX_DUMPS)
     for DUMP in $DUMPS_TO_REMOVE; do
         echo "Removing old dump \"$DUMP\""
         rm $DUMP_DIR/$DUMP
@@ -75,6 +75,7 @@ CleanETCDDumps() {
 ######################################################################################################################################################
 
 export DATE=$(date +%F-%T)
+MAX_DUMPS=${MAX_DUMPS:-60} # Should backups around two days worth of backups with default settings
 
 ##################################################
 ### Postgres backups
@@ -120,26 +121,3 @@ for CONTAINER_ID in $(GetBackupLabeledContainers etcd); do
     CleanETCDDumps $SERVICE
     #TODO add checking for errors
 done
-
-##################################################
-### Old backups removal
-##################################################
-
-
-# rm -fr /tmp/test
-# mkdir /tmp/test
-# cd /tmp/test
-
-# TMP_DATE=$(date +%s)
-# for i in $(seq 0 100); do
-#     touch file.$(date --date=@$TMP_DATE +%F-%T)
-#     TMP_DATE=$(($TMP_DATE-60*30))
-# done
-
-# tree /tmp/test -C
-
-# for SERVICE in /backup/postgres/*; do
-#     for DATABASE in /backup/postgres/$(basename $SERVICE)/*; do
-#         ls $DATABASE
-#     done
-# done
