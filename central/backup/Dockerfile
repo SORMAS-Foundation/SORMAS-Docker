@@ -7,7 +7,7 @@ RUN tar xzvf /etcd-v3.5.2-linux-amd64.tar.gz
 FROM alpine:3.15.0
 
 # Packages installation from repository
-RUN apk add docker-cli postgresql-client zstd
+RUN apk add docker-cli postgresql-client zstd tree
 
 # etcdctl installation
 COPY --from=builder etcd-v3.5.2-linux-amd64 /etcd
@@ -20,3 +20,5 @@ COPY main.sh /main.sh
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 CMD [ "/usr/sbin/crond", "-f" ]
+
+VOLUME "/backup"
