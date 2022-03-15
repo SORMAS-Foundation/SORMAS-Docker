@@ -3,8 +3,8 @@ version: '3.8'
 services:
   etcd:
     build: etcd
-    image: hzibraunschweig/central-etcd:${CENTRAL_DOCKER_VERSION}
+    image: ${DOCKER_REGISTRY}/hzibraunschweig/central-etcd:${CENTRAL_DOCKER_VERSION}
 
   backup:
     build: backup
-    image: hzibraunschweig/central-backup:${CENTRAL_DOCKER_VERSION}
+    image: ${DOCKER_REGISTRY}/hzibraunschweig/central-backup:${CENTRAL_DOCKER_VERSION}
