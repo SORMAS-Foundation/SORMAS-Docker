@@ -1,10 +1,4 @@
 #!/bin/sh
-set -e
-
-#TODO Add readme for this image - remember to add description of tests
-#TODO Add comments inside code
-#TODO Investigate if visible password for ETCD access could stay (probably yes)
-#TODO Investigate if it is really required to check ETCD certificate (probably no)
 
 GetContainerLabel() {
     CONTAINER_ID=$1
@@ -118,5 +112,4 @@ for CONTAINER_ID in $(GetBackupLabeledContainers etcd); do
 
     DumpETCD $SERVICE "$ETCD_FLAGS"
     CleanETCDDumps $SERVICE
-    #TODO add checking for errors
 done
