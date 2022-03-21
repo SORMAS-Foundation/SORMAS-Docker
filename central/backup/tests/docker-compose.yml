@@ -1,0 +1,65 @@
+version: '2.3'
+
+services:
+  postgres_first:
+    labels:
+      - backup.type=postgres
+    build:
+      context: testers/postgres
+    command: first
+    environment:
+      - POSTGRES_PASSWORD=dbsecret_for_first_database
+      - POSTGRES_USER=first_user
+      - POSTGRES_DB=first_default_database
+    volumes:
+      - ./volumes/postgres_1:/var/lib/postgresql/data
+
+  postgres_second:
+    labels:
+      - backup.type=postgres
+    build:
+      context: testers/postgres
+    command: second
+    environment:
+      - POSTGRES_PASSWORD=dbsecret_for_second_database
+      - POSTGRES_USER=second_user
+      - POSTGRES_DB=second_default_database
+    volumes:
+      - ./volumes/postgres_2:/var/lib/postgresql/data
+
+  etcd_plain:
+    labels:
+      - backup.type=etcd
+    build:
+      context: testers/etcd
+    command: plain
+
+  etcd_auth:
+    labels:
+      - backup.type=etcd
+      - backup.user=root
+      - backup.password=second_password
+    build:
+      context: testers/etcd
+    command: auth
+
+  etcd_secured:
+    labels:
+      - backup.type=etcd
+      - backup.user=root
+      - backup.password=secured_password
+      - backup.encrypted=true
+    build:
+      context: testers/etcd
+    command: secured
+
+  backup:
+    build:
+      context: ..
+    environment:
+      - MAX_DUMPS=3
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./volumes/backup:/backup
+      - ./local-test.sh:/local-test.sh
+      - ../main.sh:/main.sh
