@@ -222,6 +222,8 @@ sed -i "/^map.usecountrycenter/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^feature.automaticcaseclassification/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^documentUploadSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^importFileSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^audit.logger.config/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^audit.source.site/d" ${DOMAIN_DIR}/sormas.properties
 
 echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ncountry.locale=${LOCALE}" >>${DOMAIN_DIR}/sormas.properties
@@ -251,6 +253,11 @@ echo -e "\nmap.usecountrycenter=${MAP_USECOUNTRYCENTER}" >>${DOMAIN_DIR}/sormas.
 echo -e "\nfeature.automaticcaseclassification=${FEATURE_AUTOMATICCASECLASSIFICATION}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ndocumentUploadSizeLimitMb=${DOCUMENTUPLOADSIZELIMITMB}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nimportFileSizeLimitMb=${IMPORTFILESIZELIMITMB}" >>${DOMAIN_DIR}/sormas.properties
+
+if [ ! -z "$AUDIT_LOGGER_CONFIG" ] && [ "$AUDIT_LOGGER_CONFIG" != "" ];then
+echo -e "\naudit.logger.config=${AUDIT_LOGGER_CONFIG}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\naudit.source.site=${SORMAS_SERVER_URL}" >>${DOMAIN_DIR}/sormas.properties
+fi
 
 #------------------GEOCODING
 sed -i "/^geocodingServiceUrlTemplate/d " ${DOMAIN_DIR}/sormas.properties

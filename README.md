@@ -181,6 +181,8 @@ These Options are available to customize the installation:
 
 **SORMAS_ORG_NAME** Name of the organisation
 
+**AUDIT_LOGGER_CONFIG** Config file path of the audit logger. Not specifying a value will effectively disable the audit log. Possible Values: any valid filesystem path, but prefer /opt/config/audit-logback.xml
+
 ### PIA
 If you choose to align SORMAS with a PIA instance, use the docker-compose-sb.yml.
 The following variables should be set.
