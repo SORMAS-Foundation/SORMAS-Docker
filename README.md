@@ -175,6 +175,8 @@ These Options are available to customize the installation:
 
 **SORMAS2SORMAS_DIR** Path to the sormas to sormas directory
 
+**SORMAS2SORMAS_DISTRICT_EXTERNALID** External id of the district to which the Cases/Contacts to be assigned when accepting a share request
+
 **SORMAS_ORG_ID** ID of the organisiation
 
 **SORMAS_ORG_NAME** Name of the organisation
