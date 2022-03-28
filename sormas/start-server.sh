@@ -357,7 +357,9 @@ if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
   sed -i -E "s/#?sormas2sormas.ignoreProperty.externalId=.*/sormas2sormas.ignoreProperty.externalId=${SORMAS2SORMAS_IGNOREPROPERTY_EXTERNALID}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.ignoreProperty.externalToken=.*/sormas2sormas.ignoreProperty.externalToken=${SORMAS2SORMAS_IGNOREPROPERTY_EXTERNALTOKEN}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.ignoreProperty.internalToken=.*/sormas2sormas.ignoreProperty.internalToken=${SORMAS2SORMAS_IGNOREPROPERTY_INTERNALTOKEN}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?sormas2sormas.districtExternalId=.*/sormas2sormas.districtExternalId=${SORMAS2SORMAS_DISTRICT_EXTERNALID}/" "${PROPERTIES_FILE}"
+  if [ ! -z "$SORMAS2SORMAS_DISTRICT_EXTERNALID" ] && [ "$SORMAS2SORMAS_DISTRICT_EXTERNALID" != "" ];then
+    sed -i -E "s/#?sormas2sormas.districtExternalId=.*/sormas2sormas.districtExternalId=${SORMAS2SORMAS_DISTRICT_EXTERNALID}/" "${PROPERTIES_FILE}"
+  fi
 fi
 
 
