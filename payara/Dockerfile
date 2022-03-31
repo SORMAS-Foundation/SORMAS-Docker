@@ -9,3 +9,5 @@ RUN wget --no-check-certificate -O /tmp/payara-5.2021.10.zip "https://search.mav
   && unzip -q -o /tmp/payara-5.2021.10.zip -d /opt/ \
   && rm -R /opt/payara5/glassfish/domains \
   && rm /tmp/payara-5.2021.10.zip
+
+RUN wget --no-check-certificate -O /opt/payara5/glassfish/glassfish-modules/weld-integration.jar "https://github.com/hzi-braunschweig/SORMAS-Project/blob/development/sormas-base/setup/glassfish-modules/weld-integration.jar"
