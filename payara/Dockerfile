@@ -11,4 +11,4 @@ RUN wget --no-check-certificate -O /tmp/payara-5.2021.10.zip "https://search.mav
   && rm /tmp/payara-5.2021.10.zip
 
 # remove this below patch after upgraded Payara to higher than 5.2021.10 once (No valid EE environment) is FIXED
-RUN wget --no-check-certificate -O /opt/payara5/glassfish/modules/weld-integration.jar "https://github.com/hzi-braunschweig/SORMAS-Project/blob/development/sormas-base/setup/glassfish-modules/weld-integration.jar"
+RUN wget --no-check-certificate -O /opt/payara5/glassfish/modules/weld-integration.jar "https://raw.githubusercontent.com/hzi-braunschweig/SORMAS-Project/development/sormas-base/setup/glassfish-modules/weld-integration.jar"
