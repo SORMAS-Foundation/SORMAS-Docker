@@ -220,10 +220,10 @@ sed -i "/^namesimilaritythreshold/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^duplicatechecks.excludepersonsonlylinkedtoarchivedentries/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^map.usecountrycenter/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^feature.automaticcaseclassification/d" ${DOMAIN_DIR}/sormas.properties
-sed -i "/^daysAfterCaseGetsArchived/d" ${DOMAIN_DIR}/sormas.properties
-sed -i "/^daysAfterEventGetsArchived/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^documentUploadSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^importFileSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^audit.logger.config/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^audit.source.site/d" ${DOMAIN_DIR}/sormas.properties
 
 echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ncountry.locale=${LOCALE}" >>${DOMAIN_DIR}/sormas.properties
@@ -251,10 +251,13 @@ echo -e "\nnamesimilaritythreshold=${NAMESIMILARITYTHRESHOLD}" >>${DOMAIN_DIR}/s
 echo -e "\nduplicatechecks.excludepersonsonlylinkedtoarchivedentries=${DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nmap.usecountrycenter=${MAP_USECOUNTRYCENTER}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nfeature.automaticcaseclassification=${FEATURE_AUTOMATICCASECLASSIFICATION}" >>${DOMAIN_DIR}/sormas.properties
-echo -e "\ndaysAfterCaseGetsArchived=${CASEARCHIVEDAYS}" >>${DOMAIN_DIR}/sormas.properties
-echo -e "\ndaysAfterEventGetsArchived=${EVENTARCHIVEDAYS}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ndocumentUploadSizeLimitMb=${DOCUMENTUPLOADSIZELIMITMB}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nimportFileSizeLimitMb=${IMPORTFILESIZELIMITMB}" >>${DOMAIN_DIR}/sormas.properties
+
+if [ ! -z "$AUDIT_LOGGER_CONFIG" ] && [ "$AUDIT_LOGGER_CONFIG" != "" ];then
+echo -e "\naudit.logger.config=${AUDIT_LOGGER_CONFIG}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\naudit.source.site=${SORMAS_SERVER_URL}" >>${DOMAIN_DIR}/sormas.properties
+fi
 
 #------------------GEOCODING
 sed -i "/^geocodingServiceUrlTemplate/d " ${DOMAIN_DIR}/sormas.properties
@@ -354,6 +357,9 @@ if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
   sed -i -E "s/#?sormas2sormas.ignoreProperty.externalId=.*/sormas2sormas.ignoreProperty.externalId=${SORMAS2SORMAS_IGNOREPROPERTY_EXTERNALID}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.ignoreProperty.externalToken=.*/sormas2sormas.ignoreProperty.externalToken=${SORMAS2SORMAS_IGNOREPROPERTY_EXTERNALTOKEN}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.ignoreProperty.internalToken=.*/sormas2sormas.ignoreProperty.internalToken=${SORMAS2SORMAS_IGNOREPROPERTY_INTERNALTOKEN}/" "${PROPERTIES_FILE}"
+  if [ ! -z "$SORMAS2SORMAS_DISTRICT_EXTERNALID" ] && [ "$SORMAS2SORMAS_DISTRICT_EXTERNALID" != "" ];then
+    sed -i -E "s/#?sormas2sormas.districtExternalId=.*/sormas2sormas.districtExternalId=${SORMAS2SORMAS_DISTRICT_EXTERNALID}/" "${PROPERTIES_FILE}"
+  fi
 fi
 
 
