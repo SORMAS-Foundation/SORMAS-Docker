@@ -149,10 +149,6 @@ These Options are available to customize the installation:
 
 **CREATE_DEFAULT_ENTITIES** Control the creation of the default entities
 
-**CASEARCHIVEDAYS** The number of days without any changes after which cases are automatically archived (i.e. they will no longer be displayed in the normal directories, but still count towards statistics or counts on the dashboard and can still be viewed by users with the respective user right). If set to 0, automatic archiving is disabled.
-
-**EVENTARCHIVEDAYS** The number of days without any changes after which events are automatically archived (i.e. they will no longer be displayed in the normal directories, but still count towards statistics or counts on the dashboard and can still be viewed by users with the respective user right). If set to 0, automatic archiving is disabled.
-
 **NAMESIMILARITYTHRESHOLD** Use a value between 0 and 1 (the higher the value, the more restrictive the similarity search)
 
 **CUSTOMBRANDING_ENABLED** Enables the custombranding feature
@@ -179,9 +175,13 @@ These Options are available to customize the installation:
 
 **SORMAS2SORMAS_DIR** Path to the sormas to sormas directory
 
+**SORMAS2SORMAS_DISTRICT_EXTERNALID** External id of the district to which the Cases/Contacts to be assigned when accepting a share request
+
 **SORMAS_ORG_ID** ID of the organisiation
 
 **SORMAS_ORG_NAME** Name of the organisation
+
+**AUDIT_LOGGER_CONFIG** Config file path of the audit logger. Not specifying a value will effectively disable the audit log. Possible Values: any valid filesystem path, but prefer /opt/config/audit-logback.xml
 
 ### PIA
 If you choose to align SORMAS with a PIA instance, use the docker-compose-sb.yml.
