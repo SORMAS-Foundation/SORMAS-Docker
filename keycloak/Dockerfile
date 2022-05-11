@@ -21,7 +21,9 @@ COPY standalone-logging.cli /opt/jboss/startup-scripts/
 
 USER root
 RUN chown jboss /opt/jboss/startup-scripts/setup-keycloak.sh && \
-  chmod +x /opt/jboss/startup-scripts/setup-keycloak.sh
+    chown jboss /opt/jboss/startup-scripts/standalone-logging.cli && \
+    chmod +x /opt/jboss/startup-scripts/setup-keycloak.sh && \
+    chmod +x /opt/jboss/startup-scripts/standalone-logging.cli
 
 RUN chown jboss $JBOSS_HOME/update-realm.sh && \
   chmod +x $JBOSS_HOME/update-realm.sh
