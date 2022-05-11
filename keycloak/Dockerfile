@@ -17,6 +17,7 @@ RUN sed -i -e 's/\/auth/\/keycloak\/auth"/' $JBOSS_HOME/welcome-content/index.ht
 
 COPY setup-keycloak.sh /opt/jboss/startup-scripts/
 COPY update-realm.sh $JBOSS_HOME
+COPY standalone-logging.cli /opt/jboss/startup-scripts/
 
 USER root
 RUN chown jboss /opt/jboss/startup-scripts/setup-keycloak.sh && \
