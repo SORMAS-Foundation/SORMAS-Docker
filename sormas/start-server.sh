@@ -241,7 +241,7 @@ fi
 if [ ! -z "$MAP_TILES_ATTRIBUTION" ] && [ "$MAP_TILES_ATTRIBUTION" != "" ];then
 echo -e "\nmap.tiles.attribution=${MAP_TILES_ATTRIBUTION}" >>${DOMAIN_DIR}/sormas.properties
 fi
-echo -e "\napp.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk;" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\napp.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk" >>${DOMAIN_DIR}/sormas.properties
 if [ -n "${UI_URL}" ]; then
   echo -e "\nui.url=https://${SORMAS_SERVER_URL}/sormas-ui/"
 else
