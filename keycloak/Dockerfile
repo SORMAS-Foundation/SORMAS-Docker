@@ -1,8 +1,8 @@
-FROM jboss/keycloak:16.1.0
+FROM jboss/keycloak:16.1.1
 
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 
-ARG SORMAS_VERSION=1.67.0
+ARG SORMAS_VERSION=1.72.0
 
 ARG SORMAS_SERVER_URL=sormas-docker-test.com
 ARG KEYCLOAK_SORMAS_REST_SECRET=changeit
@@ -17,10 +17,13 @@ RUN sed -i -e 's/\/auth/\/keycloak\/auth"/' $JBOSS_HOME/welcome-content/index.ht
 
 COPY setup-keycloak.sh /opt/jboss/startup-scripts/
 COPY update-realm.sh $JBOSS_HOME
+COPY standalone-logging.cli /opt/jboss/startup-scripts/
 
 USER root
 RUN chown jboss /opt/jboss/startup-scripts/setup-keycloak.sh && \
-  chmod +x /opt/jboss/startup-scripts/setup-keycloak.sh
+    chown jboss /opt/jboss/startup-scripts/standalone-logging.cli && \
+    chmod +x /opt/jboss/startup-scripts/setup-keycloak.sh && \
+    chmod +x /opt/jboss/startup-scripts/standalone-logging.cli
 
 RUN chown jboss $JBOSS_HOME/update-realm.sh && \
   chmod +x $JBOSS_HOME/update-realm.sh

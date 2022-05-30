@@ -130,14 +130,19 @@ ${ASADMIN} create-system-properties --target server-config org.jboss.resteasy.ja
 fi
 # JDBC pool
 echo "Configuring JDBC pool"
-delete_jdbc_connection_pool "jdbc/${DOMAIN_NAME}DataPool" "${DOMAIN_NAME}DataPool"
-${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}DataPool
-${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}DataPool jdbc/${DOMAIN_NAME}DataPool
+if [ ! -z DB_JDBC_IDLE_TIMEOUT ] && [ ! -z DB_JDBC_MAXPOOLSIZE ] ; then
+  delete_jdbc_connection_pool "jdbc/${DOMAIN_NAME}DataPool" "${DOMAIN_NAME}DataPool"
+  ${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --idletimeout ${DB_JDBC_IDLE_TIMEOUT} --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}"  ${DOMAIN_NAME}DataPool
+  ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}DataPool jdbc/${DOMAIN_NAME}DataPool
+else 
+  echo "JDBC pool could not be configured because of missing Variables DB_JDBC_IDLE_TIMEOUT or DB_JDBC_MAXPOOLSIZE"
+  exit -1
+fi
 
 # Pool for audit log
 echo "Configuring audit log"
 delete_jdbc_connection_pool "jdbc/AuditlogPool" "${DOMAIN_NAME}AuditlogPool"
-${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME_AUDIT}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" ${DOMAIN_NAME}AuditlogPool
+${ASADMIN} create-jdbc-connection-pool --restype javax.sql.XADataSource --datasourceclassname org.postgresql.xa.PGXADataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --property "portNumber=5432:databaseName=${DB_NAME_AUDIT}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}" --idletimeout ${DB_JDBC_IDLE_TIMEOUT} ${DOMAIN_NAME}AuditlogPool
 ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}AuditlogPool jdbc/AuditlogPool
 
 set +e
@@ -207,16 +212,18 @@ sed -i "/^email.sender.name/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^country.center.latitude/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^country.center.longitude/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^map.zoom/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^map.tiles.url /d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^map.tiles.attribution/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^app.url/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^ui.url/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^namesimilaritythreshold/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^duplicatechecks.excludepersonsonlylinkedtoarchivedentries/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^map.usecountrycenter/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^feature.automaticcaseclassification/d" ${DOMAIN_DIR}/sormas.properties
-sed -i "/^daysAfterCaseGetsArchived/d" ${DOMAIN_DIR}/sormas.properties
-sed -i "/^daysAfterEventGetsArchived/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^documentUploadSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^importFileSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^audit.logger.config/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^audit.source.site/d" ${DOMAIN_DIR}/sormas.properties
 
 echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ncountry.locale=${LOCALE}" >>${DOMAIN_DIR}/sormas.properties
@@ -228,7 +235,13 @@ echo -e "\nemail.sender.name=${EMAIL_SENDER_NAME}" >>${DOMAIN_DIR}/sormas.proper
 echo -e "\ncountry.center.latitude=${LATITUDE}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ncountry.center.longitude=${LONGITUDE}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nmap.zoom=${MAP_ZOOM}" >>${DOMAIN_DIR}/sormas.properties
-echo -e "\napp.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk;" >>${DOMAIN_DIR}/sormas.properties
+if [ ! -z "$MAP_TILES_URL" ] && [ "$MAP_TILES_URL" != "" ];then
+echo -e "\nmap.tiles.url=${MAP_TILES_URL}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$MAP_TILES_ATTRIBUTION" ] && [ "$MAP_TILES_ATTRIBUTION" != "" ];then
+echo -e "\nmap.tiles.attribution=${MAP_TILES_ATTRIBUTION}" >>${DOMAIN_DIR}/sormas.properties
+fi
+echo -e "\napp.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk" >>${DOMAIN_DIR}/sormas.properties
 if [ -n "${UI_URL}" ]; then
   echo -e "\nui.url=https://${SORMAS_SERVER_URL}/sormas-ui/"
 else
@@ -238,10 +251,13 @@ echo -e "\nnamesimilaritythreshold=${NAMESIMILARITYTHRESHOLD}" >>${DOMAIN_DIR}/s
 echo -e "\nduplicatechecks.excludepersonsonlylinkedtoarchivedentries=${DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nmap.usecountrycenter=${MAP_USECOUNTRYCENTER}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nfeature.automaticcaseclassification=${FEATURE_AUTOMATICCASECLASSIFICATION}" >>${DOMAIN_DIR}/sormas.properties
-echo -e "\ndaysAfterCaseGetsArchived=${CASEARCHIVEDAYS}" >>${DOMAIN_DIR}/sormas.properties
-echo -e "\ndaysAfterEventGetsArchived=${EVENTARCHIVEDAYS}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ndocumentUploadSizeLimitMb=${DOCUMENTUPLOADSIZELIMITMB}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\nimportFileSizeLimitMb=${IMPORTFILESIZELIMITMB}" >>${DOMAIN_DIR}/sormas.properties
+
+if [ ! -z "$AUDIT_LOGGER_CONFIG" ] && [ "$AUDIT_LOGGER_CONFIG" != "" ];then
+echo -e "\naudit.logger.config=${AUDIT_LOGGER_CONFIG}" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\naudit.source.site=${SORMAS_SERVER_URL}" >>${DOMAIN_DIR}/sormas.properties
+fi
 
 #------------------GEOCODING
 sed -i "/^geocodingServiceUrlTemplate/d " ${DOMAIN_DIR}/sormas.properties
@@ -276,6 +292,7 @@ sed -i "/^interface\.patientdiary\.email/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^interface\.patientdiary\.password/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^interface\.patientdiary\.defaultuser\.username/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^interface\.patientdiary\.defaultuser\.password/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^interface\.patientdiary\.tokenLifetime\.password/d" "${DOMAIN_DIR}/sormas.properties"
 
 if [ ! -z "$PATIENTDIARY_ENABLED" ];then
 echo -e "\ninterface.patientdiary.url=${PD_URL}" >>${DOMAIN_DIR}/sormas.properties
@@ -285,8 +302,15 @@ echo -e "\ninterface.patientdiary.email=${PD_EMAIL}" >>${DOMAIN_DIR}/sormas.prop
 echo -e "\ninterface.patientdiary.password=${PD_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.defaultuser.username=${PD_DEFAULT_USERNAME}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ninterface.patientdiary.defaultuser.password=${PD_DEFAULT_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
+if [ ! -z "$PD_ACCEPTPHONECONTACT" ] && ([ "$PD_ACCEPTPHONECONTACT" == "true" ] || [ "$PD_ACCEPTPHONECONTACT" == "True" ]);then
 echo -e "\ninterface.patientdiary.acceptPhoneContact=${PD_ACCEPTPHONECONTACT}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$PD_FRONTENDAUTHURL" ] && [ "$PD_FRONTENDAUTHURL" != "" ];then
 echo -e "\ninterface.patientdiary.frontendAuthurl=${PD_FRONTENDAUTHURL}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$PD_TOKENLIFETIME" ] && [ "$PD_TOKENLIFETIME" != "" ];then
+echo -e "\ninterface.patientdiary.tokenLifetime=${PD_TOKENLIFETIME}" >>${DOMAIN_DIR}/sormas.properties
+fi
 fi
 
 #------------------BRANDING CONFIG
@@ -318,7 +342,7 @@ if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
   sed -i -E "s/#?sormas2sormas.id=.*/sormas2sormas.id=${SORMAS2SORMAS_ID}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.keystoreName=.*/sormas2sormas.keystoreName=${SORMAS2SORMAS_KEYSTORENAME}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.keystorePass=.*/sormas2sormas.keystorePass=${SORMAS2SORMAS_KEYPASSWORD}/" "${PROPERTIES_FILE}"
-  sed -i -E "s/#?sormas2sormas.rootCaAlias=.*/sormas2sormas.rootCaAlias=${SORMAS2SORMAS_ROOTCALIAS}/" "${PROPERTIES_FILE}"
+  sed -i -E "s/#?sormas2sormas.rootCaAlias=.*/sormas2sormas.rootCaAlias=${SORMAS2SORMAS_ROOTCAALIAS}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.truststoreName=.*/sormas2sormas.truststoreName=${SORMAS2SORMAS_TRUSTSTORENAME}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.truststorePass=.*/sormas2sormas.truststorePass=${SORMAS2SORMAS_TRUSTSTOREPASSWORD}/" "${PROPERTIES_FILE}"
 
@@ -333,6 +357,9 @@ if [ ! -z  "$SORMAS2SORMAS_ENABLED" ]; then
   sed -i -E "s/#?sormas2sormas.ignoreProperty.externalId=.*/sormas2sormas.ignoreProperty.externalId=${SORMAS2SORMAS_IGNOREPROPERTY_EXTERNALID}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.ignoreProperty.externalToken=.*/sormas2sormas.ignoreProperty.externalToken=${SORMAS2SORMAS_IGNOREPROPERTY_EXTERNALTOKEN}/" "${PROPERTIES_FILE}"
   sed -i -E "s/#?sormas2sormas.ignoreProperty.internalToken=.*/sormas2sormas.ignoreProperty.internalToken=${SORMAS2SORMAS_IGNOREPROPERTY_INTERNALTOKEN}/" "${PROPERTIES_FILE}"
+  if [ ! -z "$SORMAS2SORMAS_DISTRICT_EXTERNALID" ] && [ "$SORMAS2SORMAS_DISTRICT_EXTERNALID" != "" ];then
+    sed -i -E "s/#?sormas2sormas.districtExternalId=.*/sormas2sormas.districtExternalId=${SORMAS2SORMAS_DISTRICT_EXTERNALID}/" "${PROPERTIES_FILE}"
+  fi
 fi
 
 
@@ -347,14 +374,17 @@ fi
 
 #------------------SURVNET CONFIG
 sed -i "/^survnet\.url/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^survnet\.versionEndpoint/d" "${DOMAIN_DIR}/sormas.properties"
 if [ ! -z "$SURVNET_ENABLED" ];then
 echo -e "\nsurvnet.url=${SURVNET_URL}" >>${DOMAIN_DIR}/sormas.properties
+if [ ! -z "$SURVNET_VERSION_ENDPOINT" ] && [ ! "$SURVNET_VERSION_ENDPOINT" == "" ];then
 echo -e "\nsurvnet.versionEndpoint=${SURVNET_VERSION_ENDPOINT}" >>${DOMAIN_DIR}/sormas.properties
+fi
 fi
 
 #------------------SORMAS-Stats CONFIG
 sed -i "/^sormasStats\.url/d" "${DOMAIN_DIR}/sormas.properties"
-if [ ! -z "$SORMAS_STATS_ENABLED" ] && [ "$SORMAS_STATS_ENABLED" == "true"];then
+if [ ! -z "$SORMAS_STATS_ENABLED" ] && [ "$SORMAS_STATS_ENABLED" == "true" ];then
 echo -e "\nsormasStats.url=${SORMAS_STATS_URL}" >>${DOMAIN_DIR}/sormas.properties
 fi
 
