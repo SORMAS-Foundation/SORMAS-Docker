@@ -1,3 +1,5 @@
 /.project
 .idea
 /.pydevproject
+/ATT04797.env
+/docker-compose-fr.yml
