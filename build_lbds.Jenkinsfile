@@ -1,8 +1,5 @@
 node {
     
-    
-    
-        
     stage('checkout') {
         git branch: '${BRANCH}', url: 'https://github.com/hzi-braunschweig/SORMAS-Docker.git'
     }
