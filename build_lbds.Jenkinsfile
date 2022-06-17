@@ -1,7 +1,6 @@
 node {
     
-    def SORMAS_VERSION=''
-    def SORMAS_VERSION_NIGHTLY=''
+    
     
         
     stage('checkout') {
@@ -14,7 +13,6 @@ node {
 		echo 'Building....'
         withCredentials([ usernamePassword(credentialsId: 'crowdcodeNexus', usernameVariable: 'CROWDCODE_NEXUS_USER', passwordVariable: 'CROWDCODE_NEXUS_PASSWORD' )]) {
         	sh """
-        	source ./.env
         	cd lbds
         	sudo docker build --pull --no-cache --build-arg LBDS_JAR_FILE_VERSION=${LBDS_JAR_FILE_VERSION} --build-arg CROWDCODE_NEXUS_USER=${CROWDCODE_NEXUS_USER} --build-arg CROWDCODE_NEXUS_PASSWORD="${CROWDCODE_NEXUS_PASSWORD}" -t hzibraunschweig/lbds:${LBDS_JAR_FILE_VERSION} .
         	"""
