@@ -23,7 +23,7 @@ Listen 443
         # RedirectMatch: All locations not listed here will be redirected to sormas-ui
         # APACHE_REDIRECT_EXCLUDE Example Usage: "|test|test2" will add /test and /test2 to that list
         # IMPORTANT: it needs to start with "|"
-	    RedirectMatch "^(/(?!downloads|keycloak|metrics${REDIRECT_MATCH_LBDS_CONTEXT_PATH}).*)" https://${SORMAS_SERVER_URL}/sormas-ui\$1
+	    RedirectMatch "^(/(?!downloads|keycloak|metrics${APACHE_REDIRECT_EXCLUDE}).*)" https://${SORMAS_SERVER_URL}/sormas-ui\$1
 		
         ErrorLog /var/log/apache2/error.log
         LogLevel warn
