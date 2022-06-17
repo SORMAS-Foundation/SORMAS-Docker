@@ -8,36 +8,6 @@ node {
         git branch: '${BRANCH}', url: 'https://github.com/hzi-braunschweig/SORMAS-Docker.git'
     }
     
-    stage('set variables') {
-        echo 'Setting variables'
-        SORMAS_VERSION_NIGHTLY= sh (
-        	script: 'curl -s https://raw.githubusercontent.com/hzi-braunschweig/SORMAS-Project/development/sormas-base/pom.xml | grep SNAPSHOT | sed s/\\<version\\>// | sed s/\\<\\\\/version\\>// | sed \'s/[[:space:]]//g\'', 
-        	returnStdout: true
-        ).trim()
-        if (params.BUILD_NIGHTLY != null && params.BUILD_NIGHTLY) {
-            echo 'Build NIGHTLY'
-			SORMAS_VERSION = SORMAS_VERSION_NIGHTLY
-			sh """
-			sed -i 's,SORMAS_URL=.*\$,SORMAS_URL=http://10.160.41.100/,' ./.env
-			sed -i 's,SORMAS_VERSION=.*\$,SORMAS_VERSION=${SORMAS_VERSION},' ./.env
-			"""
-        }
-        else {
-            echo 'Build Version from .env'
-            SORMAS_VERSION = sh (
-            	script: "source ./.env &> /dev/null && echo \$SORMAS_VERSION",
-            	returnStdout: true
-            ).trim()
-        }
-        sh """
-		sed -i 's,SORMAS_DOCKER_VERSION=.#*\$,SORMAS_DOCKER_VERSION=${SORMAS_DOCKER_VERSION},' ./.env
-		sed -i "/^GEO_TEMPLATE/d " ./.env
-		cat ./.env
-        """        
-        
-        
-        echo "${SORMAS_VERSION}"
-    }
 
         
     stage('Build LBDS') {
