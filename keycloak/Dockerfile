@@ -1,48 +1,32 @@
-FROM jboss/keycloak:16.1.1
+# Keycloak builder
+FROM quay.io/keycloak/keycloak:18.0.1 as kc-builder
+USER root
+RUN microdnf update && microdnf install wget unzip
+USER keycloak
+WORKDIR /opt/keycloak
 
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
+ARG SORMAS_VERSION=1.72.1
 
-ARG SORMAS_VERSION=1.73.0
-
-ARG SORMAS_SERVER_URL=sormas-docker-test.com
-ARG KEYCLOAK_SORMAS_REST_SECRET=changeit
-ARG KEYCLOAK_SORMAS_UI_SECRET=changeit
-ARG KEYCLOAK_SORMAS_BACKEND_SECRET=changeit
-
-RUN sed -i -e 's/<web-context>auth<\/web-context>/<web-context>keycloak\/auth<\/web-context>/' $JBOSS_HOME/standalone/configuration/standalone.xml
-RUN sed -i -e 's/<web-context>auth<\/web-context>/<web-context>keycloak\/auth<\/web-context>/' /opt/jboss/keycloak/standalone/configuration/standalone-ha.xml
-RUN sed -i -e 's/name="\/"/name="\/keycloak\/"/' $JBOSS_HOME/standalone/configuration/standalone.xml
-RUN sed -i -e 's/name="\/"/name="\/keycloak\/"/' $JBOSS_HOME/standalone/configuration/standalone-ha.xml
-RUN sed -i -e 's/\/auth/\/keycloak\/auth"/' $JBOSS_HOME/welcome-content/index.html
-
-COPY setup-keycloak.sh /opt/jboss/startup-scripts/
-COPY update-realm.sh $JBOSS_HOME
-COPY standalone-logging.cli /opt/jboss/startup-scripts/
-
-USER root
-RUN chown jboss /opt/jboss/startup-scripts/setup-keycloak.sh && \
-    chown jboss /opt/jboss/startup-scripts/standalone-logging.cli && \
-    chmod +x /opt/jboss/startup-scripts/setup-keycloak.sh && \
-    chmod +x /opt/jboss/startup-scripts/standalone-logging.cli
-
-RUN chown jboss $JBOSS_HOME/update-realm.sh && \
-  chmod +x $JBOSS_HOME/update-realm.sh
-
-RUN microdnf install wget
-RUN microdnf install unzip
-
-RUN TEMP_PATH=$(mktemp -d) && \
-    cd ${TEMP_PATH} && \
+RUN cd /tmp && \
     wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O sormas.zip && \
-    unzip sormas.zip deploy/keycloak/*  && \
-    mv deploy/keycloak/themes/* $JBOSS_HOME/themes && \
-    mv deploy/keycloak/SORMAS.json $JBOSS_HOME/SORMAS.json && \
-    mv deploy/keycloak/*.jar $JBOSS_HOME/standalone/deployments && \
-    rm -rf ${TEMP_PATH}
-USER 1000
+    unzip sormas.zip
 
-ENV KEYCLOAK_IMPORT $JBOSS_HOME/SORMAS.json
-ENV KEYCLOAK_MIGRATION_STRATEGY IGNORE_EXISTING
+RUN mv /tmp/deploy/keycloak/themes/* themes/
 
-EXPOSE 8080
-EXPOSE 8443
+RUN mkdir "data/import" && \
+    mv /tmp/deploy/keycloak/SORMAS.json data/import/ && \
+    mv /tmp/deploy/keycloak/*.jar providers/
+
+RUN bin/kc.sh build --http-relative-path=keycloak --db postgres --spi-password-hashing-sormas-sha256-enabled=true
+
+# Runtime container
+FROM quay.io/keycloak/keycloak:18.0.1
+
+
+
+COPY --from=kc-builder /opt/keycloak/ /opt/keycloak/
+WORKDIR /opt/keycloak
+
+ENTRYPOINT ["bin/kc.sh", "start", "--proxy=edge", "--http-enabled=true", "--hostname-strict-https=false", "--import-realm", \
+ "--log-level=INFO,org.keycloak.events:DEBUG"]
