@@ -19,6 +19,7 @@ node {
 			SORMAS_VERSION = SORMAS_VERSION_NIGHTLY
 			sh """
 			sed -i 's,SORMAS_URL=.*\$,SORMAS_URL=http://10.160.41.100/,' ./.env
+			sed -i 's,SORMAS_VERSION=.*\$,SORMAS_VERSION=${SORMAS_VERSION},' ./.env
 			"""
         }
         else {
