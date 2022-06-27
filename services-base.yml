@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     image: hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
     environment:
+      - DB_JDBC_IDLE_TIMEOUT=${DB_JDBC_IDLE_TIMEOUT}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
@@ -49,8 +50,11 @@ services:
       - MAP_USECOUNTRYCENTER=${MAP_USECOUNTRYCENTER}
       - FEATURE_AUTOMATICCASECLASSIFICATION=${FEATURE_AUTOMATICCASECLASSIFICATION}      
       - GLOWROOT_ENABLED=${GLOWROOT_ENABLED}
-    #mem_limit: ${APPSERVER_MEM}
-    #mem_reservation: ${APPSERVER_MEM_RESERVED}
+      - PD_TOKENLIFETIME=${PD_TOKENLIFETIME}
+      - MAP_TILES_URL=${MAP_TILES_URL}
+      - MAP_TILES_ATTRIBUTION=${MAP_TILES_ATTRIBUTION}
+    mem_limit: ${APPSERVER_MEM}
+    mem_reservation: ${APPSERVER_MEM_RESERVED}
     ports:
       - "4000:4000"
 
@@ -67,8 +71,8 @@ services:
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
-    #mem_limit: ${DB_MEM}
-    #mem_reservation: ${DB_MEM_RESERVED}
+    mem_limit: ${DB_MEM}
+    mem_reservation: ${DB_MEM_RESERVED}
     healthcheck:
       test: ["CMD", "psql", "-U", "${SORMAS_POSTGRES_USER}", "-c", "SELECT 1;", "${DB_NAME}"]
       interval: 30s
@@ -87,12 +91,12 @@ services:
       - POSTGRES_USER=${KEYCLOAK_DB_USER}
       - POSTGRES_DB=${KEYCLOAK_DB_NAME}
       - TZ=${TZ}
-    #cpus: ${KEYCLOAK_DB_CPUS}
-    #mem_limit: ${KEYCLOAK_DB_MEM}
-    #mem_reservation: ${KEYCLOAK_DB_MEM_RESERVED}
+    cpus: ${KEYCLOAK_DB_CPUS}
+    mem_limit: ${KEYCLOAK_DB_MEM}
+    mem_reservation: ${KEYCLOAK_DB_MEM_RESERVED}
     healthcheck:
       test: [ "CMD", "psql", "-U", "${KEYCLOAK_DB_USER}", "-c", "SELECT 1;", "${KEYCLOAK_DB_NAME}" ]
-      interval: 15s
+      interval: 30s
       timeout: 3s
       retries: 3
       start_period: 30s
@@ -102,9 +106,9 @@ services:
     image: hzibraunschweig/sormas-pg-dump:${SORMAS_DOCKER_VERSION}
     environment:
       - TZ=${TZ}
-    #cpus: ${DB_DUMP_CPUS}
-    #mem_limit: ${DB_DUMP_MEM}
-    #mem_reservation: ${DB_DUMP_MEM_RESERVED}
+    cpus: ${DB_DUMP_CPUS}
+    mem_limit: ${DB_DUMP_MEM}
+    mem_reservation: ${DB_DUMP_MEM_RESERVED}
 
   base-apache2:
     restart: unless-stopped
@@ -114,9 +118,9 @@ services:
     environment:
       - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
       - TZ=${TZ}
-    #cpus: ${WEBSERVER_CPUS}
-    #mem_limit: ${WEBSERVER_MEM}
-    #mem_reservation: ${WEBSERVER_MEM_RESERVED}
+    cpus: ${WEBSERVER_CPUS}
+    mem_limit: ${WEBSERVER_MEM}
+    mem_reservation: ${WEBSERVER_MEM_RESERVED}
     healthcheck:
       test: ["CMD", "curl", "-f", "-I", "-k", "--resolve", "${SORMAS_SERVER_URL}:443:127.0.0.1", "https://${SORMAS_SERVER_URL}/downloads/"]
       interval: 30s
@@ -156,9 +160,9 @@ services:
     ports:
       - 443:443
       - 80:80
-    #cpus: ${WEBSERVER_CPUS}
-    #mem_limit: ${WEBSERVER_MEM}
-    #mem_reservation: ${WEBSERVER_MEM_RESERVED}
+    cpus: ${WEBSERVER_CPUS}
+    mem_limit: ${WEBSERVER_MEM}
+    mem_reservation: ${WEBSERVER_MEM_RESERVED}
 
   base-keycloak:
     restart: unless-stopped
@@ -169,8 +173,6 @@ services:
       args:
         - SORMAS_URL=${SORMAS_URL}
         - SORMAS_VERSION=${SORMAS_VERSION}
-        - SORMAS_SERVER_URL=${SORMAS_SERVER_URL}
-
     environment:
       - KC_HOSTNAME=${SORMAS_SERVER_URL}
       - KEYCLOAK_ADMIN_USER=${KEYCLOAK_ADMIN_USER}
@@ -181,12 +183,12 @@ services:
       - KEYCLOAK_SORMAS_UI_SECRET=${KEYCLOAK_SORMAS_UI_SECRET}
       - KEYCLOAK_SORMAS_REST_SECRET=${KEYCLOAK_SORMAS_REST_SECRET}
       - KEYCLOAK_SORMAS_BACKEND_SECRET=${KEYCLOAK_SORMAS_BACKEND_SECRET}
-    #cpus: ${KEYCLOAK_CPUS}
-    #mem_limit: ${KEYCLOAK_MEM}
-    #mem_reservation: ${KEYCLOAK_MEM_RESERVED}
+    cpus: ${KEYCLOAK_CPUS}
+    mem_limit: ${KEYCLOAK_MEM}
+    mem_reservation: ${KEYCLOAK_MEM_RESERVED}
     healthcheck:
-      test: ["CMD", "curl", "-f", "-I", "http://localhost:8080/keycloak/"]
-      interval: 15s
+      test: [ "CMD", "curl", "-f", "-I", "http://localhost:8080/keycloak/" ]
+      interval: 30s
       timeout: 3s
       retries: 3
-      start_period: 60s
+      start_period: 180s
