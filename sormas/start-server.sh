@@ -223,7 +223,7 @@ sed -i "/^feature.automaticcaseclassification/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^documentUploadSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^importFileSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^audit.logger.config/d" ${DOMAIN_DIR}/sormas.properties
-sed -i "/^audit.source.site/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^audit.source.site/d" ${DOMAIN_DIR}/properties
 
 echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ncountry.locale=${LOCALE}" >>${DOMAIN_DIR}/sormas.properties
@@ -375,13 +375,14 @@ fi
 #------------------SURVNET CONFIG
 sed -i "/^survnet\.url/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^survnet\.versionEndpoint/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^sormas\.district-external-id/d" "${DOMAIN_DIR}/sormas.properties"
+
 if [ ! -z "$SURVNET_ENABLED" ];then
 echo -e "\nsurvnet.url=${SURVNET_URL}" >>${DOMAIN_DIR}/sormas.properties
 if [ ! -z "$SURVNET_VERSION_ENDPOINT" ] && [ ! "$SURVNET_VERSION_ENDPOINT" == "" ];then
 echo -e "\nsurvnet.versionEndpoint=${SURVNET_VERSION_ENDPOINT}" >>${DOMAIN_DIR}/sormas.properties
 fi
 fi
-
 #------------------SORMAS-Stats CONFIG
 sed -i "/^sormasStats\.url/d" "${DOMAIN_DIR}/sormas.properties"
 if [ ! -z "$SORMAS_STATS_ENABLED" ] && [ "$SORMAS_STATS_ENABLED" == "true" ];then
