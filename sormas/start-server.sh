@@ -223,7 +223,7 @@ sed -i "/^feature.automaticcaseclassification/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^documentUploadSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^importFileSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^audit.logger.config/d" ${DOMAIN_DIR}/sormas.properties
-sed -i "/^audit.source.site/d" ${DOMAIN_DIR}/properties
+sed -i "/^audit.source.site/d" ${DOMAIN_DIR}/sormas.properties
 
 echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
 echo -e "\ncountry.locale=${LOCALE}" >>${DOMAIN_DIR}/sormas.properties
