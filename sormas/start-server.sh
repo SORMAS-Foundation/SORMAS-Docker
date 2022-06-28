@@ -134,7 +134,7 @@ if [ ! -z DB_JDBC_IDLE_TIMEOUT ] && [ ! -z DB_JDBC_MAXPOOLSIZE ] ; then
   delete_jdbc_connection_pool "jdbc/${DOMAIN_NAME}DataPool" "${DOMAIN_NAME}DataPool"
   ${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --idletimeout ${DB_JDBC_IDLE_TIMEOUT} --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}"  ${DOMAIN_NAME}DataPool
   ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}DataPool jdbc/${DOMAIN_NAME}DataPool
-else 
+else
   echo "JDBC pool could not be configured because of missing Variables DB_JDBC_IDLE_TIMEOUT or DB_JDBC_MAXPOOLSIZE"
   exit -1
 fi
@@ -390,11 +390,11 @@ echo -e "\nsormasStats.url=${SORMAS_STATS_URL}" >>${DOMAIN_DIR}/sormas.propertie
 fi
 
 #------------------DEMIS CONFIG
-if [ ! -z "$DEMIS_ENABLED" ];then
+if [ ! -z "$DEMIS_ENABLED" ] && [ ! -z "$DEMIS_VERSION" ] && [ "$DEMIS_VERSION" == "true" ] ;then
 set +e
 cp -a /tmp/${DOMAIN_NAME}/config/demis/. ${DOMAIN_DIR}/config/
 set -e
-echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
+echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisMessageFacade" >>${DOMAIN_DIR}/sormas.properties
 
 echo -e "debuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/config/demis-adapter.properties
 echo -e "\nfhir.basepath=${FHIR_BASEPATH}" >>${DOMAIN_DIR}/config/demis-adapter.properties
