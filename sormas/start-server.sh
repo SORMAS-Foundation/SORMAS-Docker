@@ -375,13 +375,14 @@ fi
 #------------------SURVNET CONFIG
 sed -i "/^survnet\.url/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^survnet\.versionEndpoint/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^sormas\.district-external-id/d" "${DOMAIN_DIR}/sormas.properties"
+
 if [ ! -z "$SURVNET_ENABLED" ];then
 echo -e "\nsurvnet.url=${SURVNET_URL}" >>${DOMAIN_DIR}/sormas.properties
 if [ ! -z "$SURVNET_VERSION_ENDPOINT" ] && [ ! "$SURVNET_VERSION_ENDPOINT" == "" ];then
 echo -e "\nsurvnet.versionEndpoint=${SURVNET_VERSION_ENDPOINT}" >>${DOMAIN_DIR}/sormas.properties
 fi
 fi
-
 #------------------SORMAS-Stats CONFIG
 sed -i "/^sormasStats\.url/d" "${DOMAIN_DIR}/sormas.properties"
 if [ ! -z "$SORMAS_STATS_ENABLED" ] && [ "$SORMAS_STATS_ENABLED" == "true" ];then
