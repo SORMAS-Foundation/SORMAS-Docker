@@ -389,7 +389,7 @@ echo -e "\nsormasStats.url=${SORMAS_STATS_URL}" >>${DOMAIN_DIR}/sormas.propertie
 fi
 
 #------------------DEMIS CONFIG
-if [ ! -z "$DEMIS_ENABLED" ];then
+if [ ! -z "$DEMIS_ENABLED" ] && [ ! -z "$DEMIS_VERSION" ] && [ "$DEMIS_VERSION" == "true" ] ;then
 set +e
 cp -a /tmp/${DOMAIN_NAME}/config/demis/. ${DOMAIN_DIR}/config/
 set -e
