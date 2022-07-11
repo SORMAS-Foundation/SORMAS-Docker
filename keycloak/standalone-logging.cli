@@ -1,4 +1,6 @@
 embed-server --server-config=standalone.xml --std-out=echo
 /subsystem=logging/logger=org.keycloak.events/:add(category=org.keycloak.events,level=DEBUG)
+/subsystem=logging/file-handler=EVENTLOG:add(file={"path"=>"events.log", "relative-to"=>"jboss.server.log.dir"})
+/subsystem=logging/logger=org.keycloak.events:add(use-parent-handlers="false", level=DEBUG, handlers=[EVENTLOG])
 stop-embedded-server
 
