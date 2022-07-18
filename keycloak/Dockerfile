@@ -18,7 +18,8 @@ RUN mkdir "data/import" && \
     mv /tmp/deploy/keycloak/SORMAS.json data/import/ && \
     mv /tmp/deploy/keycloak/*.jar providers/
 
-RUN bin/kc.sh build --http-relative-path=keycloak --db postgres --spi-password-hashing-sormas-sha256-enabled=true
+RUN bin/kc.sh build --http-relative-path=keycloak --db postgres --spi-password-hashing-sormas-sha256-enabled=true  \
+    --health-enabled=true
 
 # Runtime container
 FROM quay.io/keycloak/keycloak:18.0.1
