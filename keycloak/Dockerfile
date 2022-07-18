@@ -6,7 +6,7 @@ USER keycloak
 WORKDIR /opt/keycloak
 
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
-ARG SORMAS_VERSION=1.72.1
+ARG SORMAS_VERSION=1.73.0
 
 RUN cd /tmp && \
     wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O sormas.zip && \
@@ -23,10 +23,10 @@ RUN bin/kc.sh build --http-relative-path=keycloak --db postgres --spi-password-h
 # Runtime container
 FROM quay.io/keycloak/keycloak:18.0.1
 
-
-
 COPY --from=kc-builder /opt/keycloak/ /opt/keycloak/
 WORKDIR /opt/keycloak
 
-ENTRYPOINT ["bin/kc.sh", "start", "--proxy=edge", "--http-enabled=true", "--hostname-strict-https=false", "--import-realm", \
+RUN bin/kc.sh import --file data/import/SORMAS.json --override=true
+
+ENTRYPOINT ["bin/kc.sh", "start", "--proxy=edge", "--http-enabled=true", "--hostname-strict-https=false", \
  "--log-level=INFO,org.keycloak.events:DEBUG"]
