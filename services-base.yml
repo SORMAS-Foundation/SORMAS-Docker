@@ -168,11 +168,7 @@ services:
     restart: unless-stopped
     labels:
       - autoheal=true
-    build:
-      context: keycloak
-      args:
-        - SORMAS_URL=${SORMAS_URL}
-        - SORMAS_VERSION=${SORMAS_VERSION}
+    image: hzibraunschweig/sormas-keycloak:${SORMAS_DOCKER_VERSION}
     environment:
       - KC_HOSTNAME=${SORMAS_SERVER_URL}
       - KEYCLOAK_ADMIN_USER=${KEYCLOAK_ADMIN_USER}
@@ -180,6 +176,7 @@ services:
       - KC_DB_URL_HOST=${KEYCLOAK_DB_HOST}
       - KC_DB_USERNAME=${KEYCLOAK_DB_USER}
       - KC_DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+      - PROXY_ADDRESS_FORWARDING=true
       - KEYCLOAK_SORMAS_UI_SECRET=${KEYCLOAK_SORMAS_UI_SECRET}
       - KEYCLOAK_SORMAS_REST_SECRET=${KEYCLOAK_SORMAS_REST_SECRET}
       - KEYCLOAK_SORMAS_BACKEND_SECRET=${KEYCLOAK_SORMAS_BACKEND_SECRET}
@@ -191,4 +188,4 @@ services:
       interval: 30s
       timeout: 3s
       retries: 3
-      start_period: 180s
+      start_period: 300s
