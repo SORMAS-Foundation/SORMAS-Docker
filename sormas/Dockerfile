@@ -1,5 +1,7 @@
 FROM hzibraunschweig/sormas-rscript:3.5-5.2021.10
 
+# just a new comment
+
 ARG SORMAS_POSTGRES_PASSWORD=password
 ARG SORMAS_POSTGRES_USER=sormas_user
 ARG SORMAS_SERVER_URL=sormas-docker-test.com
