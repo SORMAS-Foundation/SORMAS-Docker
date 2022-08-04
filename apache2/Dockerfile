@@ -1,4 +1,4 @@
-FROM httpd:2.4-alpine
+FROM httpd:2.4.53-alpine
 ARG SORMAS_SERVER_URL
 
 ARG SORMAS_VERSION=1.74.1
