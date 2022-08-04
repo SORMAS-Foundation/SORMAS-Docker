@@ -134,7 +134,7 @@ if [ ! -z DB_JDBC_IDLE_TIMEOUT ] && [ ! -z DB_JDBC_MAXPOOLSIZE ] ; then
   delete_jdbc_connection_pool "jdbc/${DOMAIN_NAME}DataPool" "${DOMAIN_NAME}DataPool"
   ${ASADMIN} create-jdbc-connection-pool --restype javax.sql.ConnectionPoolDataSource --datasourceclassname org.postgresql.ds.PGConnectionPoolDataSource --isconnectvalidatereq true --validationmethod custom-validation --validationclassname org.glassfish.api.jdbc.validation.PostgresConnectionValidation --maxpoolsize ${DB_JDBC_MAXPOOLSIZE} --idletimeout ${DB_JDBC_IDLE_TIMEOUT} --property "portNumber=5432:databaseName=${DB_NAME}:serverName=${DB_HOST}:user=${SORMAS_POSTGRES_USER}:password=${SORMAS_POSTGRES_PASSWORD}"  ${DOMAIN_NAME}DataPool
   ${ASADMIN} create-jdbc-resource --connectionpoolid ${DOMAIN_NAME}DataPool jdbc/${DOMAIN_NAME}DataPool
-else 
+else
   echo "JDBC pool could not be configured because of missing Variables DB_JDBC_IDLE_TIMEOUT or DB_JDBC_MAXPOOLSIZE"
   exit -1
 fi
@@ -375,13 +375,14 @@ fi
 #------------------SURVNET CONFIG
 sed -i "/^survnet\.url/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^survnet\.versionEndpoint/d" "${DOMAIN_DIR}/sormas.properties"
+sed -i "/^sormas\.district-external-id/d" "${DOMAIN_DIR}/sormas.properties"
+
 if [ ! -z "$SURVNET_ENABLED" ];then
 echo -e "\nsurvnet.url=${SURVNET_URL}" >>${DOMAIN_DIR}/sormas.properties
 if [ ! -z "$SURVNET_VERSION_ENDPOINT" ] && [ ! "$SURVNET_VERSION_ENDPOINT" == "" ];then
 echo -e "\nsurvnet.versionEndpoint=${SURVNET_VERSION_ENDPOINT}" >>${DOMAIN_DIR}/sormas.properties
 fi
 fi
-
 #------------------SORMAS-Stats CONFIG
 sed -i "/^sormasStats\.url/d" "${DOMAIN_DIR}/sormas.properties"
 if [ ! -z "$SORMAS_STATS_ENABLED" ] && [ "$SORMAS_STATS_ENABLED" == "true" ];then
@@ -389,12 +390,17 @@ echo -e "\nsormasStats.url=${SORMAS_STATS_URL}" >>${DOMAIN_DIR}/sormas.propertie
 fi
 
 #------------------DEMIS CONFIG
-if [ ! -z "$DEMIS_ENABLED" ];then
+if [ ! -z "$DEMIS_ENABLED" ] ;then
 set +e
 cp -a /tmp/${DOMAIN_NAME}/config/demis/. ${DOMAIN_DIR}/config/
 set -e
+if  [ "$(printf '%s\n' "1.73.0" "$SORMAS_VERSION" | sort -V | head -n1)" = "1.73.0" ]; then 
+# new Facade for SORMAS >= 1.73.0
+echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisMessageFacade" >>${DOMAIN_DIR}/sormas.properties
+else 
+# old Facade for SORMAS < 1.73.0
 echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
-
+fi
 echo -e "debuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/config/demis-adapter.properties
 echo -e "\nfhir.basepath=${FHIR_BASEPATH}" >>${DOMAIN_DIR}/config/demis-adapter.properties
 echo -e "\nidp.tokenendpoint=${IDP_TOKENENDPOINT}" >>${DOMAIN_DIR}/config/demis-adapter.properties
