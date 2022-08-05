@@ -9,14 +9,16 @@ ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/downl
 
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --no-cache --upgrade tzdata openssl curl bash openssl
+    apk add --no-cache --upgrade tzdata openssl curl bash cjose=0.6.1-r1
 RUN mkdir -p /var/log/apache2/ \
   && mkdir /usr/local/apache2/conf.d/ \
   && chown -R www-data:www-data /var/log/apache2/
 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories 
+RUN echo "http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories 
+RUN echo "http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 RUN apk update
-RUN apk add --no-cache --upgrade apache-mod-auth-openidc=2.4.4.1-r0
+RUN apk add --no-cache --upgrade apache-mod-auth-openidc 
     
 COPY ./vhost.conf.sh /tmp/vhost.conf.sh
 COPY ./httpd.conf /usr/local/apache2/conf/httpd.conf
