@@ -1,7 +1,7 @@
 FROM httpd:2.4-alpine
 ARG SORMAS_SERVER_URL
 
-ARG SORMAS_VERSION=1.73.3
+ARG SORMAS_VERSION=1.74.3
 
 ENV SORMAS_VERSION=$SORMAS_VERSION
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
@@ -14,9 +14,11 @@ RUN mkdir -p /var/log/apache2/ \
   && mkdir /usr/local/apache2/conf.d/ \
   && chown -R www-data:www-data /var/log/apache2/
 
-RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
-    apk update && \
-    apk add --no-cache --upgrade apache-mod-auth-openidc
+RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories 
+RUN echo "http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories 
+RUN echo "http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+RUN apk update
+RUN apk add --no-cache --upgrade apache-mod-auth-openidc 
     
 COPY ./vhost.conf.sh /tmp/vhost.conf.sh
 COPY ./httpd.conf /usr/local/apache2/conf/httpd.conf
