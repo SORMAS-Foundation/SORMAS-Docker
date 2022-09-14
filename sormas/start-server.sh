@@ -225,34 +225,68 @@ sed -i "/^importFileSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^audit.logger.config/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^audit.source.site/d" ${DOMAIN_DIR}/sormas.properties
 
+if [ ! -z "$CREATE_DEFAULT_ENTITIES" ] && [ ! "$CREATE_DEFAULT_ENTITIES" == "" ];then
 echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$LOCALE" ] && [ ! "$LOCALE" == "" ];then
 echo -e "\ncountry.locale=${LOCALE}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$COUNTRY_NAME" ] && [ ! "$COUNTRY_NAME" == "" ];then
 echo -e "\ncountry.name=${COUNTRY_NAME}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$EPIDPREFIX" ] && [ ! "$EPIDPREFIX" == "" ];then
 echo -e "\ncountry.epidprefix=${EPIDPREFIX}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$SEPARATOR" ] && [ ! "$SEPARATOR" == "" ];then
 echo -e "\ncsv.separator=${SEPARATOR}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$EMAIL_SENDER_ADDRESS" ] && [ ! "$EMAIL_SENDER_ADDRESS" == "" ];then
 echo -e "\nemail.sender.address=${EMAIL_SENDER_ADDRESS}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$EMAIL_SENDER_NAME" ] && [ ! "$EMAIL_SENDER_NAME" == "" ];then
 echo -e "\nemail.sender.name=${EMAIL_SENDER_NAME}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$LATITUDE" ] && [ ! "$LATITUDE" == "" ];then
 echo -e "\ncountry.center.latitude=${LATITUDE}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$LONGITUDE" ] && [ ! "$LONGITUDE" == "" ];then
 echo -e "\ncountry.center.longitude=${LONGITUDE}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$MAP_ZOOM" ] && [ ! "$MAP_ZOOM" == "" ];then
 echo -e "\nmap.zoom=${MAP_ZOOM}" >>${DOMAIN_DIR}/sormas.properties
+fi
 if [ ! -z "$MAP_TILES_URL" ] && [ "$MAP_TILES_URL" != "" ];then
 echo -e "\nmap.tiles.url=${MAP_TILES_URL}" >>${DOMAIN_DIR}/sormas.properties
 fi
 if [ ! -z "$MAP_TILES_ATTRIBUTION" ] && [ "$MAP_TILES_ATTRIBUTION" != "" ];then
 echo -e "\nmap.tiles.attribution=${MAP_TILES_ATTRIBUTION}" >>${DOMAIN_DIR}/sormas.properties
 fi
+if [ ! -z "$SORMAS_SERVER_URL" ] && [ ! "$SORMAS_SERVER_URL" == "" ] && [ ! -z "$SORMAS_VERSION" ] && [ ! "$SORMAS_VERSION" == "" ];then
 echo -e "\napp.url=https://${SORMAS_SERVER_URL}/downloads/release/sormas-${SORMAS_VERSION}-release.apk" >>${DOMAIN_DIR}/sormas.properties
+fi
 if [ -n "${UI_URL}" ]; then
   echo -e "\nui.url=https://${SORMAS_SERVER_URL}/sormas-ui/"
 else
   echo -e "\nui.url=${UI_URL}"
 fi
+if [ ! -z "$NAMESIMILARITYTHRESHOLD" ] && [ "$NAMESIMILARITYTHRESHOLD" != "" ];then
 echo -e "\nnamesimilaritythreshold=${NAMESIMILARITYTHRESHOLD}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES" ] && [ "$DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES" != "" ];then
 echo -e "\nduplicatechecks.excludepersonsonlylinkedtoarchivedentries=${DC_EXCLUDE_ARCHIVED_PERSON_ENTRIES}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$MAP_USECOUNTRYCENTER" ] && [ "$MAP_USECOUNTRYCENTER" != "" ];then
 echo -e "\nmap.usecountrycenter=${MAP_USECOUNTRYCENTER}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$FEATURE_AUTOMATICCASECLASSIFICATION" ] && [ "$FEATURE_AUTOMATICCASECLASSIFICATION" != "" ];then
 echo -e "\nfeature.automaticcaseclassification=${FEATURE_AUTOMATICCASECLASSIFICATION}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$DOCUMENTUPLOADSIZELIMITMB" ] && [ "$DOCUMENTUPLOADSIZELIMITMB" != "" ];then
 echo -e "\ndocumentUploadSizeLimitMb=${DOCUMENTUPLOADSIZELIMITMB}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$IMPORTFILESIZELIMITMB" ] && [ "$IMPORTFILESIZELIMITMB" != "" ];then
 echo -e "\nimportFileSizeLimitMb=${IMPORTFILESIZELIMITMB}" >>${DOMAIN_DIR}/sormas.properties
+fi
 
 if [ ! -z "$AUDIT_LOGGER_CONFIG" ] && [ "$AUDIT_LOGGER_CONFIG" != "" ];then
 echo -e "\naudit.logger.config=${AUDIT_LOGGER_CONFIG}" >>${DOMAIN_DIR}/sormas.properties
@@ -264,24 +298,48 @@ sed -i "/^geocodingServiceUrlTemplate/d " ${DOMAIN_DIR}/sormas.properties
 sed -i "/^geocodingLongitudeJsonPath/d " ${DOMAIN_DIR}/sormas.properties
 sed -i "/^geocodingLatitudeJsonPath/d " ${DOMAIN_DIR}/sormas.properties
 
+if [ ! -z "$GEO_TEMPLATE" ] && [ "$GEO_TEMPLATE" != "" ];then
 echo -e "\ngeocodingServiceUrlTemplate=${GEO_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$GEO_LONG_TEMPLATE" ] && [ "$GEO_LONG_TEMPLATE" != "" ];then
 echo -e "geocodingLongitudeJsonPath=${GEO_LONG_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$GEO_LAT_TEMPLATE" ] && [ "$GEO_LAT_TEMPLATE" != "" ];then
 echo -e "geocodingLatitudeJsonPath=${GEO_LAT_TEMPLATE}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$GEO_UUID" ] && [ "$GEO_UUID" != "" ];then
 sed -i "s/\${GEO_UUID}/${GEO_UUID}/" ${DOMAIN_DIR}/sormas.properties
+fi
 
 sed -i "s/\#rscript.executable=.*/rscript.executable=Rscript/" ${DOMAIN_DIR}/sormas.properties
 sed -i "/devmode=/d " ${DOMAIN_DIR}/sormas.properties
+if [ ! -z "$DEVMODE" ] && [ "$DEVMODE" != "" ];then
 echo -e "\ndevmode=${DEVMODE}" >> ${DOMAIN_DIR}/sormas.properties
+fi
 
 #------------------PIA CONFIG
 if [ ! -z "$PIA_URL" ];then
+if [ ! -z "$PIA_URL" ] && [ "$PIA_URL" != "" ];then
 sed -i "s/\#interface.pia.url=.*/interface.pia.url=${PIA_URL}/" ${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$SJ_URL" ] && [ "$SJ_URL" != "" ];then
 echo -e "\ninterface.symptomjournal.url = ${SJ_URL}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$SJ_AUTH" ] && [ "$SJ_AUTH" != "" ];then
 echo "interface.symptomjournal.authurl = ${SJ_AUTH}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$SJ_CLIENTID" ] && [ "$SJ_CLIENTID" != "" ];then
 echo "interface.symptomjournal.clientid = ${SJ_CLIENTID}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$SJ_SECRET" ] && [ "$SJ_SECRET" != "" ];then
 echo "interface.symptomjournal.secret = ${SJ_SECRET}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$SJ_DEFAULT_USERNAME" ] && [ "$SJ_DEFAULT_USERNAME" != "" ];then
 echo "interface.symptomjournal.defaultuser.username = ${SJ_DEFAULT_USERNAME}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$SJ_DEFAULT_PASSWORD" ] && [ "$SJ_DEFAULT_PASSWORD" != "" ];then
 echo "interface.symptomjournal.defaultuser.password = ${SJ_DEFAULT_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
+fi
 fi
 
 #------------------CLIMEDO CONFIG
@@ -295,13 +353,27 @@ sed -i "/^interface\.patientdiary\.defaultuser\.password/d" "${DOMAIN_DIR}/sorma
 sed -i "/^interface\.patientdiary\.tokenLifetime\.password/d" "${DOMAIN_DIR}/sormas.properties"
 
 if [ ! -z "$PATIENTDIARY_ENABLED" ];then
+if [ ! -z "$PD_URL" ] && [ "$PD_URL" != "" ];then
 echo -e "\ninterface.patientdiary.url=${PD_URL}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$PD_PROBANDS_URL" ] && [ "$PD_PROBANDS_URL" != "" ];then
 echo -e "\ninterface.patientdiary.probandsurl=${PD_PROBANDS_URL}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$PD_AUTH_URL" ] && [ "$PD_AUTH_URL" != "" ];then
 echo -e "\ninterface.patientdiary.authurl=${PD_AUTH_URL}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$PD_EMAIL" ] && [ "$PD_EMAIL" != "" ];then
 echo -e "\ninterface.patientdiary.email=${PD_EMAIL}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$PD_PASSWORD" ] && [ "$PD_PASSWORD" != "" ];then
 echo -e "\ninterface.patientdiary.password=${PD_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$PD_DEFAULT_USERNAME" ] && [ "$PD_DEFAULT_USERNAME" != "" ];then
 echo -e "\ninterface.patientdiary.defaultuser.username=${PD_DEFAULT_USERNAME}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$PD_DEFAULT_PASSWORD" ] && [ "$PD_DEFAULT_PASSWORD" != "" ];then
 echo -e "\ninterface.patientdiary.defaultuser.password=${PD_DEFAULT_PASSWORD}" >>${DOMAIN_DIR}/sormas.properties
+fi
 if [ ! -z "$PD_ACCEPTPHONECONTACT" ] && ([ "$PD_ACCEPTPHONECONTACT" == "true" ] || [ "$PD_ACCEPTPHONECONTACT" == "True" ]);then
 echo -e "\ninterface.patientdiary.acceptPhoneContact=${PD_ACCEPTPHONECONTACT}" >>${DOMAIN_DIR}/sormas.properties
 fi
@@ -315,11 +387,21 @@ fi
 
 #------------------BRANDING CONFIG
 if [ ! -z "$CUSTOMBRANDING_ENABLED" ];then
+if [ "$CUSTOMBRANDING_ENABLED" != "" ];then
 sed -i "s/\#custombranding=false/custombranding=${CUSTOMBRANDING_ENABLED}/" ${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$CUSTOMBRANDING_NAME" ] && [ "$CUSTOMBRANDING_NAME" != "" ];then
 sed -i "s/\#custombranding.name=.*/custombranding.name=${CUSTOMBRANDING_NAME}/" ${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$CUSTOMBRANDING_LOGO_PATH" ] && [ "$CUSTOMBRANDING_LOGO_PATH" != "" ];then
 echo -e "\ncustombranding.logo.path=${CUSTOMBRANDING_LOGO_PATH}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$CUSTOMBRANDING_USE_LOGINSIDEBAR" ] && [ "$CUSTOMBRANDING_USE_LOGINSIDEBAR" != "" ];then
 echo -e "\ncustombranding.useloginsidebar=${CUSTOMBRANDING_USE_LOGINSIDEBAR}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$CUSTOMBRANDING_LOGINBACKGROUND_PATH" ] && [ "$CUSTOMBRANDING_LOGINBACKGROUND_PATH" != "" ];then
 echo -e "\ncustombranding.loginbackground.path=${CUSTOMBRANDING_LOGINBACKGROUND_PATH}" >>${DOMAIN_DIR}/sormas.properties
+fi
 fi
 
 ### SORMAS CENTRAL ###
@@ -378,14 +460,16 @@ sed -i "/^survnet\.versionEndpoint/d" "${DOMAIN_DIR}/sormas.properties"
 sed -i "/^sormas\.district-external-id/d" "${DOMAIN_DIR}/sormas.properties"
 
 if [ ! -z "$SURVNET_ENABLED" ];then
+if [ ! -z "$SURVNET_URL" ] && [ "$SURVNET_URL" != "" ];then
 echo -e "\nsurvnet.url=${SURVNET_URL}" >>${DOMAIN_DIR}/sormas.properties
+fi
 if [ ! -z "$SURVNET_VERSION_ENDPOINT" ] && [ ! "$SURVNET_VERSION_ENDPOINT" == "" ];then
 echo -e "\nsurvnet.versionEndpoint=${SURVNET_VERSION_ENDPOINT}" >>${DOMAIN_DIR}/sormas.properties
 fi
 fi
 #------------------SORMAS-Stats CONFIG
 sed -i "/^sormasStats\.url/d" "${DOMAIN_DIR}/sormas.properties"
-if [ ! -z "$SORMAS_STATS_ENABLED" ] && [ "$SORMAS_STATS_ENABLED" == "true" ];then
+if [ ! -z "$SORMAS_STATS_ENABLED" ] && [ "$SORMAS_STATS_ENABLED" == "true" ] && [ ! -z "$SORMAS_STATS_URL" ] && [ ! "$SORMAS_STATS_URL" == "" ];then
 echo -e "\nsormasStats.url=${SORMAS_STATS_URL}" >>${DOMAIN_DIR}/sormas.properties
 fi
 
@@ -396,10 +480,14 @@ cp -a /tmp/${DOMAIN_NAME}/config/demis/. ${DOMAIN_DIR}/config/
 set -e
 if  [ "$(printf '%s\n' "1.73.0" "$SORMAS_VERSION" | sort -V | head -n1)" = "1.73.0" ]; then 
 # new Facade for SORMAS >= 1.73.0
+if [ ! -z "$DEMIS_VERSION" ] && [ "$DEMIS_VERSION" != "" ];then
 echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisMessageFacade" >>${DOMAIN_DIR}/sormas.properties
+fi
 else 
 # old Facade for SORMAS < 1.73.0
+if [ ! -z "$DEMIS_VERSION" ] && [ "$DEMIS_VERSION" != "" ];then
 echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
+fi
 fi
 echo -e "debuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/config/demis-adapter.properties
 echo -e "\nfhir.basepath=${FHIR_BASEPATH}" >>${DOMAIN_DIR}/config/demis-adapter.properties
