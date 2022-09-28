@@ -14,9 +14,11 @@ RUN mkdir -p /var/log/apache2/ \
   && mkdir /usr/local/apache2/conf.d/ \
   && chown -R www-data:www-data /var/log/apache2/
 
-COPY mod_auth_openidc.so /usr/lib/apache2/mod_auth_openidc.so
-RUN chmod 755 /usr/lib/apache2/mod_auth_openidc.so
-    
+COPY mod_auth_openidc.so .
+RUN /usr/bin/install -c -d /usr/lib/apache2 && \
+  /usr/bin/install -c -p -m 755 ./mod_auth_openidc.so /usr/lib/apache2/mod_auth_openidc.so
+
+   
 COPY ./vhost.conf.sh /tmp/vhost.conf.sh
 COPY ./httpd.conf /usr/local/apache2/conf/httpd.conf
 COPY ./httpd-ssl.conf /usr/local/apache2/conf/extra/httpd-ssl.conf
