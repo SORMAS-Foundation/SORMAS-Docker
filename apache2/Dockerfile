@@ -14,11 +14,9 @@ RUN mkdir -p /var/log/apache2/ \
   && mkdir /usr/local/apache2/conf.d/ \
   && chown -R www-data:www-data /var/log/apache2/
 
-RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories 
-RUN echo "http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories 
-RUN echo "http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
-RUN apk update
-RUN apk add --no-cache --upgrade apache-mod-auth-openidc 
+COPY mod_auth_openidc.so .
+
+RUN /usr/bin/install -c -d /usr/local/apache2/modules && /usr/bin/install -c -p -m 755 ./mod_auth_openidc.so /usr/local/apache2/modules/mod_auth_openidc.so
     
 COPY ./vhost.conf.sh /tmp/vhost.conf.sh
 COPY ./httpd.conf /usr/local/apache2/conf/httpd.conf
