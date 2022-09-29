@@ -6,12 +6,15 @@ ARG SORMAS_VERSION=1.75.2
 ENV SORMAS_VERSION=$SORMAS_VERSION
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 
+ENV MOD_AUTH_OPENIDC_REPOSITORY https://github.com/zmartzone/mod_auth_openidc.git
 
+ENV MOD_AUTH_OPENIDC_BRANCH master
 
+ENV BUILD_DIR /tmp/mod_auth_openidc
 
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --no-cache --upgrade tzdata openssl curl bash openssl3 curl jansson pcre libcrypto3 
+    apk add --no-cache --upgrade tzdata openssl3 jansson pcre hiredis 
 RUN mkdir -p /var/log/apache2/ \
   && mkdir /usr/local/apache2/conf.d/ \
   && chown -R www-data:www-data /var/log/apache2/
@@ -20,10 +23,13 @@ RUN mkdir -p /var/log/apache2/ \
 RUN ls -la /lib/libcr*
 RUN ls -la /usr/lib/libcr*
 
-RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories 
+RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 
-RUN apk update --no-cache && \
-    apk add cjose 
+RUN apk update && \
+    apk add \
+    cjose \
+    cjose-dev 
+     
 
 COPY mod_auth_openidc.so .
 RUN /usr/bin/install -c -d /usr/lib/apache2 && \
