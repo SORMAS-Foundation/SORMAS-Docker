@@ -14,14 +14,10 @@ ENV BUILD_DIR /tmp/mod_auth_openidc
 
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --no-cache --upgrade tzdata jansson pcre hiredis 
+    apk add --no-cache --upgrade tzdata jansson pcre hiredis bash
 RUN mkdir -p /var/log/apache2/ \
   && mkdir /usr/local/apache2/conf.d/ \
   && chown -R www-data:www-data /var/log/apache2/
-
-
-RUN ls -la /lib/libcr*
-RUN ls -la /usr/lib/libcr*
 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories 
@@ -43,6 +39,7 @@ COPY ./httpd.conf /usr/local/apache2/conf/httpd.conf
 COPY ./httpd-ssl.conf /usr/local/apache2/conf/extra/httpd-ssl.conf
 RUN chmod +x /tmp/vhost.conf.sh
 
+RUN ls -la /tmp
 
 RUN mkdir -p /var/www/sormas/downloads && \
     DEPLOY_PATH=$(mktemp -d) && \
