@@ -9,6 +9,10 @@ ENV APACHE_LOG_DIR /var/log/apache2
 
 ENV APACHE_DEFAULT_CONF /etc/apache2/httpd.conf
 
+RUN whoami
+
+USER root
+
 # add testing repository (for cjose library)
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories 
