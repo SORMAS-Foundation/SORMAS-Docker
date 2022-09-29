@@ -22,7 +22,7 @@ RUN apk add git apache2-dev cjose-dev openssl-dev curl-dev jansson-dev pcre-dev 
 RUN mkdir -p /usr/src/apache2 && cd /usr/src/apache2
 RUN wget https://github.com/zmartzone/mod_auth_openidc/archive/refs/tags/v${MOD_AUTH_OPENIDC_VERSION}.tar.gz
 RUN tar xzvf v${MOD_AUTH_OPENIDC_VERSION}.tar.gz && cd mod_auth_openidc-${MOD_AUTH_OPENIDC_VERSION}/
-RUN ./autogen.sh && ./configure && make && make install 
+RUN cd /usr/src/apache2/mod_auth_openidc-${MOD_AUTH_OPENIDC_VERSION}/ && ls -la && ./autogen.sh && ./configure && make && make install 
 
 
 
