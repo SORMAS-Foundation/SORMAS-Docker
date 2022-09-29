@@ -1,29 +1,49 @@
 FROM httpd:2.4-alpine as build
-ARG SORMAS_SERVER_URL
+ENV MOD_AUTH_OPENIDC_REPOSITORY https://github.com/zmartzone/mod_auth_openidc.git
 
-ARG SORMAS_VERSION=1.75.2
-ARG MOD_AUTH_OPENIDC_VERSION=2.4.11.3
+ENV MOD_AUTH_OPENIDC_BRANCH master
 
-ENV SORMAS_VERSION=$SORMAS_VERSION
-ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
+ENV BUILD_DIR /tmp/mod_auth_openidc
 
+ENV APACHE_LOG_DIR /var/log/apache2
+
+ENV APACHE_DEFAULT_CONF /etc/apache2/httpd.conf
+
+# add testing repository (for cjose library)
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 
-RUN apk update --no-cache && \
-    apk upgrade --no-cache && \
-    apk add --no-cache --upgrade tzdata openssl curl bash
-RUN mkdir -p /var/log/apache2/ \
-  && mkdir /usr/local/apache2/conf.d/ \
-  && chown -R www-data:www-data /var/log/apache2/
+# ADD source
+RUN mkdir ${BUILD_DIR}
 
-RUN apk add git apache2-dev cjose-dev openssl-dev curl-dev jansson-dev pcre-dev pkgconf wget autoconf automake libtool make g++
-RUN mkdir -p /usr/src/apache2 && cd /usr/src/apache2
-RUN cd /usr/src/apache2 && wget https://github.com/zmartzone/mod_auth_openidc/archive/refs/tags/v${MOD_AUTH_OPENIDC_VERSION}.tar.gz && tar xzvf v${MOD_AUTH_OPENIDC_VERSION}.tar.gz && cd mod_auth_openidc-${MOD_AUTH_OPENIDC_VERSION}/
-RUN cd /usr/src/apache2/mod_auth_openidc-${MOD_AUTH_OPENIDC_VERSION}/ && ls -la &&  bash ./autogen.sh && bash ./configure && make && mkdir -p /tmp && cp .libs/mod_auth_openidc.so /tmp
-
-
+# add dependencies, build and install mod_auth_openidc, need atomic operation for image size
+RUN apk update && apk add --no-cache \
+  apache2 \
+  apache2-proxy \
+  wget \
+  jansson \
+  hiredis \
+  cjose \
+  cjose-dev \
+  git \
+  autoconf \
+  build-base \
+  automake \
+  curl \
+  apache2-dev \
+  curl-dev \
+  pcre-dev \
+  libtool \
+  && \
+  cd ${BUILD_DIR} && \
+  git clone -b ${MOD_AUTH_OPENIDC_BRANCH} ${MOD_AUTH_OPENIDC_REPOSITORY} && \
+  cd mod_auth_openidc && \
+  ./autogen.sh && \
+  ./configure CFLAGS="-g -O0" LDFLAGS="-lrt" && \
+  make test && \
+  make install && \
+  cp .libs/mod_auth_openidc.so /tmp
 
 
 FROM httpd:2.4-alpine
