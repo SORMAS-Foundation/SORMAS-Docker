@@ -21,7 +21,7 @@ RUN mkdir -p /var/log/apache2/ \
 RUN apk add git apache2-dev cjose-dev openssl-dev curl-dev jansson-dev pcre-dev pkgconf wget autoconf automake libtool make g++
 RUN mkdir -p /usr/src/apache2 && cd /usr/src/apache2
 RUN cd /usr/src/apache2 && wget https://github.com/zmartzone/mod_auth_openidc/archive/refs/tags/v${MOD_AUTH_OPENIDC_VERSION}.tar.gz && tar xzvf v${MOD_AUTH_OPENIDC_VERSION}.tar.gz && cd mod_auth_openidc-${MOD_AUTH_OPENIDC_VERSION}/
-RUN cd /usr/src/apache2/mod_auth_openidc-${MOD_AUTH_OPENIDC_VERSION}/ && ls -la && ./autogen.sh && ./configure && make && make install 
+RUN cd /usr/src/apache2/mod_auth_openidc-${MOD_AUTH_OPENIDC_VERSION}/ && ls -la &&  bash ./autogen.sh && bash ./configure && make && mkdir -p /tmp && cp .libs/mod_auth_openidc.so /tmp
 
 
 
@@ -33,12 +33,6 @@ ARG SORMAS_VERSION=1.75.2
 
 ENV SORMAS_VERSION=$SORMAS_VERSION
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
-
-ENV MOD_AUTH_OPENIDC_REPOSITORY https://github.com/zmartzone/mod_auth_openidc.git
-
-ENV MOD_AUTH_OPENIDC_BRANCH master
-
-ENV BUILD_DIR /tmp/mod_auth_openidc
 
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
@@ -57,7 +51,7 @@ RUN apk update && \
     cjose-dev 
      
 
-COPY mod_auth_openidc.so .
+COPY --from=build /tmp/mod_auth_openidc.so .
 RUN /usr/bin/install -c -d /usr/lib/apache2 && \
   /usr/bin/install -c -p -m 755 ./mod_auth_openidc.so /usr/lib/apache2/mod_auth_openidc.so
 
