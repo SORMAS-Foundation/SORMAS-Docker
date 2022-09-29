@@ -40,7 +40,7 @@ RUN apk update && apk add --no-cache \
   git clone -b ${MOD_AUTH_OPENIDC_BRANCH} ${MOD_AUTH_OPENIDC_REPOSITORY} && \
   cd mod_auth_openidc && \
   ./autogen.sh && \
-  ./configure CFLAGS="-g -O0" LDFLAGS="-lrt" && \
+  ./configure CFLAGS="-g -O0" LDFLAGS="-lrt" --disable-dependency-tracking && \
   make test && \
   make install && \
   cp .libs/mod_auth_openidc.so /tmp
