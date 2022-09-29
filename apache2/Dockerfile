@@ -6,6 +6,8 @@ ARG SORMAS_VERSION=1.75.2
 ENV SORMAS_VERSION=$SORMAS_VERSION
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 
+RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories 
+
 
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
