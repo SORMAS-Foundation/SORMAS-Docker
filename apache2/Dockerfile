@@ -11,7 +11,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositorie
 
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --no-cache --upgrade tzdata openssl curl bash cjose openssl curl jansson pcre 
+    apk add --no-cache --upgrade tzdata openssl curl bash cjose openssl curl jansson pcre libcrypto3
 RUN mkdir -p /var/log/apache2/ \
   && mkdir /usr/local/apache2/conf.d/ \
   && chown -R www-data:www-data /var/log/apache2/
