@@ -18,7 +18,7 @@ RUN mkdir -p /var/log/apache2/ \
   && mkdir /usr/local/apache2/conf.d/ \
   && chown -R www-data:www-data /var/log/apache2/
 
-RUN apk add git apache2-dev cjose-dev openssl-dev curl-dev jansson-dev pcre-dev pkgconc wget autoconf automake libtool make g++
+RUN apk add git apache2-dev cjose-dev openssl-dev curl-dev jansson-dev pcre-dev pkgconf wget autoconf automake libtool make g++
 RUN mkdir -p /usr/src/apache2 && cd /usr/src/apache2
 RUN wget https://github.com/zmartzone/mod_auth_openidc/archive/refs/tags/v${MOD_AUTH_OPENIDC_VERSION}.tar.gz
 RUN tar xzvf v${MOD_AUTH_OPENIDC_VERSION}.tar.gz && cd mod_auth_openidc-${MOD_AUTH_OPENIDC_VERSION}/
