@@ -14,7 +14,7 @@ ENV BUILD_DIR /tmp/mod_auth_openidc
 
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --no-cache --upgrade tzdata openssl3 jansson pcre hiredis 
+    apk add --no-cache --upgrade tzdata jansson pcre hiredis 
 RUN mkdir -p /var/log/apache2/ \
   && mkdir /usr/local/apache2/conf.d/ \
   && chown -R www-data:www-data /var/log/apache2/
