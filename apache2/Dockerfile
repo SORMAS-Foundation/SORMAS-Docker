@@ -23,7 +23,9 @@ RUN mkdir -p /var/log/apache2/ \
 RUN ls -la /lib/libcr*
 RUN ls -la /usr/lib/libcr*
 
-RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories 
+RUN echo "http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories 
+RUN echo "http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 
 RUN apk update && \
     apk add \
