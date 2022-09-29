@@ -1,3 +1,32 @@
+FROM httpd:2.4-alpine as build
+ARG SORMAS_SERVER_URL
+
+ARG SORMAS_VERSION=1.75.2
+ARG MOD_AUTH_OPENIDC_VERSION=2.4.11.3
+
+ENV SORMAS_VERSION=$SORMAS_VERSION
+ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
+
+RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories 
+RUN echo "http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories 
+RUN echo "http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+
+RUN apk update --no-cache && \
+    apk upgrade --no-cache && \
+    apk add --no-cache --upgrade tzdata openssl curl bash
+RUN mkdir -p /var/log/apache2/ \
+  && mkdir /usr/local/apache2/conf.d/ \
+  && chown -R www-data:www-data /var/log/apache2/
+
+RUN apk add git apache2-dev cjose-dev openssl-dev curl-dev jansson-dev pcre-dev pkgconc wget autoconf automake libtool make g++
+RUN mkdir -p /usr/src/apache2 && cd /usr/src/apache2
+RUN wget https://github.com/zmartzone/mod_auth_openidc/archive/refs/tags/v${MOD_AUTH_OPENIDC_VERSION}.tar.gz
+RUN tar xzvf v${MOD_AUTH_OPENIDC_VERSION}.tar.gz && cd mod_auth_openidc-${MOD_AUTH_OPENIDC_VERSION}/
+RUN ./autogen.sh && ./configure && make && make install 
+
+
+
+
 FROM httpd:2.4-alpine
 ARG SORMAS_SERVER_URL
 
