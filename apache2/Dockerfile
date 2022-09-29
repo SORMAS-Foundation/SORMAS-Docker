@@ -17,11 +17,13 @@ RUN mkdir -p /var/log/apache2/ \
   && chown -R www-data:www-data /var/log/apache2/
 
 
+RUN ls -la /lib/libcr*
+RUN ls -la /usr/lib/libcr*
+
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories 
 
 RUN apk update --no-cache && \
-    apk upgrade --no-cache && \
-    apk add --no-cache --upgrade cjose 
+    apk add cjose 
 
 COPY mod_auth_openidc.so .
 RUN /usr/bin/install -c -d /usr/lib/apache2 && \
