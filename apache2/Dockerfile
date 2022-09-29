@@ -19,7 +19,7 @@ RUN mkdir -p /var/log/apache2/ \
 
 RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories 
 
-UN apk update --no-cache && \
+RUN apk update --no-cache && \
     apk upgrade --no-cache && \
     apk add --no-cache --upgrade cjose 
 
