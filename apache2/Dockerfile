@@ -11,7 +11,7 @@ ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/downl
 
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --no-cache --upgrade tzdata openssl curl bash openssl curl jansson pcre libcrypto3
+    apk add --no-cache --upgrade tzdata openssl curl bash openssl3 curl jansson pcre libcrypto3 
 RUN mkdir -p /var/log/apache2/ \
   && mkdir /usr/local/apache2/conf.d/ \
   && chown -R www-data:www-data /var/log/apache2/
