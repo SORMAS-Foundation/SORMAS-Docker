@@ -22,15 +22,28 @@ node {
 			sed -i 's,SORMAS_VERSION=.*\$,SORMAS_VERSION=${SORMAS_VERSION},' ./.env
 			"""
         }
+        
         else {
-            echo 'Build Version from .env'
-            SORMAS_VERSION = sh (
-            	script: "source ./.env &> /dev/null && echo \$SORMAS_VERSION",
-            	returnStdout: true
-            ).trim()
+            if (params.VERSION_TO_BUILD != null) {
+                echo 'Build Version specified in parameters: ${params.VERSION_TO_BUILD}'
+                SORMAS_VERSION = params.VERSION_TO_BUILD
+            }
+            else {
+                echo 'Build Version from .env'
+                SORMAS_VERSION = sh (
+            	    script: "source ./.env &> /dev/null && echo \$SORMAS_VERSION",
+            	    returnStdout: true
+                ).trim()
+            }            
         }
+        if (params.SORMAS_DOCKER_VERSION != null) {
+            echo 'Set SORMAS_DOCKER_VERSION to ${SORMAS_DOCKER_VERSION}'
+            sh """
+		    sed -i 's,SORMAS_DOCKER_VERSION=.#*\$,SORMAS_DOCKER_VERSION=${SORMAS_DOCKER_VERSION},' ./.env
+            """                                           
+        }
+
         sh """
-		sed -i 's,SORMAS_DOCKER_VERSION=.#*\$,SORMAS_DOCKER_VERSION=${SORMAS_DOCKER_VERSION},' ./.env
 		sed -i "/^GEO_TEMPLATE/d " ./.env
 		cat ./.env
         """        
