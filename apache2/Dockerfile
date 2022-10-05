@@ -1,7 +1,7 @@
 FROM httpd:2.4-alpine as build
 ARG SORMAS_SERVER_URL
 
-ARG SORMAS_VERSION=1.75.2
+ARG SORMAS_VERSION=1.75.3
 ARG MOD_AUTH_OPENIDC_VERSION=2.4.11.3
 
 ENV SORMAS_VERSION=$SORMAS_VERSION
@@ -29,14 +29,14 @@ RUN cd /usr/src/apache2/mod_auth_openidc-${MOD_AUTH_OPENIDC_VERSION}/ && ls -la 
 FROM httpd:2.4-alpine
 ARG SORMAS_SERVER_URL
 
-ARG SORMAS_VERSION=1.75.2
+ARG SORMAS_VERSION=1.75.3
 
 ENV SORMAS_VERSION=$SORMAS_VERSION
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --no-cache --upgrade tzdata jansson pcre hiredis bash
+    apk add --no-cache --upgrade tzdata jansson pcre hiredis bash curl
 RUN mkdir -p /var/log/apache2/ \
   && mkdir /usr/local/apache2/conf.d/ \
   && chown -R www-data:www-data /var/log/apache2/
