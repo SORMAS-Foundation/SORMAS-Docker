@@ -4,6 +4,7 @@ ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/downl
 
 ARG SORMAS_VERSION=1.76.0
 
+
 ARG SORMAS_SERVER_URL=sormas-docker-test.com
 ARG KEYCLOAK_SORMAS_REST_SECRET=changeit
 ARG KEYCLOAK_SORMAS_UI_SECRET=changeit
