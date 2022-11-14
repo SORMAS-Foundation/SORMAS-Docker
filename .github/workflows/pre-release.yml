@@ -25,10 +25,11 @@ jobs:
           prerelease: true
           tag_name: v${{ env.SORMAS_DOCKER_VERSION }}
           body: |
+            ## Versions
             SORMAS VERSION: ${{ env.SORMAS_VERSION }}
             DEMIS: ${{ env.DEMIS_VERSION }}
 
-            ## Application release notes:
+            ## Application release notes
             https://github.com/hzi-braunschweig/SORMAS-Project/releases/tag/v${{ env.SORMAS_VERSION }}
 
           token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
