@@ -32,4 +32,4 @@ jobs:
             ## Application release notes
             https://github.com/hzi-braunschweig/SORMAS-Project/releases/tag/v${{ env.SORMAS_VERSION }}
 
-          token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          #token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
