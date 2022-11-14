@@ -16,7 +16,7 @@ jobs:
       - name: Get versions
         run: | 
          echo "SORMAS_DOCKER_VERSION=$(cat .env | grep SORMAS_DOCKER_VERSION | cut -d '=' -f2)" >> $GITHUB_ENV
-         echo "SORMAS_DOCKER_VERSION=$(cat .env | grep SORMAS_VERSION | cut -d '=' -f2)" >> $GITHUB_ENV
+         echo "SORMAS_VERSION=$(cat .env | grep SORMAS_VERSION | cut -d '=' -f2)" >> $GITHUB_ENV
          echo "DEMIS_VERSION=$(cat .env | grep DEMIS_VERSION | cut -d '=' -f2)" >> $GITHUB_ENV
       - name: Release
         uses: softprops/action-gh-release@v0.1.14        
