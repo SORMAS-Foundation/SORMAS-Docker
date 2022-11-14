@@ -1,0 +1,33 @@
+name: Create pre-release
+
+on:
+  push:
+    branches:
+      - "integration"
+
+jobs:
+  pre-release:
+    name: "Pre Release"
+    runs-on: "ubuntu-latest"
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get versions
+        run: | 
+         echo "SORMAS_DOCKER_VERSION=$(cat .env | grep SORMAS_DOCKER_VERSION | cut -d '=' -f2)" >> $GITHUB_ENV
+         echo "SORMAS_VERSION=$(cat .env | grep SORMAS_VERSION | cut -d '=' -f2)" >> $GITHUB_ENV
+         echo "DEMIS_VERSION=$(cat .env | grep DEMIS_VERSION | cut -d '=' -f2)" >> $GITHUB_ENV
+      - name: Release
+        uses: softprops/action-gh-release@v0.1.14        
+        #if: startsWith(github.ref, 'refs/tags/')
+        with:
+          prerelease: true
+          tag_name: v${{ env.SORMAS_DOCKER_VERSION }}
+          body: |
+            ## Versions
+            SORMAS VERSION: ${{ env.SORMAS_VERSION }}
+            DEMIS: ${{ env.DEMIS_VERSION }}
+
+            ## Application release notes
+            https://github.com/hzi-braunschweig/SORMAS-Project/releases/tag/v${{ env.SORMAS_VERSION }}
