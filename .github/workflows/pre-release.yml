@@ -24,6 +24,7 @@ jobs:
         with:
           prerelease: true
           tag_name: v${{ env.SORMAS_DOCKER_VERSION }}
+          target_commitish: integration
           body: |
             ## Versions
             SORMAS VERSION: ${{ env.SORMAS_VERSION }}
