@@ -2,7 +2,7 @@ FROM jboss/keycloak:16.1.1
 
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 
-ARG SORMAS_VERSION=1.76.6
+ARG SORMAS_VERSION=1.76.7
 
 
 ARG SORMAS_SERVER_URL=sormas-docker-test.com
