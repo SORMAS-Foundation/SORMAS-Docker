@@ -24,7 +24,7 @@ RUN mkdir -p /usr/src/cjose && cd /usr/src/cjose
 RUN cd /usr/src/cjose && \
   git clone https://github.com/cisco/cjose.git && \
   cd cjose && \
-  ./configure && make && make install && mkdir -p /tmp && ls -la && cp lib/* /tmp && ls -la /tmp 
+  ./configure CFLAGS="-Wno-error=deprecated-declarations" && make && make install && mkdir -p /tmp && ls -la && cp lib/* /tmp && ls -la /tmp 
 
 
 RUN mkdir -p /usr/src/apache2 && cd /usr/src/apache2
