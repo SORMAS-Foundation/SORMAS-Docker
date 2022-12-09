@@ -224,6 +224,7 @@ sed -i "/^documentUploadSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^importFileSizeLimitMb/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^audit.logger.config/d" ${DOMAIN_DIR}/sormas.properties
 sed -i "/^audit.source.site/d" ${DOMAIN_DIR}/sormas.properties
+sed -i "/^allowed.file.extensions/d " ${DOMAIN_DIR}/sormas.properties
 
 if [ ! -z "$CREATE_DEFAULT_ENTITIES" ] && [ ! "$CREATE_DEFAULT_ENTITIES" == "" ];then
   echo -e "\ncreateDefaultEntities=${CREATE_DEFAULT_ENTITIES}" >>${DOMAIN_DIR}/sormas.properties
@@ -291,6 +292,9 @@ fi
 if [ ! -z "$AUDIT_LOGGER_CONFIG" ] && [ "$AUDIT_LOGGER_CONFIG" != "" ];then
   echo -e "\naudit.logger.config=${AUDIT_LOGGER_CONFIG}" >>${DOMAIN_DIR}/sormas.properties
   echo -e "\naudit.source.site=${SORMAS_SERVER_URL}" >>${DOMAIN_DIR}/sormas.properties
+fi
+if [ ! -z "$ALLOWED_FILE_EXTENSIONS" ] && [ "$ALLOWED_FILE_EXTENSIONS" != "" ];then
+  echo -e "\nallowed.file.extensions=${ALLOWED_FILE_EXTENSIONS}" >>${DOMAIN_DIR}/sormas.properties
 fi
 
 #------------------GEOCODING

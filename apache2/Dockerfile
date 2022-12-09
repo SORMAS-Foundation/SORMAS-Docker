@@ -1,7 +1,7 @@
 FROM httpd:2.4-alpine as build
 ARG SORMAS_SERVER_URL
 
-ARG SORMAS_VERSION=1.76.8
+ARG SORMAS_VERSION=1.77.3
 ARG MOD_AUTH_OPENIDC_VERSION=2.4.11.3
 
 ENV SORMAS_VERSION=$SORMAS_VERSION
@@ -24,7 +24,7 @@ RUN mkdir -p /usr/src/cjose && cd /usr/src/cjose
 RUN cd /usr/src/cjose && \
   git clone https://github.com/cisco/cjose.git && \
   cd cjose && \
-  ./configure && make && make install && mkdir -p /tmp && ls -la && cp lib/* /tmp && ls -la /tmp 
+  ./configure CFLAGS="-Wno-error=deprecated-declarations" && make && make install && mkdir -p /tmp && ls -la && cp lib/* /tmp && ls -la /tmp 
 
 
 RUN mkdir -p /usr/src/apache2 && cd /usr/src/apache2
@@ -36,7 +36,7 @@ RUN cd /usr/src/apache2/mod_auth_openidc-${MOD_AUTH_OPENIDC_VERSION}/ && ls -la 
 
 FROM httpd:2.4-alpine
 ARG SORMAS_SERVER_URL
-ARG SORMAS_VERSION=1.76.8
+ARG SORMAS_VERSION=1.77.3
 
 
 ENV SORMAS_VERSION=$SORMAS_VERSION
