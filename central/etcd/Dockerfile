@@ -7,4 +7,4 @@ RUN mkdir /srv/fixtures/
 COPY setup_and_run.sh /srv
 
 RUN mkdir /srv/certs/
-CMD /srv/setup_and_run.sh
+CMD /srv/setup_and_run.sh	
