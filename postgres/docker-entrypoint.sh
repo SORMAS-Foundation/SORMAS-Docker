@@ -196,6 +196,17 @@ docker_setup_db() {
 	fi
 }
 
+# create initial database
+# uses environment variables for input: POSTGRES_DB
+docker_modify_db() {
+	if [ "$POSTGRES_DB" != 'postgres' ]; then
+		POSTGRES_DB= docker_process_sql --dbname postgres --set db="$POSTGRES_DB" <<-'EOSQL'
+			CREATE DATABASE :"db" ;
+		EOSQL
+		echo
+	fi
+}
+
 # Loads various settings that are used elsewhere in the script
 # This should be called before any other functions
 docker_setup_env() {
@@ -310,6 +321,7 @@ _main() {
 			echo
 			echo 'PostgreSQL Database directory appears to contain a database; Skipping initialization'
 			echo
+			docker_process_init_files /docker-entrypoint-updatedb.d/*
 		fi
 	fi
 
