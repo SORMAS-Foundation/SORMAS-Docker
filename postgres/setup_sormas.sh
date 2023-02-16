@@ -2,7 +2,7 @@
 set -e
 
 # Set up the database
-echo "Starting database setup..."
+echo "Starting database setup	..."
 
 psql -v ON_ERROR_STOP=1 --username "postgres" <<EOSQL
     CREATE USER ${SORMAS_POSTGRES_USER} WITH PASSWORD '${SORMAS_POSTGRES_PASSWORD}' CREATEDB;
