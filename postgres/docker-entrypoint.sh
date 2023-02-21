@@ -310,6 +310,7 @@ _main() {
 			echo
 			echo 'PostgreSQL Database directory appears to contain a database; Skipping initialization'
 			echo
+			docker_process_init_files /docker-entrypoint-updatedb.d/*
 		fi
 	fi
 
