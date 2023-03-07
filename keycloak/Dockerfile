@@ -1,7 +1,7 @@
 # 1. Get config data from SORMAS release archive
 FROM redhat/ubi8-minimal:latest as config-source
 USER root
-RUN microdnf update && microdnf install -y wget unzip
+RUN microdnf update && microdnf install -y wget unzip curl
 
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 ARG SORMAS_VERSION=1.80.0
