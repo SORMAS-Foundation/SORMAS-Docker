@@ -36,6 +36,10 @@ FROM quay.io/keycloak/keycloak:21.0.1
 COPY --from=kc-builder /opt/keycloak/ /opt/keycloak/
 WORKDIR /opt/keycloak
 
-# --import-realm imports all realm JSON files provided in data/import
-# https://www.keycloak.org/server/containers#_importing_a_realm_on_startup
-ENTRYPOINT ["bin/kc.sh", "start", "--import-realm", "--proxy=edge"]
+# --import-realm imports all realm JSON files provided in data/import https://www.keycloak.org/server/containers#_importing_a_realm_on_startup
+# --hostname-strict-https b/c of keycloak/keycloak#11922
+# --http-enabled / --proxy for HTTP between reverse proxy and the container
+# --http-relative-path to register the reverse proxy path
+ENTRYPOINT ["bin/kc.sh", "start", "--import-realm", \
+    "--hostname-strict-https=false", "--http-enabled=true", "--proxy=edge", "--http-relative-path=/keycloak", \
+    "--log-level=INFO,org.keycloak.events:DEBUG"]
