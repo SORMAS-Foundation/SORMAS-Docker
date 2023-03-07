@@ -1,7 +1,7 @@
 # 1. Get config data from SORMAS release archive
 FROM redhat/ubi8-minimal:latest as config-source
 USER root
-RUN microdnf update && microdnf install -y wget unzip curl
+RUN microdnf update && microdnf install -y wget unzip
 
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
 ARG SORMAS_VERSION=1.80.0
@@ -16,7 +16,6 @@ WORKDIR /opt/keycloak
 
 USER root
 COPY --from=config-source /tmp/deploy/keycloak /tmp/deploy/keycloak
-COPY --from=config-source /bin/curl /bin/curl
 RUN chown -R -c keycloak /tmp/deploy/keycloak
 USER keycloak
 
@@ -35,7 +34,6 @@ RUN bin/kc.sh build --db postgres --spi-password-hashing-sormas-sha256-enabled=t
 FROM quay.io/keycloak/keycloak:21.0.1
 
 COPY --from=kc-builder /opt/keycloak/ /opt/keycloak/
-COPY --from=kc-builder /bin/curl /bin/curl
 WORKDIR /opt/keycloak
 
 # --import-realm imports all realm JSON files provided in data/import https://www.keycloak.org/server/containers#_importing_a_realm_on_startup
