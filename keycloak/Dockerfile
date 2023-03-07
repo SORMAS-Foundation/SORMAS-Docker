@@ -10,7 +10,6 @@ RUN cd /tmp && \
     wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O sormas.zip && \
     unzip sormas.zip
 
-
 # 2. Configure keycloak
 FROM quay.io/keycloak/keycloak:21.0.1 as kc-builder
 WORKDIR /opt/keycloak
