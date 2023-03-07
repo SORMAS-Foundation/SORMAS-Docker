@@ -16,6 +16,7 @@ WORKDIR /opt/keycloak
 
 USER root
 COPY --from=config-source /tmp/deploy/keycloak /tmp/deploy/keycloak
+COPY --from=config-source /bin/curl /bin/curl
 RUN chown -R -c keycloak /tmp/deploy/keycloak
 USER keycloak
 
@@ -34,6 +35,7 @@ RUN bin/kc.sh build --db postgres --spi-password-hashing-sormas-sha256-enabled=t
 FROM quay.io/keycloak/keycloak:21.0.1
 
 COPY --from=kc-builder /opt/keycloak/ /opt/keycloak/
+COPY --from=kc-builder /bin/curl /bin/curl
 WORKDIR /opt/keycloak
 RUN yum update && yum install -y curl
 
