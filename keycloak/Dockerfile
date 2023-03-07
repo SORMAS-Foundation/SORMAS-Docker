@@ -15,7 +15,6 @@ FROM quay.io/keycloak/keycloak:21.0.1 as kc-builder
 WORKDIR /opt/keycloak
 
 USER root
-RUN microdnf update && microdnf install -y curl
 COPY --from=config-source /tmp/deploy/keycloak /tmp/deploy/keycloak
 RUN chown -R -c keycloak /tmp/deploy/keycloak
 USER keycloak
@@ -36,6 +35,7 @@ FROM quay.io/keycloak/keycloak:21.0.1
 
 COPY --from=kc-builder /opt/keycloak/ /opt/keycloak/
 WORKDIR /opt/keycloak
+RUN yum update && yum install -y curl
 
 # --import-realm imports all realm JSON files provided in data/import https://www.keycloak.org/server/containers#_importing_a_realm_on_startup
 # --hostname-strict-https b/c of keycloak/keycloak#11922
