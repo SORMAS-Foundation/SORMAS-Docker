@@ -35,11 +35,15 @@ RUN bin/kc.sh build --db postgres --spi-password-hashing-sormas-sha256-enabled=t
 # 3. Runtime container
 FROM quay.io/keycloak/keycloak:21.0.1
 
-COPY --chown=keycloak.keycloak start-keycloak.sh /start-keycloak.sh
-COPY --chown=keycloak.keycloak update-realm.sh /update-realm.sh
+USER root
+COPY start-keycloak.sh /start-keycloak.sh
+COPY update-realm.sh /update-realm.sh
 COPY --from=kc-builder /opt/keycloak/ /opt/keycloak/
-RUN chmod ug+x /start-keycloak.sh \
+RUN chown keycloak /start-keycloak.sh \
+  && chown keycloak /update-realm.sh \
+  &&  chmod ug+x /start-keycloak.sh \
   && chmod ug+x /update-realm.sh
+USER keycloak
 WORKDIR /opt/keycloak
 
 ENTRYPOINT ["/start-keycloak.sh"]
