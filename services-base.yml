@@ -190,7 +190,7 @@ services:
     mem_limit: ${KEYCLOAK_MEM}
     mem_reservation: ${KEYCLOAK_MEM_RESERVED}
     healthcheck:
-      test: [ "CMD", "curl", "-f", "-I", "http://localhost:8080/auth/" ]
+      test: ["CMD", "/opt/keycloak/bin/kcadm.sh", "config", "credentials", "--server", "http://localhost:8080/keycloak", "--realm", "master", "--user", "${KEYCLOAK_ADMIN}", "--password", "${KEYCLOAK_ADMIN_PASSWORD}"]
       interval: 30s
       timeout: 3s
       retries: 3
