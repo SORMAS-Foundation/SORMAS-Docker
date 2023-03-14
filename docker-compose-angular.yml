@@ -153,7 +153,7 @@ services:
     environment:
       - KEYCLOAK_REALM=${SORMAS_ANGULAR_KEYCLOAK_REALM}
       - KEYCLOAK_CLIENT_ID=${SORMAS_ANGULAR_KEYCLOAK_CLIENT_ID}
-      - KEYCLOAK_URL=${SORMAS_SERVER_URL}/keycloak/auth/
+      - KEYCLOAK_URL=${SORMAS_SERVER_URL}/keycloak
       - SORMAS_REST_API_URL=${SORMAS_SERVER_URL}/sormas-rest
     depends_on:
       sormas:
