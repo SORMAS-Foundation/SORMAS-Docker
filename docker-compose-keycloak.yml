@@ -44,6 +44,10 @@ services:
       timeout: 7s
       retries: 3
       start_period: 300s
+    # In case you run this deployment locally where "sormas-docker-test.com" cannot be resolved via normal DNS,
+    # add the following lines
+    # extra_hosts:
+    #  - "sormas-docker-test.com:YOUR_LOCAL_IP"
     depends_on:
       postgres:
         condition: service_healthy
