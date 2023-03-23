@@ -11,7 +11,6 @@ psql -v ON_ERROR_STOP=1 --username "postgres" <<EOSQL
     \c ${DB_NAME}
     CREATE OR REPLACE PROCEDURAL LANGUAGE plpgsql;
     ALTER PROCEDURAL LANGUAGE plpgsql OWNER TO ${SORMAS_POSTGRES_USER};
-    CREATE EXTENSION temporal_tables;
     CREATE EXTENSION pg_trgm;
     CREATE EXTENSION pgcrypto;
     CREATE EXTENSION pg_stat_statements;
