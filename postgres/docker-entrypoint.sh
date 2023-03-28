@@ -310,7 +310,14 @@ _main() {
 			echo
 			echo 'PostgreSQL Database directory appears to contain a database; Skipping initialization'
 			echo
-		
+			docker_verify_minimum_env
+			export PGPASSWORD="${PGPASSWORD:-$POSTGRES_PASSWORD}"
+			echo 'Starting temporary data base instance'
+			docker_temp_server_start "$@"
+            echo 'applying updates'
+			docker_process_init_files /docker-entrypoint-updatedb.d/*
+			echo 'Stoppinging temporary data base instance'
+			docker_temp_server_stop
 		fi
 	fi
 
