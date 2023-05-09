@@ -5,13 +5,13 @@ node {
     
         
     stage('checkout') {
-        git branch: '${BRANCH}', url: 'https://github.com/hzi-braunschweig/SORMAS-Docker.git'
+        git branch: '${BRANCH}', url: 'https://github.com/sormas-foundation/SORMAS-Docker.git'
     }
     
     stage('set variables') {
         echo 'Setting variables'
         SORMAS_VERSION_NIGHTLY= sh (
-        	script: 'curl -s https://raw.githubusercontent.com/hzi-braunschweig/SORMAS-Project/development/sormas-base/pom.xml | grep SNAPSHOT | sed s/\\<version\\>// | sed s/\\<\\\\/version\\>// | sed \'s/[[:space:]]//g\'', 
+        	script: 'curl -s https://raw.githubusercontent.com/sormas-foundation/SORMAS-Project/development/sormas-base/pom.xml | grep SNAPSHOT | sed s/\\<version\\>// | sed s/\\<\\\\/version\\>// | sed \'s/[[:space:]]//g\'',
         	returnStdout: true
         ).trim()
         if (params.BUILD_NIGHTLY != null && params.BUILD_NIGHTLY) {
