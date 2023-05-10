@@ -1,6 +1,5 @@
 FROM postgres:10.18-alpine
 
-
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
 # this line below keeping fixed musl lib version is unnecessary under docker 20.10.3+ but musl-dev has to be normally included in apk add, then
