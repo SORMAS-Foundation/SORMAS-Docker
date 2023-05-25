@@ -22,7 +22,7 @@ For production usage, ONLY checkout from the release tags, because only these co
 **SORMAS** (Surveillance Outbreak Response Management and Analysis System) is an open source eHealth system - consisting of separate web and mobile apps - that is geared towards optimizing the processes used in monitoring the spread of infectious diseases and responding to outbreak situations.
 
 ## Project Objectives
-This project aims to build docker images for the SORMAS application (https://github.com/hzi-braunschweig/SORMAS-Project)
+This project aims to build docker images for the SORMAS application (https://github.com/sormas-foundation/SORMAS-Project)
 
 ## Firewall
 
@@ -58,11 +58,11 @@ name: admin
 pw: sadmin
 
 All default users are listed here:
-https://github.com/hzi-braunschweig/SORMAS-Project/blob/master/docs/SERVER_UPDATE.md#default-logins
+https://github.com/sormas-foundation/SORMAS-Project/blob/master/docs/SERVER_UPDATE.md#default-logins
 
 If you wish to provide a demologin page, copy the demologin.html to the custom folder (this page uses the default logins):
 ```
-wget https://raw.githubusercontent.com/hzi-braunschweig/SORMAS-Project/master/sormas-base/setup/demologinmain.html -P /srv/dockerdata/sormas/custom
+wget https://raw.githubusercontent.com/sormas-foundation/SORMAS-Project/master/sormas-base/setup/demologinmain.html -P /srv/dockerdata/sormas/custom
 ```
 
 ## Advanced Installation
@@ -89,7 +89,7 @@ These Options are available to customize the installation:
 ### SORMAS
 **SORMAS_VERSION** Version of SORMAS that should be installed (Dockerimages are provided starting from the Version 1.33.0)
 
-**SORMAS_DOCKER_VERSION** Version of dockerimages (see https://github.com/hzi-braunschweig/SORMAS-Docker/releases for all release)
+**SORMAS_DOCKER_VERSION** Version of dockerimages (see https://github.com/sormas-foundation/SORMAS-Docker/releases for all release)
 
 **SORMAS_SERVER_URL** URL under which the SORMAS installation should be accessed
 
