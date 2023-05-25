@@ -109,6 +109,7 @@ services:
       - EMAIL=${LETSENCRYPT_MAIL}
       - DISABLE_CERTBOT=${DISABLE_CERTBOT}
       - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
+      - HTTP_TIMEOUT=${HTTP_TIMEOUT}
     volumes:
       - /var/lib/docker/letsencrypt-config:/config
       - ./letsencrypt/certs:/config/etc/letsencrypt/live
