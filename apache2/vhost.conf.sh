@@ -41,16 +41,16 @@ Listen 443
 
         ProxyRequests Off
         ProxyPreserveHost On
-        ProxyPass /sormas-ui http://sormas:6080/sormas-ui connectiontimeout=5 timeout=1800
+        ProxyPass /sormas-ui http://sormas:6080/sormas-ui connectiontimeout=5 timeout=${HTTP_TIMEOUT}
         ProxyPassReverse /sormas-ui http://sormas:6080/sormas-ui
-        ProxyPass /sormas-rest http://sormas:6080/sormas-rest connectiontimeout=5 timeout=1800
+        ProxyPass /sormas-rest http://sormas:6080/sormas-rest connectiontimeout=5 timeout=${HTTP_TIMEOUT}
         ProxyPassReverse /sormas-rest http://sormas:6080/sormas-rest
-        ProxyPass /keycloak http://keycloak:8080/keycloak connectiontimeout=5 timeout=600
+        ProxyPass /keycloak http://keycloak:8080/keycloak connectiontimeout=5 timeout=${HTTP_TIMEOUT}
         ProxyPassReverse /keycloak http://keycloak:8080/keycloak
-	      ProxyPass /sormas-angular http://sormas-angular:80/ connectiontimeout=5 timeout=600
+	      ProxyPass /sormas-angular http://sormas-angular:80/ connectiontimeout=5 timeout=${HTTP_TIMEOUT}
         ProxyPassReverse /sormas-angular/ http://sormas-angular:80/
         <Location /metrics>
-            ProxyPass  http://sormas:6080/metrics connectiontimeout=5 timeout=600
+            ProxyPass  http://sormas:6080/metrics connectiontimeout=5 timeout=${HTTP_TIMEOUT}
             ProxyPassReverse http://sormas:6080/metrics
             Order deny,allow
             Deny from all
