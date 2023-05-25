@@ -11,7 +11,7 @@ ARG DB_NAME_AUDIT=sormas_audit
 ARG MAIL_HOST=localhost
 ARG MAIL_FROM=sormas@localhost
 ARG JVM_MAX=4096m
-ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
+ARG SORMAS_URL=https://github.com/sormas-foundation/SORMAS-Project/releases/download/
 EXPOSE 6080
 
 ARG SORMAS_VERSION=1.82.0
