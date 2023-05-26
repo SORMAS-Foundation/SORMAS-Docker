@@ -3,8 +3,8 @@ FROM redhat/ubi8-minimal:latest as config-source
 USER root
 RUN microdnf update && microdnf install -y wget unzip
 
-ARG SORMAS_URL=https://github.com/sormas-foundation/SORMAS-Project/releases/download/
-ARG SORMAS_VERSION=1.82.0
+ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
+ARG SORMAS_VERSION=1.83.1
 
 RUN cd /tmp && \
     wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O sormas.zip && \
