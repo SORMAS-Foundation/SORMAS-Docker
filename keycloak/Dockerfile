@@ -4,7 +4,7 @@ USER root
 RUN microdnf update && microdnf install -y wget unzip
 
 ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
-ARG SORMAS_VERSION=1.83.1
+ARG SORMAS_VERSION=1.84.0
 
 RUN cd /tmp && \
     wget ${SORMAS_URL}v${SORMAS_VERSION}/sormas_${SORMAS_VERSION}.zip -O sormas.zip && \

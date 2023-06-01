@@ -151,7 +151,7 @@ set -e
 
 ${ASADMIN} create-javamail-resource --mailhost ${MAIL_HOST} --mailuser ${EMAIL_SENDER_NAME} --fromaddress ${EMAIL_SENDER_ADDRESS} --auth ${SMTP_AUTH_ENABLED} --enabled ${EMAIL_NOTIFICATION_ENABLED} --property  "mail.smtp.port=${SMTP_PORT}:mail.smtp.auth=${SMTP_AUTH_ENABLED}" mail/MailSession
 
-# Fix for https://github.com/hzi-braunschweig/SORMAS-Project/issues/1759
+# Fix for https://github.com/sormas-foundation/SORMAS-Project/issues/1759
 ${ASADMIN} set configs.config.server-config.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size=500
 # set FQDN for sormas domain
 ${ASADMIN} set configs.config.server-config.http-service.virtual-server.server.hosts=${SORMAS_SERVER_URL}

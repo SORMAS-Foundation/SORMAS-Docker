@@ -31,4 +31,4 @@ jobs:
             DEMIS: ${{ env.DEMIS_VERSION }}
 
             ## Application release notes
-            https://github.com/hzi-braunschweig/SORMAS-Project/releases/tag/v${{ env.SORMAS_VERSION }}
+            https://github.com/sormas-foundation/SORMAS-Project/releases/tag/v${{ env.SORMAS_VERSION }}
