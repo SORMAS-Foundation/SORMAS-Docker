@@ -1,4 +1,4 @@
-FROM hzibraunschweig/sormas-rscript:3.5-5.2021.10
+FROM hzibraunschweig/sormas-rscript:3.5-5.2022.5
 
 ARG SORMAS_POSTGRES_PASSWORD=password
 ARG SORMAS_POSTGRES_USER=sormas_user
