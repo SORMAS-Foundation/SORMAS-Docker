@@ -3,7 +3,7 @@ services:
   payara:
     build:
       context: payara
-    image: hzibraunschweig/sormas-payara:5.2021.10
+    image: hzibraunschweig/sormas-payara:5.2022.5
 
   rscript:
     depends_on:
