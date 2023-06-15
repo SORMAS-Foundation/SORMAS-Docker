@@ -78,8 +78,6 @@ These Options are available to customize the installation:
 
 **DB_NAME** Name of the database for the SORMAS data
 
-**DB_NAME_AUDIT** Name of the database for SORMAS audit data
-
 **DB_HOST** Hostname or IP of the database host
 
 **DB_JDBC_MAXPOOLSIZE** Sets the maximum number of database connections

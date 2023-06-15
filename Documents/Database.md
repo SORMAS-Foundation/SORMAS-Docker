@@ -20,7 +20,6 @@ Database related values set in `.env`file:
 
 * Database server: `DB_HOST`: postgres
 * Sormas Database: `DB_NAME`: sormas
-* Sormas Audit Database: `DB_NAME_AUDIT`: sormas_audit
 * Sormas Database User: `SORMAS_POSTGRES_USER`: sormas_user
 * Sormas Database Password: `SORMAS_POSTGRES_PASSWORD`: password
 
@@ -30,11 +29,11 @@ Several parameters are configured in `docker-compose.yml`:
 
 #### Database
 
-The `postgres` container is set up with the `SORMAS_POSTGRES_PASSWORD` from the `.env` file. The `sormas` DB and `sormas_audit` DB are created and initialized. The `sormas` user gets created.
+The `postgres` container is set up with the `SORMAS_POSTGRES_PASSWORD` from the `.env` file. The `sormas` DB is created and initialized. The `sormas` user gets created.
 
-Additionally the `postgres`container listens on localhost port 5432. This can be used to access the `sormas` database e.g. for creating local DB dumps.
+Additionally, the `postgres`container listens on localhost port 5432. This can be used to access the `sormas` database e.g. for creating local DB dumps.
 
-Database files for `sormas` and `sormas_audit` are held on the host in a local folder.
+Database files for `sormas` are held on the host in a local folder.
 
 ```yaml
 services:
@@ -42,7 +41,6 @@ services:
     environment:
       - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - DB_NAME=sormas
-      - DB_NAME_AUDIT=sormas_audit
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
     ports:
@@ -53,7 +51,7 @@ services:
 
 #### pg_dump container
 
-In the default installation a pg_dump container is started. This container dumps the `sormas`  and `sormas_audit` database on a regularly basis (to a folder on the host (`/backup`). 
+In the default installation a pg_dump container is started. This container dumps the `sormas` database on a regular basis (to a folder on the host (`/backup`). 
 
 ```yaml
 services:
@@ -61,7 +59,6 @@ services:
     environment:
       - DB_HOST=${DB_HOST}
       - DB_NAME=sormas
-      - DB_NAME_AUDIT=sormas_audit
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - MIN=15,45 # Twice the hour on 15 and 45 (use crontab notation)
@@ -83,7 +80,6 @@ services:
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - DB_HOST=${DB_HOST}
       - DB_NAME=${DB_NAME}
-      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
 
 ```
 ### partner
