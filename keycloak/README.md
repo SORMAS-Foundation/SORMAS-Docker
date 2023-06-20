@@ -80,7 +80,7 @@ After deploy the following configurations have to be done from the Keycloak Admi
 
 ### Keycloak Configuration Upgrade
 
-Keycloak configurations changes usually are part of the [SORMAS.json](https://github.com/hzi-braunschweig/SORMAS-Project/blob/development/sormas-base/setup/keycloak/SORMAS.json) file.
+Keycloak configurations changes usually are part of the [SORMAS.json](https://github.com/sormas-foundation/SORMAS-Project/blob/development/sormas-base/setup/keycloak/SORMAS.json) file.
 
 The SORMAS Keycloak image automatically adds any new realm resources by running the [update-realm.sh](update-realm.sh) script at startup.
 This only imports new resources and doesn't remove/update existing resources.

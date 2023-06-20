@@ -3,9 +3,9 @@ FROM lsiobase/nginx:3.11
 # set version label
 
 ARG CERTBOT_VERSION=1.3.0
-ARG SORMAS_URL=https://github.com/hzi-braunschweig/SORMAS-Project/releases/download/
+ARG SORMAS_URL=https://github.com/sormas-foundation/SORMAS-Project/releases/download/
 
-ARG SORMAS_VERSION=1.83.1
+ARG SORMAS_VERSION=1.84.1
 
 
 ENV SORMAS_VERSION=$SORMAS_VERSION
