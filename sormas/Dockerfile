@@ -1,4 +1,4 @@
-FROM hzibraunschweig/sormas-rscript:3.5-5.2021.10
+FROM hzibraunschweig/sormas-rscript:3.5-5.2022.5
 
 ARG SORMAS_POSTGRES_PASSWORD=password
 ARG SORMAS_POSTGRES_USER=sormas_user
@@ -14,7 +14,7 @@ ARG JVM_MAX=4096m
 ARG SORMAS_URL=https://github.com/sormas-foundation/SORMAS-Project/releases/download/
 EXPOSE 6080
 
-ARG SORMAS_VERSION=1.84.1
+ARG SORMAS_VERSION=1.85.0
 
 
 ENV SORMAS_VERSION=$SORMAS_VERSION
