@@ -482,7 +482,12 @@ if [ ! -z "$DEMIS_ENABLED" ] ;then
   set +e
   cp -a /tmp/${DOMAIN_NAME}/config/demis/. ${DOMAIN_DIR}/config/
   set -e
-  if  [ "$(printf '%s\n' "1.73.0" "$SORMAS_VERSION" | sort -V | head -n1)" = "1.73.0" ]; then 
+  if  [ "$(printf '%s\n' "1.86.0" "$SORMAS_VERSION" | sort -V | head -n1)" = "1.86.0" ]; then 
+    # new Facade for SORMAS >= 1.86.0
+    if [ ! -z "$DEMIS_VERSION" ] && [ "$DEMIS_VERSION" != "" ];then
+      echo -e "\ninterface.externalMessageAdapter.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisMessageFacade" >>${DOMAIN_DIR}/sormas.properties
+    fi
+  elif  [ "$(printf '%s\n' "1.73.0" "$SORMAS_VERSION" | sort -V | head -n1)" = "1.73.0" ]; then 
     # new Facade for SORMAS >= 1.73.0
     if [ ! -z "$DEMIS_VERSION" ] && [ "$DEMIS_VERSION" != "" ];then
       echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisMessageFacade" >>${DOMAIN_DIR}/sormas.properties
