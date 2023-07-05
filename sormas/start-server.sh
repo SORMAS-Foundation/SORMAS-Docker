@@ -482,24 +482,12 @@ if [ ! -z "$DEMIS_ENABLED" ] ;then
   set +e
   cp -a /tmp/${DOMAIN_NAME}/config/demis/. ${DOMAIN_DIR}/config/
   set -e
-  if  [ "$(printf '%s\n' "1.86.0" "$SORMAS_VERSION" | sort -V | head -n1)" = "1.86.0" ]; then 
-    # new Facade for SORMAS >= 1.86.0
-    if [ ! -z "$DEMIS_VERSION" ] && [ "$DEMIS_VERSION" != "" ];then
-      echo -e "\ninterface.externalMessageAdapter.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisMessageFacade" >>${DOMAIN_DIR}/sormas.properties
-    fi
-  elif  [ "$(printf '%s\n' "1.73.0" "$SORMAS_VERSION" | sort -V | head -n1)" = "1.73.0" ]; then 
-    # new Facade for SORMAS >= 1.73.0
-    if [ ! -z "$DEMIS_VERSION" ] && [ "$DEMIS_VERSION" != "" ];then
-      echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisMessageFacade" >>${DOMAIN_DIR}/sormas.properties
-    fi
-  else 
-    # old Facade for SORMAS < 1.73.0
-    if [ ! -z "$DEMIS_VERSION" ] && [ "$DEMIS_VERSION" != "" ];then
-      echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
-    fi
+  # new Facade for SORMAS >= 1.86.0
+  if [ ! -z "$DEMIS_VERSION" ] && [ "$DEMIS_VERSION" != "" ];then
+    echo -e "\ninterface.externalMessageAdapter.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisMessageFacade" >>${DOMAIN_DIR}/sormas.properties
   fi
   if [ ! -z "$DEBUGINFO_ENABLED" ] && [ "$DEBUGINFO_ENABLED" != "" ];then
-    echo -e "debuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/config/demis-adapter.properties
+    echo -e "\ndebuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/config/demis-adapter.properties
   fi
   if [ ! -z "$FHIR_BASEPATH" ] && [ "$FHIR_BASEPATH" != "" ];then
     echo -e "\nfhir.basepath=${FHIR_BASEPATH}" >>${DOMAIN_DIR}/config/demis-adapter.properties
