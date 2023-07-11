@@ -1,11 +1,14 @@
-FROM hzibraunschweig/sormas-payara:5.2021.10
+FROM hzibraunschweig/sormas-payara:5.2022.5
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN apt update \
+  && apt install -y gpg-agent 
 
-RUN apt-get update \
-  && apt-get install -y software-properties-common \
+RUN apt update -qq \
+  && apt install -y --no-install-recommends software-properties-common dirmngr \
   && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 \
-  && add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/' \
+  && wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc \
+  && add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" \
   && apt-get update \
   && apt-get upgrade -y \
   && apt-get -y install r-base libpq-dev gcc build-essential gfortran libblas-dev liblapack-dev --no-install-recommends\
