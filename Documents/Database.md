@@ -51,19 +51,17 @@ services:
 
 #### pg_dump container
 
-In the default installation a pg_dump container is started. This container dumps the `sormas` database on a regular basis (to a folder on the host (`/backup`). 
+In the default installation a pg_dump container is started. This container dumps all database on the host (except postgres and template) on a regular basis to a folder on the host (`/backup`). 
 
 ```yaml
 services:
   pg_dump:
     environment:
       - DB_HOST=${DB_HOST}
-      - DB_NAME=sormas
       - PGPASSWORD=${SORMAS_POSTGRES_PASSWORD}
-      - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
+      - POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - MIN=15,45 # Twice the hour on 15 and 45 (use crontab notation)
       - HOUR= # Keep empty for every hour. Use crontab notation otherwise
-      - KEEP=1 # keep one day
     volumes:
       - /backup:/var/opt/db_dumps
 ```
