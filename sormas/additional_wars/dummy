@@ -1,0 +1,1 @@
+# This file is needed, so "COPY additional_wars/* /opt/domains/sormas/deployments" in Dockerfile does not throw an error when no additional war is provided.

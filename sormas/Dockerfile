@@ -32,8 +32,6 @@ COPY setup-server.sh /setup-server.sh
 
 RUN chmod +x /setup-server.sh
 RUN /setup-server.sh
-COPY start-server.sh /start-server.sh
-RUN chmod +x /start-server.sh
 
 COPY glowroot-0.13.6-dist.zip /opt
 COPY admin.json /opt
@@ -43,5 +41,9 @@ RUN cd /opt \
   && unzip glowroot-0.13.6-dist.zip \
   && mv /opt/admin.json /opt/glowroot/admin.json
 
+COPY additional_wars/* /opt/domains/sormas/deployments
 
-CMD ["/start-server.sh"]
+COPY ./docker-entrypoint.sh /
+COPY entrypoint/* /entrypoint/
+RUN chmod +x /entrypoint/*.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
