@@ -24,7 +24,6 @@ services:
         - DB_HOST=${DB_HOST}
         - DOMAIN_NAME=${DOMAIN_NAME}
         - DB_NAME=${DB_NAME}
-        - DB_NAME_AUDIT=${DB_NAME_AUDIT}
         - MAIL_FROM=${MAIL_FROM}
         - SORMAS_VERSION=${SORMAS_VERSION}
     image: hzibraunschweig/sormas-application:${SORMAS_DOCKER_VERSION}
