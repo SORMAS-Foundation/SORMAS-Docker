@@ -7,7 +7,6 @@ ARG DB_JDBC_MAXPOOLSIZE=128
 ARG DB_HOST=postgres
 ARG DOMAIN_NAME=sormas
 ARG DB_NAME=sormas
-ARG DB_NAME_AUDIT=sormas_audit
 ARG MAIL_HOST=localhost
 ARG MAIL_FROM=sormas@localhost
 ARG JVM_MAX=4096m
