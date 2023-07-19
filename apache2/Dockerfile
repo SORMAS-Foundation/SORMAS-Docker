@@ -38,7 +38,6 @@ FROM httpd:2.4-alpine
 ARG SORMAS_SERVER_URL
 ARG SORMAS_VERSION=1.86.0
 
-
 ENV SORMAS_VERSION=$SORMAS_VERSION
 ARG SORMAS_URL=https://github.com/sormas-foundation/SORMAS-Project/releases/download/
 
