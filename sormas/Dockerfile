@@ -43,6 +43,7 @@ RUN cd /opt \
 COPY additional_wars/* /opt/domains/sormas/deployments
 
 COPY ./docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
 COPY entrypoint/* /entrypoint/
 RUN chmod +x /entrypoint/*.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
