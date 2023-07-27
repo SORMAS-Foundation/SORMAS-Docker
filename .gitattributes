@@ -53,7 +53,7 @@ gradlew    text eol=lf
 
 ## DOCKER
 *.dockerignore    text
-Dockerfile    text
+Dockerfile    text eol=lf
 
 ## DOCUMENTATION
 *.markdown   text
