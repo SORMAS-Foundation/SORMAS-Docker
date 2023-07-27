@@ -129,6 +129,7 @@ services:
       - keycloak
     environment:
       - PROMETHEUS_SERVERS=${PROMETHEUS_SERVERS}
+      - HTTP_TIMEOUT=${HTTP_TIMEOUT}
     volumes:
       - ./apache2/certs:/usr/local/apache2/certs
       - ${SORMAS_PATH}/apache2_log:/var/log/apache2

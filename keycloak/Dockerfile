@@ -11,7 +11,10 @@ RUN cd /tmp && \
     unzip sormas.zip
 
 # 2. Configure keycloak
-FROM quay.io/keycloak/keycloak:21.0.1 as kc-builder
+# when updating keycloak version check https://www.keycloak.org/docs/latest/upgrading/index.html#migration-changes
+# also make sure to update the keycloak dependency in SORMAS-Project
+ARG KEYCLOAK_VERSION=21.1.2
+FROM quay.io/keycloak/keycloak:${KEYCLOAK_VERSION} as kc-builder
 WORKDIR /opt/keycloak
 
 USER root
@@ -33,7 +36,7 @@ RUN bin/kc.sh build --db postgres --spi-password-hashing-sormas-sha256-enabled=t
     --http-relative-path=/keycloak --health-enabled=true --metrics-enabled=true
 
 # 3. Runtime container
-FROM quay.io/keycloak/keycloak:21.0.1
+FROM quay.io/keycloak/keycloak:${KEYCLOAK_VERSION}
 
 USER root
 COPY start-keycloak.sh /start-keycloak.sh
