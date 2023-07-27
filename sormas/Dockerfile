@@ -40,7 +40,7 @@ RUN cd /opt \
   && unzip glowroot-0.13.6-dist.zip \
   && mv /opt/admin.json /opt/glowroot/admin.json
 
-COPY additional_wars/* /opt/domains/sormas/deployments
+COPY additional_wars/* /opt/domains/sormas/deployments/
 
 COPY ./docker-entrypoint.sh /
 RUN chmod +x /docker-entrypoint.sh
