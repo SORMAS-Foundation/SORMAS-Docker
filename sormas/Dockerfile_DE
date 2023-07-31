@@ -11,3 +11,4 @@ ENV LC_ALL de_DE.UTF-8
 ENV DEBUGINFO_ENABLED false
 
 COPY additional_wars/* /opt/domains/sormas/deployments/
+COPY entrypoint/* /entrypoint/
