@@ -9,3 +9,7 @@ RUN sed -i -e 's/# de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen && \
 ENV LANG de_DE.UTF-8
 ENV LC_ALL de_DE.UTF-8
 ENV DEBUGINFO_ENABLED false
+
+COPY additional_wars/* /opt/domains/sormas/deployments/
+COPY entrypoint/* /entrypoint/
+RUN chmod +x /entrypoint/*.sh
