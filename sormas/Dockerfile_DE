@@ -12,3 +12,4 @@ ENV DEBUGINFO_ENABLED false
 
 COPY additional_wars/* /opt/domains/sormas/deployments/
 COPY entrypoint/* /entrypoint/
+RUN chmod +x /entrypoint/*.sh
