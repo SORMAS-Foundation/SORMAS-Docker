@@ -482,19 +482,12 @@ if [ ! -z "$DEMIS_ENABLED" ] ;then
   set +e
   cp -a /tmp/${DOMAIN_NAME}/config/demis/. ${DOMAIN_DIR}/config/
   set -e
-  if  [ "$(printf '%s\n' "1.73.0" "$SORMAS_VERSION" | sort -V | head -n1)" = "1.73.0" ]; then 
-    # new Facade for SORMAS >= 1.73.0
-    if [ ! -z "$DEMIS_VERSION" ] && [ "$DEMIS_VERSION" != "" ];then
-      echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisMessageFacade" >>${DOMAIN_DIR}/sormas.properties
-    fi
-  else 
-    # old Facade for SORMAS < 1.73.0
-    if [ ! -z "$DEMIS_VERSION" ] && [ "$DEMIS_VERSION" != "" ];then
-      echo -e "\ninterface.demis.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisExternalLabResultsFacade" >>${DOMAIN_DIR}/sormas.properties
-    fi
+  # new Facade for SORMAS >= 1.86.0
+  if [ ! -z "$DEMIS_VERSION" ] && [ "$DEMIS_VERSION" != "" ];then
+    echo -e "\ninterface.externalMessageAdapter.jndiName=java:global/sormas-demis-adapter-${DEMIS_VERSION}/DemisMessageFacade" >>${DOMAIN_DIR}/sormas.properties
   fi
   if [ ! -z "$DEBUGINFO_ENABLED" ] && [ "$DEBUGINFO_ENABLED" != "" ];then
-    echo -e "debuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/config/demis-adapter.properties
+    echo -e "\ndebuginfo.enabled=${DEBUGINFO_ENABLED}" >${DOMAIN_DIR}/config/demis-adapter.properties
   fi
   if [ ! -z "$FHIR_BASEPATH" ] && [ "$FHIR_BASEPATH" != "" ];then
     echo -e "\nfhir.basepath=${FHIR_BASEPATH}" >>${DOMAIN_DIR}/config/demis-adapter.properties
@@ -586,9 +579,12 @@ done
 if [ ! -z "$AUTHENTICATION_PROVIDER" -a "$AUTHENTICATION_PROVDER" != "SORMAS" ];then
   echo "Updating payara keystores"
   set +e
-  keytool -storepass ${CACERTS_PASS} -importcert -trustcacerts -destkeystore ${DOMAIN_DIR}/config/cacerts.jks -file /tmp/certs/sormas-docker-test.com.crt -alias sormas-docker-test.com -noprompt
-  openssl pkcs12 -export -in /tmp/certs/sormas-docker-test.com.crt -inkey /tmp/certs/sormas-docker-test.com.key -out sormas-docker-test.com.p12 -name sormas-docker-test.com -password pass:${KEYSTORE_PASS}
-  keytool -storepass ${KEYSTORE_PASS} -importkeystore -destkeystore ${DOMAIN_DIR}/config/keystore.jks -srckeystore sormas-docker-test.com.p12 -srcstoretype PKCS12 -srcstorepass changeit -alias sormas-docker-test.com -noprompt
+  for file in $(ls /tmp/certs/*.crt); do
+      base_name=$(basename $file .crt)
+      keytool -storepass ${CACERTS_PASS} -importcert -trustcacerts -destkeystore ${DOMAIN_DIR}/config/cacerts.jks -file /tmp/certs/${base_name}.crt -alias ${base_name} -noprompt
+      openssl pkcs12 -export -in /tmp/certs/${base_name}.crt -inkey /tmp/certs/${base_name}.key -out ${base_name}.p12 -name ${base_name} -password pass:${KEYSTORE_PASS}
+      keytool -storepass ${KEYSTORE_PASS} -importkeystore -destkeystore ${DOMAIN_DIR}/config/keystore.jks -srckeystore ${base_name}.p12 -srcstoretype PKCS12 -srcstorepass changeit -alias ${base_name} -noprompt
+  done
   set -e
 fi
 
