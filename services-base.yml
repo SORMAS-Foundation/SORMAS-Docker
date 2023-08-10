@@ -12,7 +12,6 @@ services:
       - DB_HOST=${DB_HOST}
       - DOMAIN_NAME=${DOMAIN_NAME}
       - DB_NAME=${DB_NAME}
-      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
       - MAIL_HOST=${MAIL_HOST}
       - SMTP_PORT=${SMTP_PORT}
       - SMTP_USER=${SMTP_USER}
@@ -68,7 +67,6 @@ services:
     environment:
       - POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - DB_NAME=${DB_NAME}
-      - DB_NAME_AUDIT=${DB_NAME_AUDIT}
       - SORMAS_POSTGRES_PASSWORD=${SORMAS_POSTGRES_PASSWORD}
       - SORMAS_POSTGRES_USER=${SORMAS_POSTGRES_USER}
       - TZ=${TZ}
@@ -190,7 +188,7 @@ services:
     mem_limit: ${KEYCLOAK_MEM}
     mem_reservation: ${KEYCLOAK_MEM_RESERVED}
     healthcheck:
-      test: ["CMD", "/opt/keycloak/bin/kcadm.sh", "config", "credentials", "--server", "http://localhost:8080/keycloak", "--realm", "master", "--user", "${KEYCLOAK_ADMIN}", "--password", "${KEYCLOAK_ADMIN_PASSWORD}"]
+      test: ["CMD", "/opt/keycloak/bin/kcadm.sh", "config", "credentials", "--server", "http://localhost:8080/keycloak", "--realm", "master", "--user", "${KEYCLOAK_ADMIN_USER}", "--password", "${KEYCLOAK_ADMIN_PASSWORD}"]
       interval: 30s
       timeout: 3s
       retries: 3

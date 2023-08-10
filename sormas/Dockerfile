@@ -7,14 +7,13 @@ ARG DB_JDBC_MAXPOOLSIZE=128
 ARG DB_HOST=postgres
 ARG DOMAIN_NAME=sormas
 ARG DB_NAME=sormas
-ARG DB_NAME_AUDIT=sormas_audit
 ARG MAIL_HOST=localhost
 ARG MAIL_FROM=sormas@localhost
 ARG JVM_MAX=4096m
 ARG SORMAS_URL=https://github.com/sormas-foundation/SORMAS-Project/releases/download/
 EXPOSE 6080
 
-ARG SORMAS_VERSION=1.86.0
+ARG SORMAS_VERSION=1.87.0
 
 ENV SORMAS_VERSION=$SORMAS_VERSION
 
@@ -31,8 +30,6 @@ COPY setup-server.sh /setup-server.sh
 
 RUN chmod +x /setup-server.sh
 RUN /setup-server.sh
-COPY start-server.sh /start-server.sh
-RUN chmod +x /start-server.sh
 
 COPY glowroot-0.13.6-dist.zip /opt
 COPY admin.json /opt
@@ -42,5 +39,10 @@ RUN cd /opt \
   && unzip glowroot-0.13.6-dist.zip \
   && mv /opt/admin.json /opt/glowroot/admin.json
 
+COPY additional_wars/* /opt/domains/sormas/deployments/
 
-CMD ["/start-server.sh"]
+COPY ./docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
+COPY entrypoint/* /entrypoint/
+RUN chmod +x /entrypoint/*.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]

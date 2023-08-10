@@ -4,8 +4,7 @@ FROM lsiobase/nginx:3.11
 
 ARG CERTBOT_VERSION=1.3.0
 ARG SORMAS_URL=https://github.com/sormas-foundation/SORMAS-Project/releases/download/
-
-ARG SORMAS_VERSION=1.86.0
+ARG SORMAS_VERSION=1.87.0
 
 ENV SORMAS_VERSION=$SORMAS_VERSION
 LABEL maintainer="aptalca"
@@ -93,7 +92,7 @@ RUN \
  else \
         CERTBOT="certbot==${CERTBOT_VERSION}"; \
  fi && \
- python -m pip install -U pip && \
+ python3 -m pip install -U pip && \
  pip3 install -U \
 	pip && \
  pip3 install -U \
