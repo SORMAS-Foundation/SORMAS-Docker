@@ -1,4 +1,4 @@
-FROM postgres:14.9-alpine3.17
+FROM postgres:10.18-alpine
 
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
