@@ -18,6 +18,32 @@
 For production usage, ONLY checkout from the release tags, because only these contain working and tested images!
 
 ---
+**PostgreSQL upgrade notes**
+
+The following tips are for people who use the project's Docker images to host a SORMAS (PostgreSQL) database in their deployment.
+
+With the release of v2.50 the default database engine version will change, PostgreSQL 10.18 will be replaced with PostgreSQL 14.9
+
+Before using this update, you must migrate the data structures of the current PostgreSQL instance yourself.
+
+Bearing in mind that each deployment may be different, below are some steps on how to perform such an update (please bear in mind that these instructions will need to be adapted to individual deployment conditions).
+
+1. You need to run a temporary container with PostgreSQL version 14.9 and indicate the local file system as the data storage location (please adjust the volume '/custom/mount' according to own environment)
+``` 
+docker run --name postgres_149 -v /custom/mount:/var/lib/postgresql/data -e POSTGRES_PASSWORD=mysecretpassword -e DB_NAME=sormas -d postgres:14.9
+```
+
+2. Run a 'pg_dumpall' command, pipe the output to feed the psql command within new container (please adjust the name 'current_postgresql_instance' to the ones used withing own environment).
+```
+docker exec -it current_postgresql_instance pg_dumpall -U postgres | docker exec -i postgres_149 psql -U postgres
+```
+
+3. Stop the whole Docker application stack including temporary 'postgres_149' container
+4. Secure the initial (current_postgresql_instance) data folder (copy / archive)
+5. Copy the data related to postgres_149 volume as it was configured within current configuration of application stack
+6. You can start the application stack and use new 'postgresql' images (please keep in mind, that the underlying data was changes and it's required from now to use news postgres image)
+
+---
 
 **SORMAS** (Surveillance Outbreak Response Management and Analysis System) is an open source eHealth system - consisting of separate web and mobile apps - that is geared towards optimizing the processes used in monitoring the spread of infectious diseases and responding to outbreak situations.
 
