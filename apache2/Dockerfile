@@ -1,15 +1,11 @@
 FROM httpd:2.4-alpine as build
 ARG SORMAS_SERVER_URL
 
-ARG SORMAS_VERSION=1.82.0
+ARG SORMAS_VERSION=1.91.0
 ARG MOD_AUTH_OPENIDC_VERSION=2.4.11.3
 
 ENV SORMAS_VERSION=$SORMAS_VERSION
 ARG SORMAS_URL=https://github.com/sormas-foundation/SORMAS-Project/releases/download/
-
-
-
-
 
 RUN apk update --no-cache && \
     apk upgrade --no-cache
@@ -36,8 +32,7 @@ RUN cd /usr/src/apache2/mod_auth_openidc-${MOD_AUTH_OPENIDC_VERSION}/ && ls -la 
 
 FROM httpd:2.4-alpine
 ARG SORMAS_SERVER_URL
-ARG SORMAS_VERSION=1.82.0
-
+ARG SORMAS_VERSION=1.91.0
 
 ENV SORMAS_VERSION=$SORMAS_VERSION
 ARG SORMAS_URL=https://github.com/sormas-foundation/SORMAS-Project/releases/download/
