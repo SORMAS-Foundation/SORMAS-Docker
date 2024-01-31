@@ -11,7 +11,7 @@ RUN apt update -qq \
   && add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" \
   && apt-get update \
   && apt-get upgrade -y \
-  && apt-get -y install r-base libpq-dev gcc build-essential gfortran libblas-dev liblapack-dev libxml2-dev --no-install-recommends\
+  && apt-get -y install r-base libpq-dev gcc build-essential gfortran libblas-dev liblapack-dev libxml2-dev libglpk-dev --no-install-recommends\
   && apt-get clean
 
 RUN R -e "install.packages('epicontacts', version='1.1.0', repos='http://cran.rstudio.com/')"
